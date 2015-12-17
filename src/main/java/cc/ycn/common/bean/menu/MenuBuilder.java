@@ -34,6 +34,15 @@ public class MenuBuilder extends BaseBuilder<MenuBuilder> {
         return this;
     }
 
+    public MenuBuilder setMatchRule(WxMenuMatchRule rule) {
+        if (rule == null)
+            return this;
+
+        this.menu.matchRule = rule;
+
+        return this;
+    }
+
     @Override
     protected WxMenuType getType() {
         return WxMenuType.MENU;

@@ -23,10 +23,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class WxConfigCache {
 
     private static final AtomicReference<WxConfigCache> instance = new AtomicReference<WxConfigCache>();
+    private static final int REFRESH_SECONDS = 86400;
     private static final int CONCURRENCY_LEVEL = 10;
     private static final long MAXIMUM_SIZE = 10000;
     private static final int EXECUTOR_SIZE = 10;
     private static ExecutorService executor;
+
+    public static void init(CentralStore centralStore) {
+        if (instance.get() == null)
+            instance.compareAndSet(null, new WxConfigCache(centralStore, REFRESH_SECONDS));
+    }
 
     public static void init(CentralStore centralStore, int refreshSeconds) {
         if (instance.get() == null)

@@ -1,9 +1,6 @@
 package cc.ycn.mp;
 
-import cc.ycn.common.bean.WxAccessToken;
-import cc.ycn.common.bean.WxError;
-import cc.ycn.common.bean.WxOAuthScope;
-import cc.ycn.common.bean.WxTicket;
+import cc.ycn.common.bean.*;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.exception.WxErrorException;
@@ -18,14 +15,26 @@ import cc.ycn.mp.bean.*;
 public interface WxMpService {
 
     /**
-     * 获取AccessToken
+     * 从缓存里获取AccessToken
      *
      * @return String
      */
     String getAccessToken();
 
+    /**
+     * 获取AccessToken
+     *
+     * @return WxAccessToken
+     * @throws WxErrorException
+     */
     WxAccessToken fetchAccessToken() throws WxErrorException;
 
+    /**
+     * 验证AccessToken
+     *
+     * @param accessToken String
+     * @throws WxErrorException
+     */
     void verifyAccessToken(String accessToken) throws WxErrorException;
 
     /**
@@ -136,13 +145,23 @@ public interface WxMpService {
 
 
     /**
+     * 创建个性化菜单
+     *
+     * @param menu WxMenu
+     * @return WxError
+     * @throws WxErrorException
+     */
+    WxError createMatchMenu(WxMenu menu) throws WxErrorException;
+
+
+    /**
      * 创建二维码ticket
      *
      * @param scanScene WxScanScene
      * @return WxTicket
      * @throws WxErrorException
      */
-    WxTicket createQRCode(WxScanScene scanScene) throws WxErrorException;
+    WxQRTicket createQRCode(WxScanScene scanScene) throws WxErrorException;
 
 
     /**
@@ -153,4 +172,54 @@ public interface WxMpService {
      * @throws WxErrorException
      */
     String showQRCode(String ticket) throws WxErrorException;
+
+
+    /**
+     * 长链接转短链接
+     *
+     * @param longUrl String
+     * @return String
+     * @throws WxErrorException
+     */
+    String toShortUrl(String longUrl) throws WxErrorException;
+
+
+    /**
+     * 从缓存里获取JSTicket
+     *
+     * @return String
+     */
+    String getJSTicket();
+
+    /**
+     * 获取JSTicket
+     *
+     * @return WxJSTicket
+     * @throws WxErrorException
+     */
+    WxJSTicket fetchJSTicket() throws WxErrorException;
+
+    /**
+     * 生成微信JS Signature
+     *
+     * @param url String
+     * @return WxJSSign
+     */
+    WxJSSign createJSSign(String url);
+
+
+    /**
+     * 从缓存里获取WxcardTicket
+     *
+     * @return String
+     */
+    String getCardTicket();
+
+    /**
+     * 获取WxcardTicket
+     *
+     * @return WxCardTicket
+     * @throws WxErrorException
+     */
+    WxCardTicket fetchCardTicket() throws WxErrorException;
 }

@@ -5,6 +5,7 @@ import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.cache.WxAccessTokenCache;
 import cc.ycn.common.cache.WxConfigCache;
+import cc.ycn.common.cache.WxJSTicketCache;
 import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
@@ -143,14 +144,14 @@ public class WxCpServiceImpl implements WxCpService {
     }
 
     @Override
-    public WxOpenIdRef convertToOpenId(WxOpenIdRef openIdRef) throws WxErrorException {
+    public WxOpenIdRef toOpenId(WxOpenIdRef openIdRef) throws WxErrorException {
         String accessToken = getAccessToken();
 
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
         return requestTool.post(
-                "convertToOpenId",
+                "toOpenId",
                 url,
                 WxOpenIdRef.class,
                 ContentType.MEDIA_JSON,
@@ -159,14 +160,14 @@ public class WxCpServiceImpl implements WxCpService {
     }
 
     @Override
-    public WxOpenIdRef convertToUserId(WxOpenIdRef userIdRef) throws WxErrorException {
+    public WxOpenIdRef toUserId(WxOpenIdRef userIdRef) throws WxErrorException {
         String accessToken = getAccessToken();
 
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_userid?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
         return requestTool.post(
-                "convertToUserId",
+                "toUserId",
                 url,
                 WxOpenIdRef.class,
                 ContentType.MEDIA_JSON,
@@ -208,6 +209,44 @@ public class WxCpServiceImpl implements WxCpService {
                 url,
                 WxError.class
         );
+    }
+
+    @Override
+    public String getJSTicket() {
+        return WxJSTicketCache.getInstance().getTicket(appId);
+    }
+
+    @Override
+    public WxJSTicket fetchJSTicket() throws WxErrorException {
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.get(
+                "fetchJSTicket",
+                url,
+                WxJSTicket.class
+        );
+    }
+
+    @Override
+    public WxJSSign createJSSign(String url) {
+        if (url == null || url.isEmpty())
+            return null;
+
+        int ts = (int) (System.currentTimeMillis() / 1000);
+
+        WxJSSign sign = new WxJSSign();
+        sign.setAppId(appId);
+        sign.setNonceStr(StringTool.getRandomStr(16));
+        sign.setTimeStamp(ts + "");
+        sign.setUrl(url);
+
+        String ticket = getJSTicket();
+        sign.createSignature(ticket);
+
+        return sign;
     }
 
 }

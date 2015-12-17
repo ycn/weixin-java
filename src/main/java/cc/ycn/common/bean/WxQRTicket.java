@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by andy on 12/16/15.
  */
-public class WxTicket implements Serializable {
+public class WxQRTicket implements Serializable {
 
     private String ticket;
 
@@ -16,8 +16,10 @@ public class WxTicket implements Serializable {
     @JSONField(name = "expire_seconds")
     private long expireSeconds;
 
-    
-    public WxTicket() {
+    @JSONField(name = "expires_in")
+    private long expiresIn;
+
+    public WxQRTicket() {
 
     }
 
@@ -43,5 +45,13 @@ public class WxTicket implements Serializable {
 
     public void setExpireSeconds(long expireSeconds) {
         this.expireSeconds = expireSeconds;
+    }
+
+    public long getExpiresIn() {
+        return expiresIn;
+    }
+
+    public void setExpiresIn(long expiresIn) {
+        this.expiresIn = expiresIn;
     }
 }

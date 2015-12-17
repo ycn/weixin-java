@@ -1,7 +1,9 @@
 package cc.ycn.common.bean.message;
 
+import cc.ycn.common.bean.WxCardExt;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.exception.WxErrorException;
+import cc.ycn.common.util.JsonConverter;
 
 /**
  * Created by andy on 12/15/15.
@@ -18,9 +20,9 @@ public class WxcardBuilder extends BaseBuilder<WxcardBuilder> {
         return this;
     }
 
-    public WxcardBuilder cardExt(String cardExt) {
-        if (!isEmpty(cardExt))
-            message.wxCard.cardExt = cardExt;
+    public WxcardBuilder cardExt(WxCardExt cardExt) {
+        if (cardExt != null)
+            message.wxCard.cardExt = JsonConverter.pojo2json(cardExt);
         return this;
     }
 

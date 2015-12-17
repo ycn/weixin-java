@@ -1,8 +1,8 @@
 package cc.ycn.common.cache;
 
 import cc.ycn.common.api.CentralStore;
-import cc.ycn.common.bean.WxAccessToken;
 import cc.ycn.common.bean.WxConfig;
+import cc.ycn.common.bean.WxJSTicket;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.JsonConverter;
 import cc.ycn.cp.WxCpServiceImpl;
@@ -24,12 +24,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by andy on 12/11/15.
+ * Created by andy on 12/17/15.
  */
-public class WxAccessTokenCache {
-    private final static Logger log = LoggerFactory.getLogger(WxAccessTokenCache.class);
-    private final static String LOG_TAG = "[WxAccessTokenCache]";
-    private static final AtomicReference<WxAccessTokenCache> instance = new AtomicReference<WxAccessTokenCache>();
+public class WxJSTicketCache {
+    private final static Logger log = LoggerFactory.getLogger(WxJSTicketCache.class);
+    private final static String LOG_TAG = "[WxJSTicketCache]";
+    private static final AtomicReference<WxJSTicketCache> instance = new AtomicReference<WxJSTicketCache>();
     private static final int REFRESH_SECONDS = 7200;
     private static final int CONCURRENCY_LEVEL = 10;
     private static final long MAXIMUM_SIZE = 10000;
@@ -38,31 +38,31 @@ public class WxAccessTokenCache {
 
     public static void init(CentralStore centralStore) {
         if (instance.get() == null)
-            instance.compareAndSet(null, new WxAccessTokenCache(centralStore, REFRESH_SECONDS));
+            instance.compareAndSet(null, new WxJSTicketCache(centralStore, REFRESH_SECONDS));
     }
 
     public static void init(CentralStore centralStore, int refreshSeconds) {
         if (instance.get() == null)
-            instance.compareAndSet(null, new WxAccessTokenCache(centralStore, refreshSeconds));
+            instance.compareAndSet(null, new WxJSTicketCache(centralStore, refreshSeconds));
     }
 
     public static void init(CentralStore centralStore, int refreshSeconds, int concurrencyLevel, long maximumSize, int executorSize) {
         if (instance.get() == null)
-            instance.compareAndSet(null, new WxAccessTokenCache(centralStore, refreshSeconds, concurrencyLevel, maximumSize, executorSize));
+            instance.compareAndSet(null, new WxJSTicketCache(centralStore, refreshSeconds, concurrencyLevel, maximumSize, executorSize));
     }
 
-    public static WxAccessTokenCache getInstance() {
+    public static WxJSTicketCache getInstance() {
         return instance.get();
     }
 
     private CentralStore centralStore;
     private LoadingCache<String, String> cache;
 
-    private WxAccessTokenCache(CentralStore centralStore, int refreshSeconds) {
+    private WxJSTicketCache(CentralStore centralStore, int refreshSeconds) {
         this(centralStore, refreshSeconds, CONCURRENCY_LEVEL, MAXIMUM_SIZE, EXECUTOR_SIZE);
     }
 
-    private WxAccessTokenCache(CentralStore centralStore, int refreshSeconds, int concurrencyLevel, long maximumSize, int executorSize) {
+    private WxJSTicketCache(CentralStore centralStore, int refreshSeconds, int concurrencyLevel, long maximumSize, int executorSize) {
         executor = Executors.newFixedThreadPool(executorSize);
 
         this.centralStore = centralStore;
@@ -72,14 +72,14 @@ public class WxAccessTokenCache {
                 .concurrencyLevel(concurrencyLevel)
                 .maximumSize(maximumSize)
                 .refreshAfterWrite(refreshSeconds, TimeUnit.SECONDS)
-                .build(new WxAccessTokenCacheLoader());
+                .build(new WxJSTicketCacheLoader());
     }
 
-    public String getToken(String appId) {
+    public String getTicket(String appId) {
         return cache.getUnchecked(appId);
     }
 
-    class WxAccessTokenCacheLoader extends CacheLoader<String, String> {
+    class WxJSTicketCacheLoader extends CacheLoader<String, String> {
 
         @Override
         public String load(String appId) throws Exception {
@@ -87,14 +87,14 @@ public class WxAccessTokenCache {
         }
 
         @Override
-        public ListenableFuture<String> reload(final String appId, final String oldToken) throws Exception {
+        public ListenableFuture<String> reload(final String appId, final String oldTicket) throws Exception {
             checkNotNull(appId);
-            checkNotNull(oldToken);
+            checkNotNull(oldTicket);
 
             ListenableFutureTask<String> task = ListenableFutureTask.create(new Callable<String>() {
                 @Override
                 public String call() throws Exception {
-                    return loadOne(appId, oldToken, false);
+                    return loadOne(appId, oldTicket, false);
                 }
             });
 
@@ -102,60 +102,43 @@ public class WxAccessTokenCache {
             return task;
         }
 
-        private String loadOne(String appId, String oldToken, boolean sync) {
+        private String loadOne(String appId, String oldTicket, boolean sync) {
             if (appId == null || appId.isEmpty())
                 return "";
 
-            if (oldToken == null)
-                oldToken = "";
+            if (oldTicket == null)
+                oldTicket = "";
 
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
             WxConfig config = wxConfigCache == null ? null : wxConfigCache.getConfig(appId);
             if (config == null)
-                return oldToken;
+                return oldTicket;
 
-            // accessToken还未过期
-            String tokenJson = centralStore.get(appId);
-            WxAccessToken accessToken = tokenJson == null ? null : JsonConverter.json2pojo(tokenJson, WxAccessToken.class);
-            if (accessToken != null && accessToken.getAccessToken() != null && !accessToken.getAccessToken().isEmpty()) {
+            // 检查AccessToken
+            WxAccessTokenCache wxAccessTokenCache = WxAccessTokenCache.getInstance();
+            String accessToken = wxAccessTokenCache == null ? null : wxAccessTokenCache.getToken(appId);
+            if (accessToken == null)
+                return oldTicket;
 
-                // 测试accessToken是否有效
-                try {
-
-                    switch (config.getType()) {
-                        case MP:
-                            WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
-                            wxMpService.verifyAccessToken(accessToken.getAccessToken());
-                            break;
-                        case CP:
-                            WxCpServiceImpl wxCpService = new WxCpServiceImpl(appId);
-                            wxCpService.verifyAccessToken(accessToken.getAccessToken());
-                            break;
-                        default:
-                            break;
-                    }
-
-                    // 有效继续使用
-                    log.info("{} use oldToken: {}", LOG_TAG, accessToken);
-                    return accessToken.getAccessToken();
-
-                } catch (WxErrorException e) {
-                    log.warn("{} token invalid: {}, {}", LOG_TAG, accessToken, e.getError());
-                }
+            // ticket还未过期
+            String ticketJson = centralStore.get(appId);
+            WxJSTicket ticket = ticketJson == null ? null : JsonConverter.json2pojo(ticketJson, WxJSTicket.class);
+            if (ticket != null && ticket.getTicket() != null && !ticket.getTicket().isEmpty()) {
+                return ticket.getTicket();
             }
 
-            // accessToken已过期
+            // ticket已过期
             try {
 
                 switch (config.getType()) {
                     case MP:
                         WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
-                        accessToken = wxMpService.fetchAccessToken();
+                        ticket = wxMpService.fetchJSTicket();
                         break;
                     case CP:
                         WxCpServiceImpl wxCpService = new WxCpServiceImpl(appId);
-                        accessToken = wxCpService.fetchAccessToken();
+                        ticket = wxCpService.fetchJSTicket();
                         break;
                     default:
                         break;
@@ -163,15 +146,15 @@ public class WxAccessTokenCache {
 
             } catch (WxErrorException e) {
                 log.warn("{} request error: {}", LOG_TAG, e.getError());
-                return oldToken;
+                return oldTicket;
             }
 
-            if (accessToken == null || accessToken.getAccessToken() == null || accessToken.getAccessToken().isEmpty())
-                return oldToken;
+            if (ticket == null || ticket.getTicket() == null || ticket.getTicket().isEmpty())
+                return oldTicket;
 
-            centralStore.set(appId, JsonConverter.pojo2json(accessToken), accessToken.getExpiresIn());
+            centralStore.set(appId, JsonConverter.pojo2json(ticket), ticket.getExpiresIn());
 
-            return accessToken.getAccessToken();
+            return ticket.getTicket();
         }
     }
 }

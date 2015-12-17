@@ -123,7 +123,7 @@ public class RequestTool {
 
 
     private String getReqSign(Request request) {
-        String sign = StringTool.MD5Encode(System.currentTimeMillis() + request.httpUrl().toString(), 16);
+        String sign = StringTool.MD5(System.currentTimeMillis() + request.httpUrl().toString(), 16);
         log.info("{} SEND-{} request:{}", tag, sign, request.httpUrl());
         return sign;
     }

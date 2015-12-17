@@ -5,6 +5,7 @@ import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.cache.WxAccessTokenCache;
 import cc.ycn.common.cache.WxConfigCache;
+import cc.ycn.common.cache.WxJSTicketCache;
 import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
@@ -259,7 +260,26 @@ public class WxMpServiceImpl implements WxMpService {
     }
 
     @Override
-    public WxTicket createQRCode(WxScanScene scanScene) throws WxErrorException {
+    public WxError createMatchMenu(WxMenu menu) throws WxErrorException {
+        if (menu == null || menu.getMatchRule() == null)
+            throw new WxErrorException(new WxError(1003, "invalid matchRule"));
+
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "createMatchMenu",
+                url,
+                WxError.class,
+                ContentType.MEDIA_JSON,
+                menu
+        );
+    }
+
+    @Override
+    public WxQRTicket createQRCode(WxScanScene scanScene) throws WxErrorException {
         String accessToken = getAccessToken();
 
         String fUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={}";
@@ -268,7 +288,7 @@ public class WxMpServiceImpl implements WxMpService {
         return requestTool.post(
                 "createQRCode",
                 url,
-                WxTicket.class,
+                WxQRTicket.class,
                 ContentType.MEDIA_JSON,
                 scanScene
         );
@@ -282,5 +302,78 @@ public class WxMpServiceImpl implements WxMpService {
         } catch (UnsupportedEncodingException ignore) {
         }
         return "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + encodedTicket;
+    }
+
+    @Override
+    public String toShortUrl(String longUrl) throws WxErrorException {
+        if (longUrl == null || longUrl.isEmpty())
+            return "";
+
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/shorturl?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        WxLongUrl wxLongUrl = new WxLongUrl();
+        wxLongUrl.setAction("long2short");
+        wxLongUrl.setLongUrl(longUrl);
+
+        WxShortUrl wxShortUrl = requestTool.post(
+                "toShortUrl",
+                url,
+                WxShortUrl.class,
+                ContentType.MEDIA_JSON,
+                wxLongUrl
+        );
+
+        return wxShortUrl == null ? "" : wxShortUrl.getShortUrl();
+    }
+
+    @Override
+    public String getJSTicket() {
+        return WxJSTicketCache.getInstance().getTicket(appId);
+    }
+
+    @Override
+    public WxJSTicket fetchJSTicket() throws WxErrorException {
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={}&type=jsapi";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.get(
+                "fetchJSTicket",
+                url,
+                WxJSTicket.class
+        );
+    }
+
+    @Override
+    public WxJSSign createJSSign(String url) {
+        if (url == null || url.isEmpty())
+            return null;
+
+        int ts = (int) (System.currentTimeMillis() / 1000);
+
+        WxJSSign sign = new WxJSSign();
+        sign.setAppId(appId);
+        sign.setNonceStr(StringTool.getRandomStr(16));
+        sign.setTimeStamp(ts + "");
+        sign.setUrl(url);
+
+        String ticket = getJSTicket();
+        sign.createSignature(ticket);
+
+        return sign;
+    }
+
+    @Override
+    public String getCardTicket() {
+        return null;
+    }
+
+    @Override
+    public WxCardTicket fetchCardTicket() throws WxErrorException {
+        return null;
     }
 }

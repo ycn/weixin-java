@@ -1,9 +1,6 @@
 package cc.ycn.cp;
 
-import cc.ycn.common.bean.WxAccessToken;
-import cc.ycn.common.bean.WxError;
-import cc.ycn.common.bean.WxOAuthScope;
-import cc.ycn.common.bean.WxOpenIdRef;
+import cc.ycn.common.bean.*;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.exception.WxErrorException;
@@ -19,14 +16,26 @@ import cc.ycn.cp.bean.WxQyUser;
 public interface WxCpService {
 
     /**
-     * 获取AccessToken
+     * 从缓存里获取AccessToken
      *
      * @return String
      */
     String getAccessToken();
 
+    /**
+     * 获取AccessToken
+     *
+     * @return WxAccessToken
+     * @throws WxErrorException
+     */
     WxAccessToken fetchAccessToken() throws WxErrorException;
 
+    /**
+     * 验证AccessToken
+     *
+     * @param accessToken String
+     * @throws WxErrorException
+     */
     void verifyAccessToken(String accessToken) throws WxErrorException;
 
     /**
@@ -75,7 +84,7 @@ public interface WxCpService {
      * @return WxOpenIdRef
      * @throws WxErrorException
      */
-    WxOpenIdRef convertToOpenId(WxOpenIdRef openIdRef) throws WxErrorException;
+    WxOpenIdRef toOpenId(WxOpenIdRef openIdRef) throws WxErrorException;
 
 
     /**
@@ -85,7 +94,7 @@ public interface WxCpService {
      * @return WxOpenIdRef
      * @throws WxErrorException
      */
-    WxOpenIdRef convertToUserId(WxOpenIdRef userIdRef) throws WxErrorException;
+    WxOpenIdRef toUserId(WxOpenIdRef userIdRef) throws WxErrorException;
 
 
     /**
@@ -107,6 +116,28 @@ public interface WxCpService {
      */
     WxError deleteMenu(String agentId) throws WxErrorException;
 
+    /**
+     * 从缓存里获取JSTicket
+     *
+     * @return String
+     */
+    String getJSTicket();
 
+    /**
+     * 获取JSTicket
+     *
+     * @return WxJSTicket
+     * @throws WxErrorException
+     */
+    WxJSTicket fetchJSTicket() throws WxErrorException;
 
+    /**
+     * 生成微信JS Signature
+     *
+     * @param url String
+     * @return WxJSSign
+     */
+    WxJSSign createJSSign(String url);
+
+    
 }

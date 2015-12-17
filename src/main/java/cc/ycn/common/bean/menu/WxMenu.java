@@ -28,6 +28,8 @@ public class WxMenu implements Serializable {
     @JSONField(name = "media_id")
     String mediaId;
 
+    @JSONField(name = "matchrule")
+    WxMenuMatchRule matchRule;
 
     WxMenu() {
 
@@ -132,5 +134,8 @@ public class WxMenu implements Serializable {
     public void setMediaId(String mediaId) {
         this.mediaId = mediaId;
     }
-    
+
+    public WxMenuMatchRule getMatchRule() {
+        return matchRule;
+    }
 }

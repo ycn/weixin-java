@@ -1,9 +1,10 @@
 package cc.ycn.common.util;
 
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import java.security.MessageDigest;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -14,6 +15,8 @@ import java.util.zip.Checksum;
  */
 public class StringTool {
 
+    private static final String RANDOM_STR = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final java.util.Random RANDOM = new java.util.Random();
     private static final Pattern R_EMAIL = Pattern.compile("^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$");
     private static final Pattern R_PHONE = Pattern.compile("^((13[0-9])|(15[0-9])|(17[0-9])|(18[0-9]))\\d{8}$");
     private static final Pattern R_PHONE_CODE = Pattern.compile("^\\d{4}$");
@@ -104,25 +107,33 @@ public class StringTool {
         return resultString;
     }
 
-    public static String md5(String format, Object... arguments) {
-        String value = formatString(format, arguments);
-        return MD5Encode(value);
+    public static String MD5(String origin) {
+        return MD5(origin, 32);
     }
 
-    public static String MD5Encode(String origin, int length) {
-        String resultString = null;
+    public static String MD5(String origin, int length) {
+        String result = "";
         try {
-            resultString = origin;
+            result = origin;
             MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(resultString.getBytes("UTF-8"));
-            resultString = byteArrayToHexString(md.digest());
+            md.update(result.getBytes("UTF-8"));
+            result = byteArrayToHexString(md.digest());
         } catch (Exception ignore) {
         }
 
-        if (length > 32) return resultString;
+        if (length > 32) return result;
 
         int start = (int) Math.ceil((32 - length) / 2);
-        return resultString.substring(start, start + length);
+        return result.substring(start, start + length);
+    }
+
+    public static String SHA1(String origin) {
+        String result = "";
+        try {
+            result = DigestUtils.sha1Hex(origin);
+        } catch (Exception ignore) {
+        }
+        return result;
     }
 
     public static String checkSum(String content) {
@@ -216,13 +227,11 @@ public class StringTool {
      * @param length 指定字符串长度
      * @return 一定长度的字符串
      */
-    public static String getRandomStringByLength(int length) {
-        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        StringBuffer sb = new StringBuffer();
+    public static String getRandomStr(int length) {
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            int number = random.nextInt(base.length());
-            sb.append(base.charAt(number));
+            int number = RANDOM.nextInt(RANDOM_STR.length());
+            sb.append(RANDOM_STR.charAt(number));
         }
         return sb.toString();
     }
