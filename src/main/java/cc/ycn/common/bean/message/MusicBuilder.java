@@ -1,5 +1,8 @@
 package cc.ycn.common.bean.message;
 
+import cc.ycn.common.bean.WxError;
+import cc.ycn.common.exception.WxErrorException;
+
 /**
  * Created by andy on 12/15/15.
  */
@@ -42,5 +45,19 @@ public class MusicBuilder extends BaseBuilder<MusicBuilder> {
     @Override
     protected WxMsgType getType() {
         return WxMsgType.MUSIC;
+    }
+
+    @Override
+    protected void isValid() {
+        if (isEmpty(message.music.title))
+            throw new WxErrorException(new WxError(1004, "missing title"));
+        if (isEmpty(message.music.description))
+            throw new WxErrorException(new WxError(1004, "missing description"));
+        if (isEmpty(message.music.thumbMediaId))
+            throw new WxErrorException(new WxError(1004, "missing thumbMediaId"));
+        if (isEmpty(message.music.musicUrl))
+            throw new WxErrorException(new WxError(1004, "missing musicUrl"));
+        if (isEmpty(message.music.hqMusicUrl))
+            throw new WxErrorException(new WxError(1004, "missing hqMusicUrl"));
     }
 }

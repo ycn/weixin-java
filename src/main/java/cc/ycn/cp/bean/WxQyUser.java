@@ -15,6 +15,9 @@ public class WxQyUser implements Serializable {
     @JSONField(name = "DeviceId")
     private String deviceId;
 
+    @JSONField(name = "OpenId")
+    private String openId;
+
     public WxQyUser() {
 
     }
@@ -33,5 +36,13 @@ public class WxQyUser implements Serializable {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

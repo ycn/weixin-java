@@ -16,7 +16,7 @@ public final class WxConfig implements Serializable {
     private String appSecret;
 
     public WxConfig() {
-        
+
     }
 
     public WxConfig(String appId, WxApiType type) {
@@ -47,4 +47,5 @@ public final class WxConfig implements Serializable {
     public void setAppSecret(String appSecret) {
         this.appSecret = appSecret;
     }
+
 }

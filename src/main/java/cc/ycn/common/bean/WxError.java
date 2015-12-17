@@ -34,7 +34,7 @@ public final class WxError implements Serializable {
     private String invalidTag;
 
     public WxError() {
-        
+
     }
 
     public WxError(long errcode, String errmsg) {
@@ -80,5 +80,10 @@ public final class WxError implements Serializable {
 
     public void setInvalidTag(String invalidTag) {
         this.invalidTag = invalidTag;
+    }
+
+    @Override
+    public String toString() {
+        return "WxError(errcode:" + errcode + ",errmsg:" + errmsg + ")";
     }
 }

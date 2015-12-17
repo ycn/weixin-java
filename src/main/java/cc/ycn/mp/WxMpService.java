@@ -3,11 +3,11 @@ package cc.ycn.mp;
 import cc.ycn.common.bean.WxAccessToken;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.bean.WxOAuthScope;
+import cc.ycn.common.bean.WxTicket;
+import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.exception.WxErrorException;
-import cc.ycn.mp.bean.WxIpList;
-import cc.ycn.mp.bean.WxKfAccount;
-import cc.ycn.mp.bean.WxOAuthAccessToken;
+import cc.ycn.mp.bean.*;
 
 /**
  * 微信公众号Service
@@ -94,4 +94,63 @@ public interface WxMpService {
      * @throws WxErrorException
      */
     WxOAuthAccessToken getOAuthAccessToken(String code) throws WxErrorException;
+
+
+    /**
+     * 获取用户资料
+     *
+     * @param oauthAccessToken String
+     * @param openId           String
+     * @return WxUserInfo
+     * @throws WxErrorException
+     */
+    WxUserInfo getUserInfo(String oauthAccessToken, String openId) throws WxErrorException;
+
+
+    /**
+     * 检验授权凭证（access_token）是否有效
+     *
+     * @param oauthAccessToken String
+     * @return WxError
+     * @throws WxErrorException
+     */
+    WxError checkOAuthAccessToken(String oauthAccessToken, String openId) throws WxErrorException;
+
+
+    /**
+     * 创建自定义菜单
+     *
+     * @param menu WxMenu
+     * @return WxError
+     * @throws WxErrorException
+     */
+    WxError createMenu(WxMenu menu) throws WxErrorException;
+
+    /**
+     * 删除自定义菜单
+     *
+     * @return WxError
+     * @throws WxErrorException
+     */
+    WxError deleteMenu() throws WxErrorException;
+
+
+    /**
+     * 创建二维码ticket
+     *
+     * @param scanScene WxScanScene
+     * @return WxTicket
+     * @throws WxErrorException
+     */
+    WxTicket createQRCode(WxScanScene scanScene) throws WxErrorException;
+
+
+    /**
+     * 通过ticket换取二维码
+     *
+     * @param ticket String
+     * @return String
+     * @throws WxErrorException
+     */
+    String showQRCode(String ticket) throws WxErrorException;
 }

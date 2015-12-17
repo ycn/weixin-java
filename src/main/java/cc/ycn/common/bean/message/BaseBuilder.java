@@ -13,6 +13,8 @@ public abstract class BaseBuilder<T> {
 
     abstract protected WxMsgType getType();
 
+    abstract protected void isValid();
+
     public T toUser(String toUser) {
         if (!isEmpty(toUser))
             message.toUser = toUser;
@@ -51,6 +53,7 @@ public abstract class BaseBuilder<T> {
         if (isEmpty(message.toUser) && isEmpty(message.toParty) && isEmpty(message.toTag))
             throw new WxErrorException(new WxError(1004, "missing toUser/toParty/toTag"));
 
+        isValid();
 
         message.msgType = type.info();
         return message;

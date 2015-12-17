@@ -1,5 +1,8 @@
 package cc.ycn.common.bean.message;
 
+import cc.ycn.common.bean.WxError;
+import cc.ycn.common.exception.WxErrorException;
+
 /**
  * Created by andy on 12/15/15.
  */
@@ -18,5 +21,11 @@ public class TextBuilder extends BaseBuilder<TextBuilder> {
     @Override
     protected WxMsgType getType() {
         return WxMsgType.TEXT;
+    }
+
+    @Override
+    protected void isValid() {
+        if (isEmpty(message.text.content))
+            throw new WxErrorException(new WxError(1004, "missing content"));
     }
 }

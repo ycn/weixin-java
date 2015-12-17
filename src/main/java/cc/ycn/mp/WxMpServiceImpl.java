@@ -1,9 +1,7 @@
 package cc.ycn.mp;
 
-import cc.ycn.common.bean.WxAccessToken;
-import cc.ycn.common.bean.WxConfig;
-import cc.ycn.common.bean.WxError;
-import cc.ycn.common.bean.WxOAuthScope;
+import cc.ycn.common.bean.*;
+import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.cache.WxAccessTokenCache;
 import cc.ycn.common.cache.WxConfigCache;
@@ -12,9 +10,7 @@ import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.RequestTool;
 import cc.ycn.common.util.StringTool;
-import cc.ycn.mp.bean.WxIpList;
-import cc.ycn.mp.bean.WxKfAccount;
-import cc.ycn.mp.bean.WxOAuthAccessToken;
+import cc.ycn.mp.bean.*;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.UnsupportedEncodingException;
@@ -194,5 +190,97 @@ public class WxMpServiceImpl implements WxMpService {
                 url,
                 WxOAuthAccessToken.class
         );
+    }
+
+    @Override
+    public WxUserInfo getUserInfo(String oauthAccessToken, String openId) throws WxErrorException {
+        if (oauthAccessToken == null || oauthAccessToken.isEmpty())
+            throw new WxErrorException(new WxError(1003, "invalid oauthAccessToken"));
+
+        if (openId == null || openId.isEmpty())
+            throw new WxErrorException(new WxError(1003, "invalid openId"));
+
+        String fUrl = "https://api.weixin.qq.com/sns/userinfo?access_token={}&openid={}&lang=zh_CN";
+        String url = StringTool.formatString(fUrl, oauthAccessToken, openId);
+
+        return requestTool.get(
+                "getUserInfo",
+                url,
+                WxUserInfo.class
+        );
+    }
+
+    @Override
+    public WxError checkOAuthAccessToken(String oauthAccessToken, String openId) throws WxErrorException {
+        if (oauthAccessToken == null || oauthAccessToken.isEmpty())
+            throw new WxErrorException(new WxError(1003, "invalid oauthAccessToken"));
+
+        if (openId == null || openId.isEmpty())
+            throw new WxErrorException(new WxError(1003, "invalid openId"));
+
+        String fUrl = "https://api.weixin.qq.com/sns/auth?access_token={}&openid={}";
+        String url = StringTool.formatString(fUrl, oauthAccessToken, openId);
+
+        return requestTool.get(
+                "checkOAuthAccessToken",
+                url,
+                WxError.class
+        );
+    }
+
+    @Override
+    public WxError createMenu(WxMenu menu) throws WxErrorException {
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "createMenu",
+                url,
+                WxError.class,
+                ContentType.MEDIA_JSON,
+                menu
+        );
+    }
+
+    @Override
+    public WxError deleteMenu() throws WxErrorException {
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.get(
+                "deleteMenu",
+                url,
+                WxError.class
+        );
+    }
+
+    @Override
+    public WxTicket createQRCode(WxScanScene scanScene) throws WxErrorException {
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "createQRCode",
+                url,
+                WxTicket.class,
+                ContentType.MEDIA_JSON,
+                scanScene
+        );
+    }
+
+    @Override
+    public String showQRCode(String ticket) throws WxErrorException {
+        String encodedTicket = "";
+        try {
+            encodedTicket = URLEncoder.encode(ticket, "UTF-8");
+        } catch (UnsupportedEncodingException ignore) {
+        }
+        return "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + encodedTicket;
     }
 }

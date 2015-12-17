@@ -2,8 +2,7 @@ package cc.ycn;
 
 import cc.ycn.common.api.CentralStore;
 import cc.ycn.common.bean.WxConfig;
-import cc.ycn.common.bean.message.WxArticle;
-import cc.ycn.common.bean.message.WxMessage;
+import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.cache.WxAccessTokenCache;
 import cc.ycn.common.cache.WxConfigCache;
 import cc.ycn.common.constant.WxApiType;
@@ -77,19 +76,35 @@ public class TestMain {
             }
         }, 5);
 
-        WxArticle article1 = new WxArticle();
-        article1.setTitle("123");
-        WxArticle article2 = new WxArticle();
-        article2.setDescription("hhh");
-        WxMessage msg = WxMessage.NEWS()
-                .toUser("andy")
-                .addArticle(article1)
-                .addArticle(article2)
-                .addArticle(article1)
-                .kfAccount("andy@khw")
+
+        WxMenu click1 = WxMenu.CLICK()
+                .name("点击我")
+                .key("click_1")
                 .build();
 
-        System.out.println(JsonConverter.pojo2json(msg));
+        WxMenu click2 = WxMenu.CLICK()
+                .name("点击我2")
+                .key("click_2")
+                .build();
+
+        WxMenu menu1 = WxMenu.MENU()
+                .name("菜单A")
+                .addSubMenu(click1)
+                .build();
+
+        WxMenu menu2 = WxMenu.MENU()
+                .name("菜单B")
+                .addSubMenu(click1)
+                .addSubMenu(click2)
+                .build();
+
+        WxMenu menu = WxMenu.MENU()
+                .addMenu(menu1)
+                .addMenu(click2)
+                .addMenu(menu2)
+                .build();
+
+        System.out.println(JsonConverter.pojo2json(menu));
 
 
 //        WxMpServiceImpl wxMpService = new WxMpServiceImpl(MP_APP_ID);

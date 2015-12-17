@@ -3,7 +3,7 @@ package cc.ycn.common.bean.message;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 /**
  * 发送微信消息的实体
@@ -252,9 +252,9 @@ public class WxMessage implements Serializable {
     }
 
     class WxMsgNews implements Serializable {
-        Set<WxArticle> articles;
+        List<WxArticle> articles;
 
-        public Set<WxArticle> getArticles() {
+        public List<WxArticle> getArticles() {
             return articles;
         }
     }

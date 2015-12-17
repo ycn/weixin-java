@@ -1,9 +1,7 @@
 package cc.ycn.cp;
 
-import cc.ycn.common.bean.WxAccessToken;
-import cc.ycn.common.bean.WxConfig;
-import cc.ycn.common.bean.WxError;
-import cc.ycn.common.bean.WxOAuthScope;
+import cc.ycn.common.bean.*;
+import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.cache.WxAccessTokenCache;
 import cc.ycn.common.cache.WxConfigCache;
@@ -144,5 +142,72 @@ public class WxCpServiceImpl implements WxCpService {
         );
     }
 
+    @Override
+    public WxOpenIdRef convertToOpenId(WxOpenIdRef openIdRef) throws WxErrorException {
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "convertToOpenId",
+                url,
+                WxOpenIdRef.class,
+                ContentType.MEDIA_JSON,
+                openIdRef
+        );
+    }
+
+    @Override
+    public WxOpenIdRef convertToUserId(WxOpenIdRef userIdRef) throws WxErrorException {
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_userid?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "convertToUserId",
+                url,
+                WxOpenIdRef.class,
+                ContentType.MEDIA_JSON,
+                userIdRef
+        );
+    }
+
+    @Override
+    public WxError createMenu(String agentId, WxMenu menu) throws WxErrorException {
+        if (agentId == null || agentId.isEmpty())
+            throw new WxErrorException(new WxError(1003, "invalid agentId"));
+
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/menu/create?access_token={}&agentid={}";
+        String url = StringTool.formatString(fUrl, accessToken, agentId);
+
+        return requestTool.post(
+                "createMenu",
+                url,
+                WxError.class,
+                ContentType.MEDIA_JSON,
+                menu
+        );
+    }
+
+    @Override
+    public WxError deleteMenu(String agentId) throws WxErrorException {
+        if (agentId == null || agentId.isEmpty())
+            throw new WxErrorException(new WxError(1003, "invalid agentId"));
+
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/menu/delete?access_token={}&agentid={}";
+        String url = StringTool.formatString(fUrl, accessToken, agentId);
+
+        return requestTool.get(
+                "deleteMenu",
+                url,
+                WxError.class
+        );
+    }
 
 }

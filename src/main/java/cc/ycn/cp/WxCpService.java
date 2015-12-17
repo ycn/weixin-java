@@ -3,6 +3,8 @@ package cc.ycn.cp;
 import cc.ycn.common.bean.WxAccessToken;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.bean.WxOAuthScope;
+import cc.ycn.common.bean.WxOpenIdRef;
+import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.cp.bean.WxDepartmentList;
@@ -64,5 +66,47 @@ public interface WxCpService {
      * @throws WxErrorException
      */
     WxQyUser getUserId(String code) throws WxErrorException;
+
+
+    /**
+     * 换取用户OpenId
+     *
+     * @param openIdRef WxOpenIdRef
+     * @return WxOpenIdRef
+     * @throws WxErrorException
+     */
+    WxOpenIdRef convertToOpenId(WxOpenIdRef openIdRef) throws WxErrorException;
+
+
+    /**
+     * 换取用户UserId
+     *
+     * @param userIdRef WxOpenIdRef
+     * @return WxOpenIdRef
+     * @throws WxErrorException
+     */
+    WxOpenIdRef convertToUserId(WxOpenIdRef userIdRef) throws WxErrorException;
+
+
+    /**
+     * 创建自定义菜单
+     *
+     * @param menu WxMenu
+     * @return WxError
+     * @throws WxErrorException
+     */
+    WxError createMenu(String agentId, WxMenu menu) throws WxErrorException;
+
+
+    /**
+     * 删除自定义菜单
+     *
+     * @param agentId String
+     * @return WxError
+     * @throws WxErrorException
+     */
+    WxError deleteMenu(String agentId) throws WxErrorException;
+
+
 
 }
