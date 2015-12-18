@@ -1,6 +1,6 @@
 package cc.ycn.common.bean;
 
-import cc.ycn.common.util.WeixinSignTool;
+import cc.ycn.common.WeixinSignTool;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Created by andy on 12/17/15.
  */
-public class WxJSSign implements Serializable {
+public class WxJSSignature implements Serializable {
 
     @JSONField(name = "appid")
     private String appId;
@@ -24,7 +24,7 @@ public class WxJSSign implements Serializable {
 
     private String signature;
 
-    public WxJSSign() {
+    public WxJSSignature() {
 
     }
 

@@ -137,7 +137,6 @@ public interface WxCpService {
      * @param url String
      * @return WxJSSign
      */
-    WxJSSign createJSSign(String url);
+    WxJSSignature createJSSignature(String url);
 
-    
 }

@@ -1,7 +1,9 @@
 package cc.ycn.common.api;
 
 /**
- * Created by andy on 12/12/15.
+ * 中央仓库接口
+ *
+ * @author andy <andy@ycn.cc>
  */
 public interface CentralStore {
 

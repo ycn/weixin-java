@@ -1,6 +1,10 @@
-package cc.ycn.common.util;
+package cc.ycn.common;
 
+import cc.ycn.common.bean.WxConfig;
+import cc.ycn.common.util.StringTool;
 import com.google.common.base.Joiner;
+import com.qq.weixin.mp.aes.AesException;
+import com.qq.weixin.mp.aes.WXBizMsgCrypt;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.StandardToStringStyle;
 
@@ -12,6 +16,88 @@ import java.util.*;
  * @author andy
  */
 public class WeixinSignTool {
+
+    /**
+     * 验证推送消息的正确性
+     *
+     * @return boolean
+     */
+    boolean checkMsgSignature(WxConfig config, String msgSignature, String timeStamp, String nonce, String msgEncrypt) {
+        if (config == null)
+            return false;
+
+        if (msgSignature == null || msgSignature.isEmpty())
+            return false;
+
+        if (timeStamp == null || timeStamp.isEmpty())
+            return false;
+
+        if (nonce == null || nonce.isEmpty())
+            return false;
+
+        if (msgEncrypt == null)
+            msgEncrypt = "";
+
+        String sign = WeixinSignTool.createSignature(config.getToken(), timeStamp, nonce, msgEncrypt);
+
+        return msgSignature.equals(sign);
+    }
+
+
+    /**
+     * 校验Url
+     *
+     * @param msgSignature   String
+     * @param timeStamp      String
+     * @param nonce          String
+     * @param echoStrEncrypt String 密文echoStr
+     * @return String 明文echoStr
+     * @throws cc.ycn.common.exception.WxErrorException
+     */
+    String verifyUrl(WxConfig config, String msgSignature, String timeStamp, String nonce, String echoStrEncrypt) {
+        if (config == null)
+            return null;
+
+        if (msgSignature == null || msgSignature.isEmpty())
+            return null;
+
+        if (timeStamp == null || timeStamp.isEmpty())
+            return null;
+
+        if (nonce == null || nonce.isEmpty())
+            return null;
+
+        if (echoStrEncrypt == null || echoStrEncrypt.isEmpty())
+            return null;
+
+        String echoStr = null;
+        try {
+            WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId());
+            echoStr = msgCrypt.VerifyURL(msgSignature, timeStamp, nonce, echoStrEncrypt);
+        } catch (Exception ignore) {
+        }
+
+        return echoStr;
+    }
+
+    public static String encrypt(WxConfig config, String text) throws AesException {
+        if (config == null || text == null || text.isEmpty())
+            return "";
+        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId());
+        return msgCrypt.encrypt(text);
+    }
+
+    public static String decrypt(WxConfig config, String text) throws AesException {
+        if (config == null || text == null || text.isEmpty())
+            return "";
+        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId());
+        return msgCrypt.decrypt(text);
+    }
+
+    public static String createSignature(String... params) {
+        String packValue = packValue(Arrays.asList(params), "");
+        return StringTool.SHA1(packValue);
+    }
 
     public static String createJSSignature(String packValue) {
         return StringTool.SHA1(packValue);

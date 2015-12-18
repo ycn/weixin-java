@@ -4,6 +4,7 @@ import cc.ycn.common.bean.*;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.cache.WxAccessTokenCache;
+import cc.ycn.common.cache.WxCardTicketCache;
 import cc.ycn.common.cache.WxConfigCache;
 import cc.ycn.common.cache.WxJSTicketCache;
 import cc.ycn.common.constant.ContentType;
@@ -349,13 +350,13 @@ public class WxMpServiceImpl implements WxMpService {
     }
 
     @Override
-    public WxJSSign createJSSign(String url) {
+    public WxJSSignature createJSSignature(String url) {
         if (url == null || url.isEmpty())
             return null;
 
         int ts = (int) (System.currentTimeMillis() / 1000);
 
-        WxJSSign sign = new WxJSSign();
+        WxJSSignature sign = new WxJSSignature();
         sign.setAppId(appId);
         sign.setNonceStr(StringTool.getRandomStr(16));
         sign.setTimeStamp(ts + "");
@@ -369,11 +370,21 @@ public class WxMpServiceImpl implements WxMpService {
 
     @Override
     public String getCardTicket() {
-        return null;
+        return WxCardTicketCache.getInstance().getTicket(appId);
     }
 
     @Override
     public WxCardTicket fetchCardTicket() throws WxErrorException {
-        return null;
+        String accessToken = getAccessToken();
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={}&type=wx_card";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.get(
+                "fetchCardTicket",
+                url,
+                WxCardTicket.class
+        );
     }
+    
 }

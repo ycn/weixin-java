@@ -1,6 +1,6 @@
 package cc.ycn.common.bean;
 
-import cc.ycn.common.util.WeixinSignTool;
+import cc.ycn.common.WeixinSignTool;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
@@ -92,9 +92,7 @@ public class WxCardExt implements Serializable {
                 nonceStr
         ), "");
 
-        System.out.println(packValue);
-
         this.signature = WeixinSignTool.createCardSignature(packValue);
     }
-    
+
 }

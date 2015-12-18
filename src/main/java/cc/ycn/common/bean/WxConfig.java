@@ -14,6 +14,8 @@ public final class WxConfig implements Serializable {
     private WxApiType type;
     private String appId;
     private String appSecret;
+    private String token;
+    private String aesKey;
 
     public WxConfig() {
 
@@ -48,4 +50,19 @@ public final class WxConfig implements Serializable {
         this.appSecret = appSecret;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getAesKey() {
+        return aesKey;
+    }
+
+    public void setAesKey(String aesKey) {
+        this.aesKey = aesKey;
+    }
 }

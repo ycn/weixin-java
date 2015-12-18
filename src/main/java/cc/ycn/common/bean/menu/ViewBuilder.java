@@ -19,7 +19,7 @@ public class ViewBuilder extends BaseBuilder<ViewBuilder> {
 
     @Override
     protected WxMenuType getType() {
-        return null;
+        return WxMenuType.VIEW;
     }
 
     @Override

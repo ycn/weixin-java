@@ -231,13 +231,13 @@ public class WxCpServiceImpl implements WxCpService {
     }
 
     @Override
-    public WxJSSign createJSSign(String url) {
+    public WxJSSignature createJSSignature(String url) {
         if (url == null || url.isEmpty())
             return null;
 
         int ts = (int) (System.currentTimeMillis() / 1000);
 
-        WxJSSign sign = new WxJSSign();
+        WxJSSignature sign = new WxJSSignature();
         sign.setAppId(appId);
         sign.setNonceStr(StringTool.getRandomStr(16));
         sign.setTimeStamp(ts + "");

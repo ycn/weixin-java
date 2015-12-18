@@ -205,7 +205,7 @@ public interface WxMpService {
      * @param url String
      * @return WxJSSign
      */
-    WxJSSign createJSSign(String url);
+    WxJSSignature createJSSignature(String url);
 
 
     /**
@@ -222,4 +222,5 @@ public interface WxMpService {
      * @throws WxErrorException
      */
     WxCardTicket fetchCardTicket() throws WxErrorException;
+
 }
