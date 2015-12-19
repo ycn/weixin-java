@@ -1,4 +1,4 @@
-package com.qq.weixin.mp.aes;
+package cc.ycn.weixin.aes;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

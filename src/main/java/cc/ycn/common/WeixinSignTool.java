@@ -3,8 +3,8 @@ package cc.ycn.common;
 import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.util.StringTool;
 import com.google.common.base.Joiner;
-import com.qq.weixin.mp.aes.AesException;
-import com.qq.weixin.mp.aes.WXBizMsgCrypt;
+import cc.ycn.weixin.aes.AesException;
+import cc.ycn.weixin.aes.WXBizMsgCrypt;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.StandardToStringStyle;
 

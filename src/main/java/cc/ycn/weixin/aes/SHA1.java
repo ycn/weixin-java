@@ -1,4 +1,4 @@
-package com.qq.weixin.mp.aes;
+package cc.ycn.weixin.aes;
 
 import java.security.MessageDigest;
 import java.util.Arrays;

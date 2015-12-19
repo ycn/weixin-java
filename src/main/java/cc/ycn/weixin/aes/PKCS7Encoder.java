@@ -1,4 +1,4 @@
-package com.qq.weixin.mp.aes;
+package cc.ycn.weixin.aes;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;

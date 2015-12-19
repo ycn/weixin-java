@@ -1,4 +1,4 @@
-package com.qq.weixin.mp.aes;
+package cc.ycn.weixin.aes;
 
 /**
  * Created by andy on 8/22/15.
