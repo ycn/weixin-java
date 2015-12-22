@@ -2,9 +2,9 @@ package cc.ycn.common;
 
 import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.util.StringTool;
-import com.google.common.base.Joiner;
 import cc.ycn.weixin.aes.AesException;
 import cc.ycn.weixin.aes.WXBizMsgCrypt;
+import com.google.common.base.Joiner;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.StandardToStringStyle;
 
@@ -22,7 +22,7 @@ public class WeixinSignTool {
      *
      * @return boolean
      */
-    boolean checkMsgSignature(WxConfig config, String msgSignature, String timeStamp, String nonce, String msgEncrypt) {
+    public static boolean checkMsgSignature(WxConfig config, String msgSignature, String timeStamp, String nonce, String msgEncrypt) {
         if (config == null)
             return false;
 
@@ -54,7 +54,7 @@ public class WeixinSignTool {
      * @return String 明文echoStr
      * @throws cc.ycn.common.exception.WxErrorException
      */
-    String verifyUrl(WxConfig config, String msgSignature, String timeStamp, String nonce, String echoStrEncrypt) {
+    public static String verifyUrl(WxConfig config, String msgSignature, String timeStamp, String nonce, String echoStrEncrypt) {
         if (config == null)
             return null;
 

@@ -16,6 +16,7 @@ public final class WxConfig implements Serializable {
     private String appSecret;
     private String token;
     private String aesKey;
+    private String salt;
 
     public WxConfig() {
 
@@ -64,5 +65,13 @@ public final class WxConfig implements Serializable {
 
     public void setAesKey(String aesKey) {
         this.aesKey = aesKey;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }

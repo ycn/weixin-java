@@ -6,7 +6,8 @@ package cc.ycn.common.constant;
 public enum WxApiType {
 
     MP("公众号"),
-    CP("企业号");
+    CP("企业号"),
+    OPEN("开放平台");
 
     private String info;
 
