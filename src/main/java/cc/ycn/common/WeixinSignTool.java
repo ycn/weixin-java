@@ -188,16 +188,10 @@ public class WeixinSignTool {
 
         List<String> list = new ArrayList<String>();
         for (String item : arr) {
-            if (item != null && item.contains("=")) {
-                String[] parts = item.split("=");
-                if (excludeMap.contains(parts[0])) continue;
-                String val = parts[1];
-                if (val == null || val.isEmpty()) continue;
-            } else {
-                if (item == null || item.isEmpty()) continue;
+            if (item != null && !item.isEmpty()) {
                 if (excludeMap.contains(item)) continue;
+                list.add(item);
             }
-            list.add(item);
         }
 
         Collections.sort(list);
