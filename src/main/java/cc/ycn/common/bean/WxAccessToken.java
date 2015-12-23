@@ -1,5 +1,7 @@
 package cc.ycn.common.bean;
 
+import cc.ycn.component.bean.WxAuthorizerAccessToken;
+import cc.ycn.component.bean.WxComponentAccessToken;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
@@ -17,6 +19,20 @@ public class WxAccessToken implements Serializable {
 
     public WxAccessToken() {
 
+    }
+
+    public WxAccessToken(WxComponentAccessToken componentAccessToken) {
+        if (componentAccessToken != null) {
+            this.accessToken = componentAccessToken.getComponentAccessToken();
+            this.expiresIn = componentAccessToken.getExpiresIn();
+        }
+    }
+
+    public WxAccessToken(WxAuthorizerAccessToken authorizerAccessToken) {
+        if (authorizerAccessToken != null) {
+            this.accessToken = authorizerAccessToken.getAuthorizerAccessToken();
+            this.expiresIn = authorizerAccessToken.getExpiresIn();
+        }
     }
 
     public String getAccessToken() {

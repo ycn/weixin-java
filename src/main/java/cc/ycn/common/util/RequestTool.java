@@ -111,6 +111,11 @@ public class RequestTool {
             // GET RESPONSE
             String respBody = response.body().string();
 
+            if (respBody.contains("errmsg")) {
+                log.error("{} ERR-{} http_code:{}, body:{}", tag, reqSign, response.code(), respBody);
+                throw new WxErrorException(new WxError(1002, "request failed:" + subTag));
+            }
+
             result = getObject(respBody, contentType, respType, reqSign);
 
         } catch (IOException e) {

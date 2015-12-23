@@ -17,6 +17,8 @@ public final class WxConfig implements Serializable {
     private String token;
     private String aesKey;
     private String salt;
+    // 有componentAppId为第三方代理模式处理
+    private String componentAppId;
 
     public WxConfig() {
 
@@ -25,6 +27,11 @@ public final class WxConfig implements Serializable {
     public WxConfig(String appId, WxApiType type) {
         this.appId = appId;
         this.type = type;
+    }
+
+    // 第三方代理模式:授权方
+    public boolean isAuthorizer() {
+        return componentAppId != null && !componentAppId.isEmpty();
     }
 
     public WxApiType getType() {
@@ -73,5 +80,13 @@ public final class WxConfig implements Serializable {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public String getComponentAppId() {
+        return componentAppId;
+    }
+
+    public void setComponentAppId(String componentAppId) {
+        this.componentAppId = componentAppId;
     }
 }

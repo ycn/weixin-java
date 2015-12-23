@@ -5,6 +5,8 @@ import cc.ycn.common.bean.WxAccessToken;
 import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.JsonConverter;
+import cc.ycn.component.WxComponentServiceImpl;
+import cc.ycn.component.bean.WxAuthorizerAccessToken;
 import cc.ycn.cp.WxCpServiceImpl;
 import cc.ycn.mp.WxMpServiceImpl;
 import com.google.common.cache.CacheBuilder;
@@ -27,6 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by andy on 12/11/15.
  */
 public class WxAccessTokenCache {
+    public final static String KEY_PREFIX = "AccessToken:";
     private final static Logger log = LoggerFactory.getLogger(WxAccessTokenCache.class);
     private final static String LOG_TAG = "[WxAccessTokenCache]";
     private static final AtomicReference<WxAccessTokenCache> instance = new AtomicReference<WxAccessTokenCache>();
@@ -79,6 +82,19 @@ public class WxAccessTokenCache {
         return cache.getUnchecked(appId);
     }
 
+    public void setToken(String appId, String token, long expiredIn) {
+        if (appId == null || appId.isEmpty())
+            return;
+        if (token == null || token.isEmpty())
+            return;
+        centralStore.set(KEY_PREFIX + appId, token, expiredIn);
+        cache.invalidate(appId);
+    }
+
+    public void invalidate(String appId) {
+        cache.invalidate(KEY_PREFIX + appId);
+    }
+
     class WxAccessTokenCacheLoader extends CacheLoader<String, String> {
 
         @Override
@@ -112,11 +128,23 @@ public class WxAccessTokenCache {
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
             WxConfig config = wxConfigCache == null ? null : wxConfigCache.getConfig(appId);
-            if (config == null)
+            if (config == null) {
+                log.warn("{} missing config, appId:{}, use oldToken:{}", LOG_TAG, appId, oldToken);
                 return oldToken;
+            }
+
+            // 检查refreshToken
+            WxRefreshTokenCache refreshTokenCache = WxRefreshTokenCache.getInstance();
+            if (config.isAuthorizer()) {
+                String refreshToken = refreshTokenCache.getToken(appId);
+                if (refreshToken == null || refreshToken.isEmpty()) {
+                    log.warn("{} missing refreshToken, appId:{}, use oldToken:{}", LOG_TAG, appId, oldToken);
+                    return oldToken;
+                }
+            }
 
             // accessToken还未过期
-            String tokenJson = centralStore.get(appId);
+            String tokenJson = centralStore.get(KEY_PREFIX + appId);
             WxAccessToken accessToken = tokenJson == null ? null : JsonConverter.json2pojo(tokenJson, WxAccessToken.class);
             if (accessToken != null && accessToken.getAccessToken() != null && !accessToken.getAccessToken().isEmpty()) {
 
@@ -125,12 +153,18 @@ public class WxAccessTokenCache {
 
                     switch (config.getType()) {
                         case MP:
-                            WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
-                            wxMpService.verifyAccessToken(accessToken.getAccessToken());
+                            if (!config.isAuthorizer()) {
+                                WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
+                                wxMpService.verifyAccessToken(accessToken.getAccessToken());
+                            }
                             break;
                         case CP:
                             WxCpServiceImpl wxCpService = new WxCpServiceImpl(appId);
                             wxCpService.verifyAccessToken(accessToken.getAccessToken());
+                            break;
+                        case COMPONENT:
+                            WxComponentServiceImpl wxComponentService = new WxComponentServiceImpl(appId);
+                            wxComponentService.verifyAccessToken(accessToken.getAccessToken());
                             break;
                         default:
                             break;
@@ -150,12 +184,24 @@ public class WxAccessTokenCache {
 
                 switch (config.getType()) {
                     case MP:
-                        WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
-                        accessToken = wxMpService.fetchAccessToken();
+                        if (!config.isAuthorizer()) {
+                            WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
+                            accessToken = wxMpService.fetchAccessToken();
+                        } else {
+                            WxComponentServiceImpl wxComponentService = new WxComponentServiceImpl(config.getComponentAppId());
+                            WxAuthorizerAccessToken authorizerAccessToken = wxComponentService.refreshAuthorizerAccessToken(appId);
+                            // 更新refreshToken
+                            refreshTokenCache.setToken(appId, authorizerAccessToken.getAuthorizerRefreshToken());
+                            accessToken = new WxAccessToken(authorizerAccessToken);
+                        }
                         break;
                     case CP:
                         WxCpServiceImpl wxCpService = new WxCpServiceImpl(appId);
                         accessToken = wxCpService.fetchAccessToken();
+                        break;
+                    case COMPONENT:
+                        WxComponentServiceImpl wxComponentService = new WxComponentServiceImpl(appId);
+                        accessToken = new WxAccessToken(wxComponentService.fetchAccessToken());
                         break;
                     default:
                         break;
@@ -169,7 +215,7 @@ public class WxAccessTokenCache {
             if (accessToken == null || accessToken.getAccessToken() == null || accessToken.getAccessToken().isEmpty())
                 return oldToken;
 
-            centralStore.set(appId, JsonConverter.pojo2json(accessToken), accessToken.getExpiresIn());
+            centralStore.set(KEY_PREFIX + appId, JsonConverter.pojo2json(accessToken), accessToken.getExpiresIn());
 
             return accessToken.getAccessToken();
         }

@@ -1,8 +1,6 @@
 package cc.ycn.common.cache;
 
 import cc.ycn.common.api.CentralStore;
-import cc.ycn.common.bean.WxConfig;
-import cc.ycn.common.util.JsonConverter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -18,11 +16,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by andy on 12/11/15.
+ * Created by andy on 12/23/15.
  */
-public class WxConfigCache {
-    public final static String KEY_PREFIX = "";
-    private static final AtomicReference<WxConfigCache> instance = new AtomicReference<WxConfigCache>();
+public class WxRefreshTokenCache {
+    public final static String KEY_PREFIX = "AuthorizerRefreshToken:";
+    private static final AtomicReference<WxRefreshTokenCache> instance = new AtomicReference<WxRefreshTokenCache>();
     private static final int REFRESH_SECONDS = 86400;
     private static final int CONCURRENCY_LEVEL = 10;
     private static final long MAXIMUM_SIZE = 10000;
@@ -31,31 +29,31 @@ public class WxConfigCache {
 
     public static void init(CentralStore centralStore) {
         if (instance.get() == null)
-            instance.compareAndSet(null, new WxConfigCache(centralStore, REFRESH_SECONDS));
+            instance.compareAndSet(null, new WxRefreshTokenCache(centralStore, REFRESH_SECONDS));
     }
 
     public static void init(CentralStore centralStore, int refreshSeconds) {
         if (instance.get() == null)
-            instance.compareAndSet(null, new WxConfigCache(centralStore, refreshSeconds));
+            instance.compareAndSet(null, new WxRefreshTokenCache(centralStore, refreshSeconds));
     }
 
     public static void init(CentralStore centralStore, int refreshSeconds, int concurrencyLevel, long maximumSize, int executorSize) {
         if (instance.get() == null)
-            instance.compareAndSet(null, new WxConfigCache(centralStore, refreshSeconds, concurrencyLevel, maximumSize, executorSize));
+            instance.compareAndSet(null, new WxRefreshTokenCache(centralStore, refreshSeconds, concurrencyLevel, maximumSize, executorSize));
     }
 
-    public static WxConfigCache getInstance() {
+    public static WxRefreshTokenCache getInstance() {
         return instance.get();
     }
 
     private CentralStore centralStore;
-    private LoadingCache<String, WxConfig> cache;
+    private LoadingCache<String, String> cache;
 
-    private WxConfigCache(CentralStore centralStore, int refreshSeconds) {
+    private WxRefreshTokenCache(CentralStore centralStore, int refreshSeconds) {
         this(centralStore, refreshSeconds, CONCURRENCY_LEVEL, MAXIMUM_SIZE, EXECUTOR_SIZE);
     }
 
-    private WxConfigCache(CentralStore centralStore, int refreshSeconds, int concurrencyLevel, long maximumSize, int executorSize) {
+    private WxRefreshTokenCache(CentralStore centralStore, int refreshSeconds, int concurrencyLevel, long maximumSize, int executorSize) {
         executor = Executors.newFixedThreadPool(executorSize);
 
         this.centralStore = centralStore;
@@ -65,29 +63,39 @@ public class WxConfigCache {
                 .concurrencyLevel(concurrencyLevel)
                 .maximumSize(maximumSize)
                 .refreshAfterWrite(refreshSeconds, TimeUnit.SECONDS)
-                .build(new WxConfigCacheLoader());
+                .build(new WxAuthorizerRefreshTokenCacheLoader());
     }
 
-    public WxConfig getConfig(String appId) {
+    public String getToken(String appId) {
         return cache.getUnchecked(appId);
     }
 
-    class WxConfigCacheLoader extends CacheLoader<String, WxConfig> {
+    public void setToken(String appId, String token) {
+        if (appId == null || appId.isEmpty())
+            return;
+        if (token == null || token.isEmpty())
+            return;
+        centralStore.set(KEY_PREFIX + appId, token);
+        cache.invalidate(appId);
+    }
+
+
+    class WxAuthorizerRefreshTokenCacheLoader extends CacheLoader<String, String> {
 
         @Override
-        public WxConfig load(String appId) throws Exception {
+        public String load(String appId) throws Exception {
             return loadOne(appId, null, true);
         }
 
         @Override
-        public ListenableFuture<WxConfig> reload(final String appId, final WxConfig oldConfig) throws Exception {
+        public ListenableFuture<String> reload(final String appId, final String oldToken) throws Exception {
             checkNotNull(appId);
-            checkNotNull(oldConfig);
+            checkNotNull(oldToken);
 
-            ListenableFutureTask<WxConfig> task = ListenableFutureTask.create(new Callable<WxConfig>() {
+            ListenableFutureTask<String> task = ListenableFutureTask.create(new Callable<String>() {
                 @Override
-                public WxConfig call() throws Exception {
-                    return loadOne(appId, oldConfig, false);
+                public String call() throws Exception {
+                    return loadOne(appId, oldToken, false);
                 }
             });
 
@@ -95,13 +103,12 @@ public class WxConfigCache {
             return task;
         }
 
-        private WxConfig loadOne(String appId, WxConfig oldConfig, boolean sync) {
+        private String loadOne(String appId, String oldToken, boolean sync) {
             if (appId == null || appId.isEmpty())
                 return null;
 
-            String configJson = centralStore.get(KEY_PREFIX + appId);
-            WxConfig config = configJson == null ? null : JsonConverter.json2pojo(configJson, WxConfig.class);
-            return config == null ? oldConfig : config;
+            String tokenStr = centralStore.get(KEY_PREFIX + appId);
+            return tokenStr == null ? oldToken : tokenStr;
         }
     }
 }

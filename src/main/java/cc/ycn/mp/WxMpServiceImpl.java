@@ -174,9 +174,13 @@ public class WxMpServiceImpl implements WxMpService {
             throw new WxErrorException(new WxError(1003, "invalid redirectUrl"));
         }
 
-        String fUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={}&redirect_uri={}&response_type=code&scope={}&state={}#wechat_redirect";
+        String appendix = "";
+        if (config.isAuthorizer()) {
+            appendix = "&component_appid=" + config.getComponentAppId();
+        }
 
-        return StringTool.formatString(fUrl, appId, redirectUrl, scope.info(), state);
+        String fUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={}&redirect_uri={}&response_type=code&scope={}&state={}{}#wechat_redirect";
+        return StringTool.formatString(fUrl, appId, redirectUrl, scope.info(), state, appendix);
     }
 
     @Override
@@ -184,8 +188,19 @@ public class WxMpServiceImpl implements WxMpService {
         if (code == null || code.isEmpty())
             throw new WxErrorException(new WxError(1003, "invalid code"));
 
-        String fUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={}&secret={}&code={}&grant_type=authorization_code";
-        String url = StringTool.formatString(fUrl, appId, config.getAppSecret(), code);
+        String fUrl = "";
+        String url = "";
+
+        if (config.isAuthorizer()) {
+
+            String accessToken = WxAccessTokenCache.getInstance().getToken(config.getComponentAppId());
+
+            fUrl = "https://api.weixin.qq.com/sns/oauth2/component/access_token?appid={}&code={}&grant_type=authorization_code&component_appid={}&component_access_token={}";
+            url = StringTool.formatString(fUrl, appId, code, config.getComponentAppId(), accessToken);
+        } else {
+            fUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={}&secret={}&code={}&grant_type=authorization_code";
+            url = StringTool.formatString(fUrl, appId, config.getAppSecret(), code);
+        }
 
         return requestTool.get(
                 "getOAuthAccessToken",
@@ -386,5 +401,5 @@ public class WxMpServiceImpl implements WxMpService {
                 WxCardTicket.class
         );
     }
-    
+
 }

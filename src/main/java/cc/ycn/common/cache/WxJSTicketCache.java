@@ -27,6 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by andy on 12/17/15.
  */
 public class WxJSTicketCache {
+    public final static String KEY_PREFIX = "JSTicket:";
     private final static Logger log = LoggerFactory.getLogger(WxJSTicketCache.class);
     private final static String LOG_TAG = "[WxJSTicketCache]";
     private static final AtomicReference<WxJSTicketCache> instance = new AtomicReference<WxJSTicketCache>();
@@ -79,6 +80,10 @@ public class WxJSTicketCache {
         return cache.getUnchecked(appId);
     }
 
+    public void invalidate(String appId) {
+        cache.invalidate(KEY_PREFIX + appId);
+    }
+
     class WxJSTicketCacheLoader extends CacheLoader<String, String> {
 
         @Override
@@ -122,7 +127,7 @@ public class WxJSTicketCache {
                 return oldTicket;
 
             // ticket还未过期
-            String ticketJson = centralStore.get(appId);
+            String ticketJson = centralStore.get(KEY_PREFIX + appId);
             WxJSTicket ticket = ticketJson == null ? null : JsonConverter.json2pojo(ticketJson, WxJSTicket.class);
             if (ticket != null && ticket.getTicket() != null && !ticket.getTicket().isEmpty()) {
                 return ticket.getTicket();
@@ -152,7 +157,7 @@ public class WxJSTicketCache {
             if (ticket == null || ticket.getTicket() == null || ticket.getTicket().isEmpty())
                 return oldTicket;
 
-            centralStore.set(appId, JsonConverter.pojo2json(ticket), ticket.getExpiresIn());
+            centralStore.set(KEY_PREFIX + appId, JsonConverter.pojo2json(ticket), ticket.getExpiresIn());
 
             return ticket.getTicket();
         }

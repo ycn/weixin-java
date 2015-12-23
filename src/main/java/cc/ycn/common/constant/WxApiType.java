@@ -7,7 +7,7 @@ public enum WxApiType {
 
     MP("公众号"),
     CP("企业号"),
-    OPEN("开放平台");
+    COMPONENT("开放平台");
 
     private String info;
 
