@@ -148,7 +148,7 @@ public class RequestTool {
                 break;
         }
 
-        log.info("{} GOT-{} response:{}, {}", tag, sign, JsonConverter.pojo2json(t));
+        log.info("{} GOT-{} response:{}", tag, sign, JsonConverter.pojo2json(t));
 
         return t;
     }

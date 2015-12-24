@@ -48,6 +48,11 @@ public abstract class ExpireCache<T> {
         cache.invalidate(key);
     }
 
+    final public T refresh(String key) {
+        invalidate(key);
+        return get(key);
+    }
+
     final public void setToStore(String key, T value, long expiredIn) {
         if (key == null || key.isEmpty())
             return;
