@@ -12,4 +12,6 @@ public interface CentralStore {
     void set(String key, String value, long expireSeconds);
 
     String get(String key);
+
+    void del(String key);
 }

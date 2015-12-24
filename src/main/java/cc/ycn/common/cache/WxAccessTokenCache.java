@@ -78,21 +78,26 @@ public class WxAccessTokenCache {
                 .build(new WxAccessTokenCacheLoader());
     }
 
-    public String getToken(String appId) {
+    public String get(String appId) {
         return cache.getUnchecked(appId);
     }
 
-    public void setToken(String appId, String token, long expiredIn) {
+    public void set(String appId, String value, long expiredIn) {
         if (appId == null || appId.isEmpty())
             return;
-        if (token == null || token.isEmpty())
+        if (value == null || value.isEmpty())
             return;
-        centralStore.set(KEY_PREFIX + appId, token, expiredIn);
+        centralStore.set(KEY_PREFIX + appId, value, expiredIn);
+        cache.invalidate(appId);
+    }
+
+    public void del(String appId) {
+        centralStore.del(KEY_PREFIX + appId);
         cache.invalidate(appId);
     }
 
     public void invalidate(String appId) {
-        cache.invalidate(KEY_PREFIX + appId);
+        cache.invalidate(appId);
     }
 
     class WxAccessTokenCacheLoader extends CacheLoader<String, String> {
@@ -127,7 +132,7 @@ public class WxAccessTokenCache {
 
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-            WxConfig config = wxConfigCache == null ? null : wxConfigCache.getConfig(appId);
+            WxConfig config = wxConfigCache == null ? null : wxConfigCache.get(appId);
             if (config == null) {
                 log.warn("{} missing config, appId:{}, use oldToken:{}", LOG_TAG, appId, oldToken);
                 return oldToken;
@@ -136,7 +141,7 @@ public class WxAccessTokenCache {
             // 检查refreshToken
             WxRefreshTokenCache refreshTokenCache = WxRefreshTokenCache.getInstance();
             if (config.isAuthorizer()) {
-                String refreshToken = refreshTokenCache.getToken(appId);
+                String refreshToken = refreshTokenCache.get(appId);
                 if (refreshToken == null || refreshToken.isEmpty()) {
                     log.warn("{} missing refreshToken, appId:{}, use oldToken:{}", LOG_TAG, appId, oldToken);
                     return oldToken;
@@ -191,7 +196,7 @@ public class WxAccessTokenCache {
                             WxComponentServiceImpl wxComponentService = new WxComponentServiceImpl(config.getComponentAppId());
                             WxAuthorizerAccessToken authorizerAccessToken = wxComponentService.refreshAuthorizerAccessToken(appId);
                             // 更新refreshToken
-                            refreshTokenCache.setToken(appId, authorizerAccessToken.getAuthorizerRefreshToken());
+                            refreshTokenCache.set(appId, authorizerAccessToken.getAuthorizerRefreshToken());
                             accessToken = new WxAccessToken(authorizerAccessToken);
                         }
                         break;

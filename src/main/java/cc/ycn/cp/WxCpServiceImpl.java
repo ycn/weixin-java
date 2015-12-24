@@ -36,7 +36,7 @@ public class WxCpServiceImpl implements WxCpService {
         this.appId = appId;
 
         WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-        this.config = wxConfigCache == null ? null : wxConfigCache.getConfig(appId);
+        this.config = wxConfigCache == null ? null : wxConfigCache.get(appId);
         if (this.config == null)
             throw new WxErrorException(new WxError(1001, "missing config:" + appId));
 
@@ -50,7 +50,7 @@ public class WxCpServiceImpl implements WxCpService {
 
     @Override
     public String getAccessToken() {
-        return WxAccessTokenCache.getInstance().getToken(appId);
+        return WxAccessTokenCache.getInstance().get(appId);
     }
 
     @Override
@@ -85,6 +85,9 @@ public class WxCpServiceImpl implements WxCpService {
     @Override
     public WxError sendMessage(WxMessage message) throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
@@ -133,6 +136,9 @@ public class WxCpServiceImpl implements WxCpService {
 
         String accessToken = getAccessToken();
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo?access_token={}&code={}";
         String url = StringTool.formatString(fUrl, accessToken, code);
 
@@ -146,6 +152,9 @@ public class WxCpServiceImpl implements WxCpService {
     @Override
     public WxOpenIdRef toOpenId(WxOpenIdRef openIdRef) throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_openid?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
@@ -162,6 +171,9 @@ public class WxCpServiceImpl implements WxCpService {
     @Override
     public WxOpenIdRef toUserId(WxOpenIdRef userIdRef) throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_userid?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
@@ -182,6 +194,9 @@ public class WxCpServiceImpl implements WxCpService {
 
         String accessToken = getAccessToken();
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/menu/create?access_token={}&agentid={}";
         String url = StringTool.formatString(fUrl, accessToken, agentId);
 
@@ -201,6 +216,9 @@ public class WxCpServiceImpl implements WxCpService {
 
         String accessToken = getAccessToken();
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/menu/delete?access_token={}&agentid={}";
         String url = StringTool.formatString(fUrl, accessToken, agentId);
 
@@ -213,12 +231,15 @@ public class WxCpServiceImpl implements WxCpService {
 
     @Override
     public String getJSTicket() {
-        return WxJSTicketCache.getInstance().getTicket(appId);
+        return WxJSTicketCache.getInstance().get(appId);
     }
 
     @Override
     public WxJSTicket fetchJSTicket() throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);

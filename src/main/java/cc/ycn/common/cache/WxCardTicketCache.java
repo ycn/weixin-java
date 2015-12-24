@@ -75,12 +75,26 @@ public class WxCardTicketCache {
                 .build(new WxCardTicketCacheLoader());
     }
 
-    public String getTicket(String appId) {
+    public String get(String appId) {
         return cache.getUnchecked(appId);
     }
 
+    public void set(String appId, String value, long expiredIn) {
+        if (appId == null || appId.isEmpty())
+            return;
+        if (value == null || value.isEmpty())
+            return;
+        centralStore.set(KEY_PREFIX + appId, value, expiredIn);
+        cache.invalidate(appId);
+    }
+
+    public void del(String appId) {
+        centralStore.del(KEY_PREFIX + appId);
+        cache.invalidate(appId);
+    }
+
     public void invalidate(String appId) {
-        cache.invalidate(KEY_PREFIX + appId);
+        cache.invalidate(appId);
     }
 
     class WxCardTicketCacheLoader extends CacheLoader<String, String> {
@@ -115,13 +129,13 @@ public class WxCardTicketCache {
 
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-            WxConfig config = wxConfigCache == null ? null : wxConfigCache.getConfig(appId);
+            WxConfig config = wxConfigCache == null ? null : wxConfigCache.get(appId);
             if (config == null)
                 return oldTicket;
 
             // 检查AccessToken
             WxAccessTokenCache wxAccessTokenCache = WxAccessTokenCache.getInstance();
-            String accessToken = wxAccessTokenCache == null ? null : wxAccessTokenCache.getToken(appId);
+            String accessToken = wxAccessTokenCache == null ? null : wxAccessTokenCache.get(appId);
             if (accessToken == null)
                 return oldTicket;
 

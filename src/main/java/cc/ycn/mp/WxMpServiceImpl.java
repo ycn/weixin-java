@@ -36,7 +36,7 @@ public class WxMpServiceImpl implements WxMpService {
         this.appId = appId;
 
         WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-        this.config = wxConfigCache == null ? null : wxConfigCache.getConfig(appId);
+        this.config = wxConfigCache == null ? null : wxConfigCache.get(appId);
         if (this.config == null) {
             throw new WxErrorException(new WxError(1001, "missing config:" + appId));
         }
@@ -51,7 +51,7 @@ public class WxMpServiceImpl implements WxMpService {
 
     @Override
     public String getAccessToken() {
-        return WxAccessTokenCache.getInstance().getToken(appId);
+        return WxAccessTokenCache.getInstance().get(appId);
     }
 
     @Override
@@ -77,6 +77,9 @@ public class WxMpServiceImpl implements WxMpService {
             accessToken = getAccessToken();
         }
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
@@ -90,6 +93,9 @@ public class WxMpServiceImpl implements WxMpService {
     @Override
     public WxError sendMessage(WxMessage message) throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
@@ -107,6 +113,9 @@ public class WxMpServiceImpl implements WxMpService {
     public WxError createKfAccount(WxKfAccount account) throws WxErrorException {
         String accessToken = getAccessToken();
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://api.weixin.qq.com/customservice/kfaccount/add?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
@@ -123,6 +132,9 @@ public class WxMpServiceImpl implements WxMpService {
     public WxError updateKfAccount(WxKfAccount account) throws WxErrorException {
         String accessToken = getAccessToken();
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://api.weixin.qq.com/customservice/kfaccount/update?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
@@ -138,6 +150,9 @@ public class WxMpServiceImpl implements WxMpService {
     @Override
     public WxError deleteKfAccount(WxKfAccount account) throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://api.weixin.qq.com/customservice/kfaccount/del?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
@@ -193,7 +208,10 @@ public class WxMpServiceImpl implements WxMpService {
 
         if (config.isAuthorizer()) {
 
-            String accessToken = WxAccessTokenCache.getInstance().getToken(config.getComponentAppId());
+            String accessToken = WxAccessTokenCache.getInstance().get(config.getComponentAppId());
+
+            if (accessToken == null || accessToken.isEmpty())
+                throw new WxErrorException(new WxError(1004, "invalid component accessToken"));
 
             fUrl = "https://api.weixin.qq.com/sns/oauth2/component/access_token?appid={}&code={}&grant_type=authorization_code&component_appid={}&component_access_token={}";
             url = StringTool.formatString(fUrl, appId, code, config.getComponentAppId(), accessToken);
@@ -249,6 +267,9 @@ public class WxMpServiceImpl implements WxMpService {
     public WxError createMenu(WxMenu menu) throws WxErrorException {
         String accessToken = getAccessToken();
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
@@ -264,6 +285,9 @@ public class WxMpServiceImpl implements WxMpService {
     @Override
     public WxError deleteMenu() throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
@@ -282,6 +306,9 @@ public class WxMpServiceImpl implements WxMpService {
 
         String accessToken = getAccessToken();
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
@@ -297,6 +324,9 @@ public class WxMpServiceImpl implements WxMpService {
     @Override
     public WxQRTicket createQRCode(WxScanScene scanScene) throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
@@ -327,6 +357,9 @@ public class WxMpServiceImpl implements WxMpService {
 
         String accessToken = getAccessToken();
 
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
         String fUrl = "https://api.weixin.qq.com/cgi-bin/shorturl?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
@@ -347,12 +380,15 @@ public class WxMpServiceImpl implements WxMpService {
 
     @Override
     public String getJSTicket() {
-        return WxJSTicketCache.getInstance().getTicket(appId);
+        return WxJSTicketCache.getInstance().get(appId);
     }
 
     @Override
     public WxJSTicket fetchJSTicket() throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={}&type=jsapi";
         String url = StringTool.formatString(fUrl, accessToken);
@@ -385,12 +421,15 @@ public class WxMpServiceImpl implements WxMpService {
 
     @Override
     public String getCardTicket() {
-        return WxCardTicketCache.getInstance().getTicket(appId);
+        return WxCardTicketCache.getInstance().get(appId);
     }
 
     @Override
     public WxCardTicket fetchCardTicket() throws WxErrorException {
         String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={}&type=wx_card";
         String url = StringTool.formatString(fUrl, accessToken);

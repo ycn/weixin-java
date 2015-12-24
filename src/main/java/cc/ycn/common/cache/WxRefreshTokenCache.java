@@ -66,16 +66,25 @@ public class WxRefreshTokenCache {
                 .build(new WxAuthorizerRefreshTokenCacheLoader());
     }
 
-    public String getToken(String appId) {
+    public String get(String appId) {
         return cache.getUnchecked(appId);
     }
 
-    public void setToken(String appId, String token) {
+    public void set(String appId, String value) {
         if (appId == null || appId.isEmpty())
             return;
-        if (token == null || token.isEmpty())
+        if (value == null || value.isEmpty())
             return;
-        centralStore.set(KEY_PREFIX + appId, token);
+        centralStore.set(KEY_PREFIX + appId, value);
+        cache.invalidate(appId);
+    }
+
+    public void del(String appId) {
+        centralStore.del(KEY_PREFIX + appId);
+        cache.invalidate(appId);
+    }
+
+    public void invalidate(String appId) {
         cache.invalidate(appId);
     }
 

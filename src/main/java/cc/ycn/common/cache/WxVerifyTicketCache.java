@@ -70,21 +70,26 @@ public class WxVerifyTicketCache {
                 .build(new WxAccessTokenCacheLoader());
     }
 
-    public String getTicket(String appId) {
+    public String get(String appId) {
         return cache.getUnchecked(appId);
     }
 
-    public void setTicket(String appId, String ticket) {
+    public void set(String appId, String value) {
         if (appId == null || appId.isEmpty())
             return;
-        if (ticket == null || ticket.isEmpty())
+        if (value == null || value.isEmpty())
             return;
-        centralStore.set(KEY_PREFIX + appId, ticket);
+        centralStore.set(KEY_PREFIX + appId, value);
+        cache.invalidate(appId);
+    }
+
+    public void del(String appId) {
+        centralStore.del(KEY_PREFIX + appId);
         cache.invalidate(appId);
     }
 
     public void invalidate(String appId) {
-        cache.invalidate(KEY_PREFIX + appId);
+        cache.invalidate(appId);
     }
 
     class WxAccessTokenCacheLoader extends CacheLoader<String, String> {

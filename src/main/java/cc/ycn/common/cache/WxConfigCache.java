@@ -68,8 +68,26 @@ public class WxConfigCache {
                 .build(new WxConfigCacheLoader());
     }
 
-    public WxConfig getConfig(String appId) {
+    public WxConfig get(String appId) {
         return cache.getUnchecked(appId);
+    }
+
+    public void set(String appId, WxConfig value) {
+        if (appId == null || appId.isEmpty())
+            return;
+        if (value == null)
+            return;
+        centralStore.set(KEY_PREFIX + appId, JsonConverter.pojo2json(value));
+        cache.invalidate(appId);
+    }
+
+    public void del(String appId) {
+        centralStore.del(KEY_PREFIX + appId);
+        cache.invalidate(appId);
+    }
+
+    public void invalidate(String appId) {
+        cache.invalidate(appId);
     }
 
     class WxConfigCacheLoader extends CacheLoader<String, WxConfig> {
