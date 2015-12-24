@@ -64,6 +64,35 @@ public interface WxMpService {
     WxError sendMessage(WxMessage message) throws WxErrorException;
 
     /**
+     * 发送模板消息
+     *
+     * @param message WxMessage
+     * @return WxMsgIdRef
+     * @throws WxErrorException
+     */
+    WxMsgIdRef sendTemplateMessage(WxMessage message) throws WxErrorException;
+
+
+    /**
+     * 设置模板消息所属行业 (每月可修改1次)
+     *
+     * @param industryId1 String
+     * @param industryId2 String
+     * @return WxError
+     * @throws WxErrorException
+     */
+    WxError setIndustry(String industryId1, String industryId2) throws WxErrorException;
+
+    /**
+     * 添加消息模板 (返回模板ID)
+     *
+     * @param templateIdShort String
+     * @return WxTemplateIdRef
+     * @throws WxErrorException
+     */
+    WxTemplateIdRef addTemplate(String templateIdShort) throws WxErrorException;
+
+    /**
      * 添加客服帐号
      *
      * @param account WxKfAccount

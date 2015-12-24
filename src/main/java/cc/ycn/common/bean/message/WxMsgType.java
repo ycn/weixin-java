@@ -13,7 +13,8 @@ public enum WxMsgType {
     MUSIC("music"),
     NEWS("news"),
     MPNEWS("mpnews"),
-    WXCARD("wxcard");
+    WXCARD("wxcard"),
+    TEMPLATE("template");
 
     private String info;
 

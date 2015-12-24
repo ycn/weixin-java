@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 发送微信消息的实体
@@ -52,6 +53,12 @@ public class WxMessage implements Serializable {
     @JSONField(name = "customservice")
     WxMsgKf customService;
 
+    @JSONField(name = "template_id")
+    String templateId;
+
+    String url;
+
+    Map<String, WxTemplateField> data;
 
     WxMessage() {
 
@@ -117,6 +124,17 @@ public class WxMessage implements Serializable {
         return customService;
     }
 
+    public String getTemplateId() {
+        return templateId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Map<String, WxTemplateField> getData() {
+        return data;
+    }
 
     // 文本消息
     public static TextBuilder TEXT() {
@@ -308,4 +326,8 @@ public class WxMessage implements Serializable {
         }
     }
 
+    // 模板消息
+    public static TemplateBuilder TEMPLATE() {
+        return new TemplateBuilder();
+    }
 }

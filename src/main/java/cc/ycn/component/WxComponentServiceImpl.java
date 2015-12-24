@@ -252,7 +252,7 @@ public class WxComponentServiceImpl implements WxComponentService {
 
         WxOptionValue req = new WxOptionValue();
         req.setComponentAppId(this.appId);
-        req.setAuthorizerAppId(this.appId);
+        req.setAuthorizerAppId(appId);
         req.setOptionName(optionName);
 
         String accessToken = getAccessToken();
@@ -285,7 +285,7 @@ public class WxComponentServiceImpl implements WxComponentService {
 
         WxOptionValue req = new WxOptionValue();
         req.setComponentAppId(this.appId);
-        req.setAuthorizerAppId(this.appId);
+        req.setAuthorizerAppId(appId);
         req.setOptionName(optionName);
         req.setOptionValue(optionValue);
 

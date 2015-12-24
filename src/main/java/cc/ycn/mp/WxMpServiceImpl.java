@@ -3,6 +3,7 @@ package cc.ycn.mp;
 import cc.ycn.common.bean.*;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
+import cc.ycn.common.bean.message.WxMsgType;
 import cc.ycn.common.cache.WxAccessTokenCache;
 import cc.ycn.common.cache.WxCardTicketCache;
 import cc.ycn.common.cache.WxConfigCache;
@@ -97,6 +98,9 @@ public class WxMpServiceImpl implements WxMpService {
 
     @Override
     public WxError sendMessage(WxMessage message) throws WxErrorException {
+        if (message == null || WxMsgType.TEMPLATE.info().equals(message.getMsgType()))
+            throw new WxErrorException(new WxError(1004, "invalid message type"));
+
         String accessToken = getAccessToken();
 
         if (accessToken == null || accessToken.isEmpty())
@@ -111,6 +115,82 @@ public class WxMpServiceImpl implements WxMpService {
                 WxError.class,
                 ContentType.MEDIA_JSON,
                 message
+        );
+    }
+
+    @Override
+    public WxMsgIdRef sendTemplateMessage(WxMessage message) throws WxErrorException {
+        if (message == null || !WxMsgType.TEMPLATE.info().equals(message.getMsgType()))
+            throw new WxErrorException(new WxError(1004, "invalid message type"));
+
+        String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "sendTemplateMessage",
+                url,
+                WxMsgIdRef.class,
+                ContentType.MEDIA_JSON,
+                message
+        );
+    }
+
+    @Override
+    public WxError setIndustry(String industryId1, String industryId2) throws WxErrorException {
+        if (industryId1 == null || industryId1.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid industryId1"));
+
+        if (industryId2 == null || industryId2.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid industryId2"));
+
+        WxIndustryId req = new WxIndustryId();
+        req.setIndustryId1(industryId1);
+        req.setIndustryId2(industryId2);
+
+        String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/template/api_set_industry?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "setIndustry",
+                url,
+                WxError.class,
+                ContentType.MEDIA_JSON,
+                req
+        );
+    }
+
+    @Override
+    public WxTemplateIdRef addTemplate(String templateIdShort) throws WxErrorException {
+        if (templateIdShort == null || templateIdShort.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid templateIdShort"));
+
+        WxShortTemplateIdRef req = new WxShortTemplateIdRef();
+        req.setTemplateIdShort(templateIdShort);
+
+        String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "addTemplate",
+                url,
+                WxTemplateIdRef.class,
+                ContentType.MEDIA_JSON,
+                req
         );
     }
 
