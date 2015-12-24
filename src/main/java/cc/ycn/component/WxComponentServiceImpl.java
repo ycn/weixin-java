@@ -172,7 +172,7 @@ public class WxComponentServiceImpl implements WxComponentService {
         if (accessInfo != null) {
             WxAuthorizerAccessToken authorizationInfo = accessInfo.getAuthorizationInfo();
             if (authorizationInfo != null) {
-                WxAccessTokenCache.getInstance().set(
+                WxAccessTokenCache.getInstance().setToStore(
                         authorizationInfo.getAuthorizerAppId(),
                         authorizationInfo.getAuthorizerAccessToken(),
                         authorizationInfo.getExpiresIn()
