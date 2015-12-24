@@ -2,10 +2,7 @@ package cc.ycn.component;
 
 import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.bean.WxError;
-import cc.ycn.common.cache.WxAccessTokenCache;
-import cc.ycn.common.cache.WxConfigCache;
-import cc.ycn.common.cache.WxRefreshTokenCache;
-import cc.ycn.common.cache.WxVerifyTicketCache;
+import cc.ycn.common.cache.*;
 import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
@@ -87,6 +84,11 @@ public class WxComponentServiceImpl implements WxComponentService {
     }
 
     @Override
+    public String getPreAuthCode() {
+        return WxPreAuthCodeCache.getInstance().get(appId);
+    }
+
+    @Override
     public WxPreAuthCode createPreAuthCode() throws WxErrorException {
         String accessToken = getAccessToken();
 
@@ -117,8 +119,7 @@ public class WxComponentServiceImpl implements WxComponentService {
         }
 
         // 获取预授权码
-        WxPreAuthCode preAuthCode = createPreAuthCode();
-        String code = preAuthCode == null ? null : preAuthCode.getPreAuthCode();
+        String code = getPreAuthCode();
         if (code == null || code.isEmpty())
             throw new WxErrorException(new WxError(1004, "wrong preAuthCode"));
 

@@ -45,6 +45,13 @@ public interface WxComponentService {
 
 
     /**
+     * 从缓存获取预授权码
+     *
+     * @return String
+     */
+    String getPreAuthCode();
+
+    /**
      * 获取预授权码
      *
      * @return WxPreAuthCode
