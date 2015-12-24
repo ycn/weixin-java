@@ -50,6 +50,11 @@ public class WxMpServiceImpl implements WxMpService {
     }
 
     @Override
+    public WxConfig getConfig() {
+        return config;
+    }
+
+    @Override
     public String getAccessToken() {
         return WxAccessTokenCache.getInstance().get(appId);
     }

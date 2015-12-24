@@ -15,6 +15,13 @@ import cc.ycn.mp.bean.*;
 public interface WxMpService {
 
     /**
+     * 获取微信配置
+     *
+     * @return WxConfig
+     */
+    WxConfig getConfig();
+
+    /**
      * 从缓存里获取AccessToken
      *
      * @return String

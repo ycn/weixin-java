@@ -1,5 +1,6 @@
 package cc.ycn.component;
 
+import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.component.bean.*;
@@ -11,6 +12,14 @@ import cc.ycn.component.bean.*;
  * @author andy
  */
 public interface WxComponentService {
+
+
+    /**
+     * 获取微信配置
+     *
+     * @return WxConfig
+     */
+    WxConfig getConfig();
 
     /**
      * 从缓存里获取VerifyTicket

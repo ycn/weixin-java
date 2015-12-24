@@ -46,6 +46,11 @@ public class WxComponentServiceImpl implements WxComponentService {
     }
 
     @Override
+    public WxConfig getConfig() {
+        return config;
+    }
+
+    @Override
     public String getVerifyTicket() {
         return WxVerifyTicketCache.getInstance().get(appId);
     }

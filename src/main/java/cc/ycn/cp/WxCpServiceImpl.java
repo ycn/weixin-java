@@ -49,6 +49,11 @@ public class WxCpServiceImpl implements WxCpService {
     }
 
     @Override
+    public WxConfig getConfig() {
+        return config;
+    }
+
+    @Override
     public String getAccessToken() {
         return WxAccessTokenCache.getInstance().get(appId);
     }

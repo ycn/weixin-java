@@ -16,6 +16,13 @@ import cc.ycn.cp.bean.WxQyUser;
 public interface WxCpService {
 
     /**
+     * 获取微信配置
+     *
+     * @return WxConfig
+     */
+    WxConfig getConfig();
+
+    /**
      * 从缓存里获取AccessToken
      *
      * @return String
