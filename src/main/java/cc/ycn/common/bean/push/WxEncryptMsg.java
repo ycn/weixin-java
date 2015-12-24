@@ -1,4 +1,4 @@
-package cc.ycn.common.bean;
+package cc.ycn.common.bean.push;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

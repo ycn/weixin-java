@@ -51,10 +51,8 @@ public class TemplateBuilder extends BaseBuilder<TemplateBuilder> {
     protected void isValid() {
         if (isEmpty(message.templateId))
             throw new WxErrorException(new WxError(1004, "missing templateId"));
-
         if (isEmpty(message.url))
             throw new WxErrorException(new WxError(1004, "missing url"));
-
         if (message.data == null || message.data.isEmpty())
             throw new WxErrorException(new WxError(1004, "missing data"));
     }

@@ -1,15 +1,22 @@
-package cc.ycn.common.bean.message;
+package cc.ycn.common.bean.push;
 
 import cc.ycn.common.bean.WxError;
+import cc.ycn.common.bean.message.WxMsgType;
 import cc.ycn.common.exception.WxErrorException;
 
 /**
- * Created by andy on 12/15/15.
+ * Created by andy on 12/25/15.
  */
 public class MusicBuilder extends BaseBuilder<MusicBuilder> {
 
     public MusicBuilder() {
         message.music = message.new WxMsgMusic();
+    }
+
+    public MusicBuilder thumbMediaId(String thumbMediaId) {
+        if (!isEmpty(thumbMediaId))
+            message.music.thumbMediaId = thumbMediaId;
+        return this;
     }
 
     public MusicBuilder musicUrl(String musicUrl) {
@@ -21,12 +28,6 @@ public class MusicBuilder extends BaseBuilder<MusicBuilder> {
     public MusicBuilder hqMusicUrl(String hqMusicUrl) {
         if (!isEmpty(hqMusicUrl))
             message.music.hqMusicUrl = hqMusicUrl;
-        return this;
-    }
-
-    public MusicBuilder thumbMediaId(String thumbMediaId) {
-        if (!isEmpty(thumbMediaId))
-            message.music.thumbMediaId = thumbMediaId;
         return this;
     }
 

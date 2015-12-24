@@ -1,4 +1,4 @@
-package cc.ycn.component.bean;
+package cc.ycn.component.bean.push;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,7 +13,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "xml")
-public class WxComponentPushMsg implements Serializable {
+public class WxComponentAuthPushMsg implements Serializable {
 
     @JacksonXmlProperty(localName = "AppId")
     private String appId;
@@ -30,7 +30,7 @@ public class WxComponentPushMsg implements Serializable {
     @JacksonXmlProperty(localName = "AuthorizerAppid")
     private String authorizerAppId;
 
-    public WxComponentPushMsg() {
+    public WxComponentAuthPushMsg() {
 
     }
 

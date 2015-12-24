@@ -1,5 +1,6 @@
 package cc.ycn.common.bean.message;
 
+import cc.ycn.common.bean.WxArticle;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.io.Serializable;
