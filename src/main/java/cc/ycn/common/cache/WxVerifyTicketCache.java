@@ -39,7 +39,7 @@ public class WxVerifyTicketCache extends PersistenceCache<String> {
                 concurrencyLevel,
                 maximumSize,
                 new WxVerifyTicketCacheLoader(executorSize),
-                CacheKeyPrefix.REFRESH_TOKEN
+                CacheKeyPrefix.VERIFY_TICKET
         );
     }
 
