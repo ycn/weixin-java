@@ -221,7 +221,7 @@ public class WxComponentServiceImpl implements WxComponentService {
     }
 
     @Override
-    public WxAuthorizerInfo getAuthorizerInfo(String appId) throws WxErrorException {
+    public WxAuthorizerInfoResp getAuthorizerInfo(String appId) throws WxErrorException {
         if (appId == null || appId.isEmpty())
             throw new WxErrorException(new WxError(1003, "invalid appId"));
 
@@ -236,7 +236,7 @@ public class WxComponentServiceImpl implements WxComponentService {
         return requestTool.post(
                 "getAuthorizerInfo",
                 url,
-                WxAuthorizerInfo.class,
+                WxAuthorizerInfoResp.class,
                 ContentType.MEDIA_JSON,
                 new WxAuthorizerAppIdRef(this.appId, appId)
         );

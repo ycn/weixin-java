@@ -122,7 +122,7 @@ public interface WxComponentService {
      * @return WxAuthorizerInfo
      * @throws WxErrorException
      */
-    WxAuthorizerInfo getAuthorizerInfo(String appId) throws WxErrorException;
+    WxAuthorizerInfoResp getAuthorizerInfo(String appId) throws WxErrorException;
 
 
     /**
