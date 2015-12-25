@@ -18,6 +18,9 @@ public class WxEncryptMsg implements Serializable {
     @JacksonXmlProperty(localName = "AppId")
     private String appId;
 
+    @JacksonXmlProperty(localName = "ToUserName")
+    private String toUserName;
+
     @JacksonXmlProperty(localName = "Encrypt")
     private String encrypt;
 
@@ -41,5 +44,13 @@ public class WxEncryptMsg implements Serializable {
 
     public void setEncrypt(String encrypt) {
         this.encrypt = encrypt;
+    }
+
+    public String getToUserName() {
+        return toUserName;
+    }
+
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
     }
 }
