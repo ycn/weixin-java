@@ -22,6 +22,29 @@ public class WeixinSignTool {
      *
      * @return boolean
      */
+    public static boolean checkSignature(WxConfig config, String signature, String timeStamp, String nonce) {
+        if (config == null)
+            return false;
+
+        if (signature == null || signature.isEmpty())
+            return false;
+
+        if (timeStamp == null || timeStamp.isEmpty())
+            return false;
+
+        if (nonce == null || nonce.isEmpty())
+            return false;
+
+        String sign = WeixinSignTool.createSignature(config.getToken(), timeStamp, nonce);
+
+        return signature.equals(sign);
+    }
+
+    /**
+     * 验证推送的加密消息的正确性
+     *
+     * @return boolean
+     */
     public static boolean checkMsgSignature(WxConfig config, String msgSignature, String timeStamp, String nonce, String msgEncrypt) {
         if (config == null)
             return false;

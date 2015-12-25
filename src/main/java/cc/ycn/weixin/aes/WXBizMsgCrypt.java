@@ -25,23 +25,23 @@ public class WXBizMsgCrypt {
     Base64 base64 = new Base64();
     byte[] aesKey;
     String token;
-    String corpId;
+    String appId;
 
     /**
      * 构造函数
      *
      * @param token          公众平台上，开发者设置的token
      * @param encodingAesKey 公众平台上，开发者设置的EncodingAESKey
-     * @param corpId         企业的corpid
+     * @param appId          appId
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */
-    public WXBizMsgCrypt(String token, String encodingAesKey, String corpId) throws AesException {
+    public WXBizMsgCrypt(String token, String encodingAesKey, String appId) throws AesException {
         if (encodingAesKey.length() != 43) {
             throw new AesException(AesException.IllegalAesKey);
         }
 
         this.token = token;
-        this.corpId = corpId;
+        this.appId = appId;
         aesKey = Base64.decodeBase64(encodingAesKey + "=");
     }
 
@@ -90,13 +90,13 @@ public class WXBizMsgCrypt {
         byte[] randomStrBytes = randomStr.getBytes(CHARSET);
         byte[] textBytes = text.getBytes(CHARSET);
         byte[] networkBytesOrder = getNetworkBytesOrder(textBytes.length);
-        byte[] corpidBytes = corpId.getBytes(CHARSET);
+        byte[] appIdBytes = appId.getBytes(CHARSET);
 
         // randomStr + networkBytesOrder + text + corpid
         byteCollector.addBytes(randomStrBytes);
         byteCollector.addBytes(networkBytesOrder);
         byteCollector.addBytes(textBytes);
-        byteCollector.addBytes(corpidBytes);
+        byteCollector.addBytes(appIdBytes);
 
         // ... + pad: 使用自定义的填充方式对明文进行补位填充
         byte[] padBytes = PKCS7Encoder.encode(byteCollector.size());
@@ -151,18 +151,18 @@ public class WXBizMsgCrypt {
             throw new AesException(AesException.DecryptAESError);
         }
 
-        String xmlContent, from_corpid;
+        String xmlContent, from_appid;
         try {
             // 去除补位字符
             byte[] bytes = PKCS7Encoder.decode(original);
 
-            // 分离16位随机字符串,网络字节序和corpId
+            // 分离16位随机字符串,网络字节序和appId
             byte[] networkOrder = Arrays.copyOfRange(bytes, 16, 20);
 
             int xmlLength = recoverNetworkBytesOrder(networkOrder);
 
             xmlContent = new String(Arrays.copyOfRange(bytes, 20, 20 + xmlLength), CHARSET);
-            from_corpid = new String(Arrays.copyOfRange(bytes, 20 + xmlLength, bytes.length),
+            from_appid = new String(Arrays.copyOfRange(bytes, 20 + xmlLength, bytes.length),
                     CHARSET);
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,8 +170,10 @@ public class WXBizMsgCrypt {
         }
 
         // corpid不相同的情况
-        if (!from_corpid.equals(corpId)) {
-            throw new AesException(AesException.ValidateCorpidError);
+        if (!from_appid.equals(appId)) {
+            System.out.println("DEBUG: from_appid=" + from_appid);
+            System.out.println("DEBUG: xmlContent=" + xmlContent); // XXX
+            throw new AesException(AesException.ValidateAppIdError);
         }
         return xmlContent;
 
