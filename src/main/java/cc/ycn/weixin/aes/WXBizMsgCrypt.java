@@ -26,6 +26,7 @@ public class WXBizMsgCrypt {
     byte[] aesKey;
     String token;
     String appId;
+    String componentAppId;
 
     /**
      * 构造函数
@@ -35,13 +36,14 @@ public class WXBizMsgCrypt {
      * @param appId          appId
      * @throws AesException 执行失败，请查看该异常的错误码和具体的错误信息
      */
-    public WXBizMsgCrypt(String token, String encodingAesKey, String appId) throws AesException {
+    public WXBizMsgCrypt(String token, String encodingAesKey, String appId, String componentAppId) throws AesException {
         if (encodingAesKey.length() != 43) {
             throw new AesException(AesException.IllegalAesKey);
         }
 
         this.token = token;
         this.appId = appId;
+        this.componentAppId = componentAppId;
         aesKey = Base64.decodeBase64(encodingAesKey + "=");
     }
 
@@ -169,10 +171,8 @@ public class WXBizMsgCrypt {
             throw new AesException(AesException.IllegalBuffer);
         }
 
-        // corpid不相同的情况
-        if (!from_appid.equals(appId)) {
-            System.out.println("DEBUG: from_appid=" + from_appid);
-            System.out.println("DEBUG: xmlContent=" + xmlContent); // XXX
+        // appId不相同的情况
+        if (!from_appid.equals(appId) && !from_appid.equals(componentAppId)) {
             throw new AesException(AesException.ValidateAppIdError);
         }
         return xmlContent;

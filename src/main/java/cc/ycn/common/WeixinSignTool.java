@@ -95,7 +95,7 @@ public class WeixinSignTool {
 
         String echoStr = null;
         try {
-            WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId());
+            WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId(), config.getComponentAppId());
             echoStr = msgCrypt.VerifyURL(msgSignature, timeStamp, nonce, echoStrEncrypt);
         } catch (Exception ignore) {
         }
@@ -106,14 +106,14 @@ public class WeixinSignTool {
     public static String encrypt(WxConfig config, String text) throws AesException {
         if (config == null || text == null || text.isEmpty())
             return "";
-        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId());
+        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId(), config.getComponentAppId());
         return msgCrypt.encrypt(text);
     }
 
     public static String decrypt(WxConfig config, String text) throws AesException {
         if (config == null || text == null || text.isEmpty())
             return "";
-        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId());
+        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId(), config.getComponentAppId());
         return msgCrypt.decrypt(text);
     }
 
