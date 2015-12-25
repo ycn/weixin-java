@@ -34,6 +34,10 @@ public class WxComponentAuthPushMsg implements Serializable {
 
     }
 
+    public String getUniqId() {
+        String prefix = appId == null ? "" : appId + ":";
+        return prefix + authorizerAppId + ":" + createTime;
+    }
 
     public String getAppId() {
         return appId;

@@ -111,11 +111,20 @@ public class RequestTool {
             // GET RESPONSE
             String respBody = response.body().string();
 
+            // pre catch err
             if (respBody.contains("errmsg")) {
-                log.error("{} ERR-{} http_code:{}, body:{}", tag, reqSign, response.code(), respBody);
-                throw new WxErrorException(new WxError(1002, "request failed:" + subTag));
-            } else {
-                log.info("{} DEBUG-{} body:{}", tag, reqSign, respBody); // XXX
+                switch (contentType) {
+                    case URL_PARAM:
+                    case MEDIA_JSON:
+                        WxError wxError = JsonConverter.json2pojo(respBody, WxError.class);
+                        if (wxError != null && wxError.getErrcode() > 0) {
+                            log.error("{} WXERR-{} http_code:{}, body:{}", tag, reqSign, response.code(), respBody);
+                            throw new WxErrorException(new WxError(1002, "get errmsg:" + subTag));
+                        }
+                        break;
+                    case MEDIA_XML:
+                        break;
+                }
             }
 
             result = getObject(respBody, contentType, respType, reqSign);
