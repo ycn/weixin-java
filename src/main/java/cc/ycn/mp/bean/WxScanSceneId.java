@@ -19,6 +19,13 @@ public class WxScanSceneId implements Serializable {
 
     }
 
+    public WxScanSceneId(long id) {
+        this.sceneId = id;
+    }
+
+    public WxScanSceneId(String id) {
+        this.sceneStr = id;
+    }
 
     public long getSceneId() {
         return sceneId;
