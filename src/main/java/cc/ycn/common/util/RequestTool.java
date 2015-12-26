@@ -65,9 +65,9 @@ public class RequestTool {
         }
 
         // BUILD REQUEST
-        Request request;
-        RequestBody body;
-        String bodyStr;
+        Request request = null;
+        RequestBody body = null;
+        String bodyStr = null;
 
 
         switch (contentType) {
@@ -118,7 +118,10 @@ public class RequestTool {
                     case MEDIA_JSON:
                         WxError wxError = JsonConverter.json2pojo(respBody, WxError.class);
                         if (wxError != null && wxError.getErrcode() > 0) {
-                            log.error("{} WXERR-{} http_code:{}, body:{}", tag, reqSign, response.code(), respBody);
+
+                            log.error("{} WXERR-{} http_code:{}, req:{} body:{}",
+                                    tag, reqSign, response.code(), bodyStr, respBody);
+                            
                             throw new WxErrorException(new WxError(1002, "get errmsg:" + subTag));
                         }
                         break;
