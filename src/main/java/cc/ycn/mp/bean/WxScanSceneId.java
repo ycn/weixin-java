@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class WxScanSceneId implements Serializable {
 
     @JSONField(name = "scene_id")
-    private long sceneId;
+    private Long sceneId;
 
     @JSONField(name = "scene_str")
     private String sceneStr;
@@ -27,11 +27,11 @@ public class WxScanSceneId implements Serializable {
         this.sceneStr = id;
     }
 
-    public long getSceneId() {
+    public Long getSceneId() {
         return sceneId;
     }
 
-    public void setSceneId(long sceneId) {
+    public void setSceneId(Long sceneId) {
         this.sceneId = sceneId;
     }
 

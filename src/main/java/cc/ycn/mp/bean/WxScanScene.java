@@ -12,23 +12,35 @@ public class WxScanScene implements Serializable {
     @JSONField(name = "action_name")
     private String actionName;
 
-    private WxScanSceneId scene;
+    @JSONField(name = "action_info")
+    private WxScanActionInfo actionInfo;
 
     @JSONField(name = "expire_seconds")
-    private long expireSeconds;
+    private Long expireSeconds;
 
 
     public WxScanScene() {
 
     }
 
-
-    public long getExpireSeconds() {
-        return expireSeconds;
+    /* 创建临时二维码 */
+    public WxScanScene(long id, long expireSeconds) {
+        setActionName(WxQRType.QR_SCENE);
+        this.actionInfo = new WxScanActionInfo(id);
+        if (expireSeconds <= 0) expireSeconds = 30 * 86400;
+        this.expireSeconds = expireSeconds;
     }
 
-    public void setExpireSeconds(long expireSeconds) {
-        this.expireSeconds = expireSeconds;
+    /* 创建永久二维码 */
+    public WxScanScene(long id) {
+        setActionName(WxQRType.QR_LIMIT_SCENE);
+        this.actionInfo = new WxScanActionInfo(id);
+    }
+
+    /* 创建永久二维码(字符串ID) */
+    public WxScanScene(String id) {
+        setActionName(WxQRType.QR_LIMIT_STR_SCENE);
+        this.actionInfo = new WxScanActionInfo(id);
     }
 
     public String getActionName() {
@@ -39,11 +51,19 @@ public class WxScanScene implements Serializable {
         this.actionName = wxQRType.name();
     }
 
-    public WxScanSceneId getScene() {
-        return scene;
+    public WxScanActionInfo getActionInfo() {
+        return actionInfo;
     }
 
-    public void setScene(WxScanSceneId scene) {
-        this.scene = scene;
+    public void setActionInfo(WxScanActionInfo actionInfo) {
+        this.actionInfo = actionInfo;
+    }
+
+    public Long getExpireSeconds() {
+        return expireSeconds;
+    }
+
+    public void setExpireSeconds(Long expireSeconds) {
+        this.expireSeconds = expireSeconds;
     }
 }
