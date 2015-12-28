@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+import java.beans.Transient;
 import java.io.Serializable;
 
 /**
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "xml")
 public class WxPushMsg implements Serializable {
-    
+
     @JacksonXmlProperty(localName = "ToUserName")
     private String toUserName;
 
@@ -125,7 +126,7 @@ public class WxPushMsg implements Serializable {
 
     }
 
-
+    @Transient
     public String getUniqId() {
         String prefix = agentId == null ? "" : agentId + ":";
         if (msgId != null) {

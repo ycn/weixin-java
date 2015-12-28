@@ -1,10 +1,15 @@
 package cc.ycn.common.bean.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 
 /**
  * Created by andy on 12/24/15.
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WxTemplateField implements Serializable {
     private String value;
     private String color;

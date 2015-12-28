@@ -3,12 +3,16 @@ package cc.ycn.common.bean;
 import cc.ycn.component.bean.WxAuthorizerAccessToken;
 import cc.ycn.component.bean.WxComponentAccessToken;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
 /**
  * Created by andy on 12/12/15.
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WxAccessToken implements Serializable {
 
     @JSONField(name = "access_token")

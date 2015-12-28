@@ -2,6 +2,8 @@ package cc.ycn.common.bean.message;
 
 import cc.ycn.common.bean.WxArticle;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.Map;
  *
  * @author andy
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WxMessage implements Serializable {
 
     @JSONField(name = "touser")

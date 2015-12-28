@@ -1,6 +1,8 @@
 package cc.ycn.common.bean;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
@@ -18,6 +20,8 @@ import java.io.Serializable;
  *
  * @author andy
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class WxError implements Serializable {
 
     private long errcode;

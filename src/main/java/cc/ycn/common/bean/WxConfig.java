@@ -1,6 +1,8 @@
 package cc.ycn.common.bean;
 
 import cc.ycn.common.constant.WxApiType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
@@ -9,6 +11,8 @@ import java.io.Serializable;
  *
  * @author andy
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class WxConfig implements Serializable {
 
     private WxApiType type;

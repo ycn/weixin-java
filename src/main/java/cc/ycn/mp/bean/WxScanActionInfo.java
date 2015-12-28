@@ -1,10 +1,15 @@
 package cc.ycn.mp.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 
 /**
  * Created by andy on 12/26/15.
  */
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WxScanActionInfo implements Serializable {
 
     private WxScanSceneId scene;
