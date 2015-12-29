@@ -23,10 +23,11 @@ public class WxPreAuthCodeCache extends ExpireCache<String> {
                             int refreshSeconds,
                             int concurrencyLevel,
                             long maximumSize,
-                            int executorSize) {
+                            int executorSize,
+                            boolean readonly) {
         if (instance.get() == null)
             instance.compareAndSet(null, new WxPreAuthCodeCache(centralStore,
-                    refreshSeconds, concurrencyLevel, maximumSize, executorSize));
+                    refreshSeconds, concurrencyLevel, maximumSize, executorSize, readonly));
     }
 
     public static WxPreAuthCodeCache getInstance() {
@@ -37,20 +38,34 @@ public class WxPreAuthCodeCache extends ExpireCache<String> {
                                int refreshSeconds,
                                int concurrencyLevel,
                                long maximumSize,
-                               int executorSize) {
+                               int executorSize,
+                               boolean readonly) {
         init(centralStore,
                 refreshSeconds,
                 concurrencyLevel,
                 maximumSize,
-                new WxPreAuthCodeCacheLoader(executorSize),
-                CacheKeyPrefix.PRE_AUTHCODE
+                new WxPreAuthCodeCacheLoader(executorSize, readonly),
+                CacheKeyPrefix.PRE_AUTHCODE,
+                readonly
         );
     }
 
     class WxPreAuthCodeCacheLoader extends WxCacheLoader<String> {
 
-        public WxPreAuthCodeCacheLoader(int executorSize) {
-            super(executorSize);
+        public WxPreAuthCodeCacheLoader(int executorSize, boolean readonly) {
+            super(executorSize, readonly);
+        }
+
+        @Override
+        protected String loadOneReadonly(String appId, String oldCode, boolean sync) {
+            if (appId == null || appId.isEmpty())
+                return null;
+
+            if (oldCode == null)
+                oldCode = "";
+
+            String code = getFromStore(appId);
+            return code == null ? oldCode : code;
         }
 
         @Override

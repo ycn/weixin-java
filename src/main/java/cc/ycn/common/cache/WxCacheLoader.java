@@ -16,14 +16,20 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public abstract class WxCacheLoader<T> extends CacheLoader<String, T> {
 
     private ExecutorService executor;
+    private boolean readonly;
 
-    public WxCacheLoader(int executorSize) {
-        executor = Executors.newFixedThreadPool(executorSize);
+    public WxCacheLoader(int executorSize, boolean readonly) {
+        this.executor = Executors.newFixedThreadPool(executorSize);
+        this.readonly = readonly;
+    }
+
+    protected boolean isReadonly() {
+        return readonly;
     }
 
     @Override
     public T load(String appId) throws Exception {
-        return loadOne(appId, null, true);
+        return innerLoadOne(appId, null, true);
     }
 
     @Override
@@ -34,13 +40,23 @@ public abstract class WxCacheLoader<T> extends CacheLoader<String, T> {
         ListenableFutureTask<T> task = ListenableFutureTask.create(new Callable<T>() {
             @Override
             public T call() throws Exception {
-                return loadOne(appId, oldValue, false);
+                return innerLoadOne(appId, oldValue, false);
             }
         });
 
         executor.execute(task);
         return task;
     }
+
+    private T innerLoadOne(String appId, T oldValue, boolean sync) {
+        if (readonly) {
+            return loadOneReadonly(appId, oldValue, sync);
+        } else {
+            return loadOne(appId, oldValue, sync);
+        }
+    }
+
+    abstract protected T loadOneReadonly(String appId, T oldValue, boolean sync);
 
     abstract protected T loadOne(String appId, T oldValue, boolean sync);
 }

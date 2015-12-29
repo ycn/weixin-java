@@ -19,10 +19,11 @@ public class WxVerifyTicketCache extends PersistenceCache<String> {
                             int refreshSeconds,
                             int concurrencyLevel,
                             long maximumSize,
-                            int executorSize) {
+                            int executorSize,
+                            boolean readonly) {
         if (instance.get() == null)
             instance.compareAndSet(null, new WxVerifyTicketCache(centralStore,
-                    refreshSeconds, concurrencyLevel, maximumSize, executorSize));
+                    refreshSeconds, concurrencyLevel, maximumSize, executorSize, readonly));
     }
 
     public static WxVerifyTicketCache getInstance() {
@@ -33,20 +34,34 @@ public class WxVerifyTicketCache extends PersistenceCache<String> {
                                 int refreshSeconds,
                                 int concurrencyLevel,
                                 long maximumSize,
-                                int executorSize) {
+                                int executorSize,
+                                boolean readonly) {
         init(centralStore,
                 refreshSeconds,
                 concurrencyLevel,
                 maximumSize,
-                new WxVerifyTicketCacheLoader(executorSize),
-                CacheKeyPrefix.VERIFY_TICKET
+                new WxVerifyTicketCacheLoader(executorSize, readonly),
+                CacheKeyPrefix.VERIFY_TICKET,
+                readonly
         );
     }
 
     class WxVerifyTicketCacheLoader extends WxCacheLoader<String> {
 
-        public WxVerifyTicketCacheLoader(int executorSize) {
-            super(executorSize);
+        public WxVerifyTicketCacheLoader(int executorSize, boolean readonly) {
+            super(executorSize, readonly);
+        }
+
+        @Override
+        protected String loadOneReadonly(String appId, String oldTicket, boolean sync) {
+            if (appId == null || appId.isEmpty())
+                return null;
+
+            if (oldTicket == null)
+                oldTicket = "";
+
+            String ticket = getFromStore(appId);
+            return ticket == null ? oldTicket : ticket;
         }
 
         @Override

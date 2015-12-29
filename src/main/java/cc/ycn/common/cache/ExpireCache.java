@@ -16,6 +16,7 @@ public abstract class ExpireCache<T> {
     private CentralStore centralStore;
     private LoadingCache<String, T> cache;
     private String keyPrefix;
+    private boolean readonly;
 
     protected ExpireCache() {
 
@@ -26,7 +27,8 @@ public abstract class ExpireCache<T> {
                         int concurrencyLevel,
                         long maximumCacheSize,
                         WxCacheLoader<T> cacheLoader,
-                        CacheKeyPrefix keyPrefix) {
+                        CacheKeyPrefix keyPrefix,
+                        boolean readonly) {
 
         this.centralStore = centralStore;
 
@@ -38,6 +40,7 @@ public abstract class ExpireCache<T> {
                 .build(cacheLoader);
 
         this.keyPrefix = keyPrefix.prefix();
+        this.readonly = readonly;
     }
 
     final public T get(String key) {
@@ -54,6 +57,8 @@ public abstract class ExpireCache<T> {
     }
 
     final public void setToStore(String key, T value, long expiredIn) {
+        if (readonly)
+            return;
         if (key == null || key.isEmpty())
             return;
         if (value == null)
@@ -69,6 +74,8 @@ public abstract class ExpireCache<T> {
     }
 
     final public void delFromStore(String key) {
+        if (readonly)
+            return;
         centralStore.del(keyPrefix + key);
         cache.invalidate(key);
     }

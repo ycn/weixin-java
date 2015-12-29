@@ -20,10 +20,11 @@ public class WxConfigCache extends PersistenceCache<WxConfig> {
                             int refreshSeconds,
                             int concurrencyLevel,
                             long maximumSize,
-                            int executorSize) {
+                            int executorSize,
+                            boolean readonly) {
         if (instance.get() == null)
             instance.compareAndSet(null, new WxConfigCache(centralStore,
-                    refreshSeconds, concurrencyLevel, maximumSize, executorSize));
+                    refreshSeconds, concurrencyLevel, maximumSize, executorSize, readonly));
     }
 
     public static WxConfigCache getInstance() {
@@ -34,29 +35,37 @@ public class WxConfigCache extends PersistenceCache<WxConfig> {
                           int refreshSeconds,
                           int concurrencyLevel,
                           long maximumSize,
-                          int executorSize) {
+                          int executorSize,
+                          boolean readonly) {
         init(centralStore,
                 refreshSeconds,
                 concurrencyLevel,
                 maximumSize,
-                new WxConfigCacheLoader(executorSize),
-                CacheKeyPrefix.CONFIG
+                new WxConfigCacheLoader(executorSize, readonly),
+                CacheKeyPrefix.CONFIG,
+                readonly
         );
     }
 
     class WxConfigCacheLoader extends WxCacheLoader<WxConfig> {
 
-        public WxConfigCacheLoader(int executorSize) {
-            super(executorSize);
+        public WxConfigCacheLoader(int executorSize, boolean readonly) {
+            super(executorSize, readonly);
+        }
+
+        @Override
+        protected WxConfig loadOneReadonly(String appId, WxConfig oldConfig, boolean sync) {
+            if (appId == null || appId.isEmpty())
+                return null;
+            WxConfig config = getFromStore(appId, WxConfig.class);
+            return config == null ? oldConfig : config;
         }
 
         @Override
         protected WxConfig loadOne(String appId, WxConfig oldConfig, boolean sync) {
             if (appId == null || appId.isEmpty())
                 return null;
-
             WxConfig config = getFromStore(appId, WxConfig.class);
-
             return config == null ? oldConfig : config;
         }
     }

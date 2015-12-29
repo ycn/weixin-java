@@ -19,10 +19,11 @@ public class WxRefreshTokenCache extends PersistenceCache<String> {
                             int refreshSeconds,
                             int concurrencyLevel,
                             long maximumSize,
-                            int executorSize) {
+                            int executorSize,
+                            boolean readonly) {
         if (instance.get() == null)
             instance.compareAndSet(null, new WxRefreshTokenCache(centralStore,
-                    refreshSeconds, concurrencyLevel, maximumSize, executorSize));
+                    refreshSeconds, concurrencyLevel, maximumSize, executorSize, readonly));
     }
 
     public static WxRefreshTokenCache getInstance() {
@@ -33,20 +34,34 @@ public class WxRefreshTokenCache extends PersistenceCache<String> {
                                 int refreshSeconds,
                                 int concurrencyLevel,
                                 long maximumSize,
-                                int executorSize) {
+                                int executorSize,
+                                boolean readonly) {
         init(centralStore,
                 refreshSeconds,
                 concurrencyLevel,
                 maximumSize,
-                new WxRefreshTokenCacheLoader(executorSize),
-                CacheKeyPrefix.REFRESH_TOKEN
+                new WxRefreshTokenCacheLoader(executorSize, readonly),
+                CacheKeyPrefix.REFRESH_TOKEN,
+                readonly
         );
     }
 
     class WxRefreshTokenCacheLoader extends WxCacheLoader<String> {
 
-        public WxRefreshTokenCacheLoader(int executorSize) {
-            super(executorSize);
+        public WxRefreshTokenCacheLoader(int executorSize, boolean readonly) {
+            super(executorSize, readonly);
+        }
+
+        @Override
+        protected String loadOneReadonly(String appId, String oldToken, boolean sync) {
+            if (appId == null || appId.isEmpty())
+                return null;
+
+            if (oldToken == null)
+                oldToken = "";
+
+            String token = getFromStore(appId);
+            return token == null ? oldToken : token;
         }
 
         @Override
