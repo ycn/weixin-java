@@ -26,7 +26,7 @@ public class TemplateBuilder extends BaseBuilder<TemplateBuilder> {
         return this;
     }
 
-    public TemplateBuilder setUrl(String url) {
+    public TemplateBuilder url(String url) {
         if (isEmpty(url))
             return this;
 
@@ -34,7 +34,7 @@ public class TemplateBuilder extends BaseBuilder<TemplateBuilder> {
         return this;
     }
 
-    public TemplateBuilder setTemplateId(String templateId) {
+    public TemplateBuilder templateId(String templateId) {
         if (isEmpty(templateId))
             return this;
 
