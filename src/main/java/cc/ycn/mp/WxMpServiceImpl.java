@@ -98,8 +98,20 @@ public class WxMpServiceImpl implements WxMpService {
 
     @Override
     public WxError sendMessage(WxMessage message) throws WxErrorException {
-        if (message == null || WxMsgType.TEMPLATE.info().equals(message.getMsgType()))
+        if (message == null)
             throw new WxErrorException(new WxError(1004, "invalid message type"));
+
+        // 发送模板消息
+        if (WxMsgType.TEMPLATE.info().equals(message.getMsgType())) {
+            WxError error = null;
+            try {
+                WxMsgIdRef idRef = sendTemplateMessage(message);
+                error = new WxError(0, idRef.getMsgId());
+            } catch (WxErrorException e) {
+                error = e.getError();
+            }
+            return error;
+        }
 
         String accessToken = getAccessToken();
 
