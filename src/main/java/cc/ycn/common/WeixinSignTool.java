@@ -103,6 +103,14 @@ public class WeixinSignTool {
         return echoStr;
     }
 
+    /**
+     * 加密微信消息
+     *
+     * @param config WxConfig
+     * @param text   String
+     * @return String
+     * @throws AesException
+     */
     public static String encrypt(WxConfig config, String text) throws AesException {
         if (config == null || text == null || text.isEmpty())
             return "";
@@ -110,6 +118,14 @@ public class WeixinSignTool {
         return msgCrypt.encrypt(text);
     }
 
+    /**
+     * 解密微信消息
+     *
+     * @param config WxConfig
+     * @param text   String
+     * @return String
+     * @throws AesException
+     */
     public static String decrypt(WxConfig config, String text) throws AesException {
         if (config == null || text == null || text.isEmpty())
             return "";
@@ -117,23 +133,103 @@ public class WeixinSignTool {
         return msgCrypt.decrypt(text);
     }
 
+    /**
+     * 计算微信参数SHA1签名
+     *
+     * @param params String[]
+     * @return String
+     */
     public static String createSignature(String... params) {
         String packValue = packValue(Arrays.asList(params), "");
         return StringTool.SHA1(packValue);
     }
 
+    /**
+     * 计算微信JS参数SHA1签名
+     *
+     * @param packValue String
+     * @return String
+     */
     public static String createJSSignature(String packValue) {
         return StringTool.SHA1(packValue);
     }
 
+    /**
+     * 计算微信卡券参数SHA1签名
+     *
+     * @param packValue String
+     * @return String
+     */
     public static String createCardSignature(String packValue) {
         return StringTool.SHA1(packValue);
     }
 
+
+    /**
+     * 计算微信支付参数MD5签名
+     *
+     * @param config        WxConfig
+     * @param obj           Object
+     * @param excludeFields String[]
+     * @return String
+     */
+    public static String createPaySignature(WxConfig config, Object obj, String[] excludeFields) {
+        if (config == null || obj == null)
+            return "";
+        String packVal = packValue(obj, "&", excludeFields) + "&key=" + config.getPaySecret();
+        return StringTool.MD5(packVal).toUpperCase();
+    }
+
+    /**
+     * 计算微信支付参数MD5签名
+     *
+     * @param config        WxConfig
+     * @param map           Map
+     * @param excludeFields String[]
+     * @return String
+     */
+    public static String createPaySignature(WxConfig config, Map<String, String> map, String[] excludeFields) {
+        if (config == null || map == null || map.isEmpty())
+            return "";
+        String packVal = packValue(map, "&", excludeFields) + "&key=" + config.getPaySecret();
+        return StringTool.MD5(packVal).toUpperCase();
+    }
+
+    /**
+     * 计算微信支付参数MD5签名
+     *
+     * @param config        WxConfig
+     * @param arr           List
+     * @param excludeFields String[]
+     * @return String
+     */
+    public static String createPaySignature(WxConfig config, List<String> arr, String[] excludeFields) {
+        if (config == null || arr == null || arr.isEmpty())
+            return "";
+        String packVal = packValue(arr, "&", excludeFields) + "&key=" + config.getPaySecret();
+        return StringTool.MD5(packVal).toUpperCase();
+    }
+
+    /**
+     * 微信参数打包
+     *
+     * @param obj Object
+     * @param sep String
+     * @return String
+     */
     public static String packValue(Object obj, String sep) {
         return packValue(obj, sep, null);
     }
 
+
+    /**
+     * 微信参数打包
+     *
+     * @param obj           Object
+     * @param sep           String
+     * @param excludeFields String[]
+     * @return String
+     */
     public static String packValue(Object obj, String sep, String[] excludeFields) {
 
         if (obj == null)
@@ -172,10 +268,25 @@ public class WeixinSignTool {
         return Joiner.on(sep).join(list);
     }
 
+    /**
+     * 微信参数打包
+     *
+     * @param map Map
+     * @param sep String
+     * @return String
+     */
     public static String packValue(Map<String, String> map, String sep) {
         return packValue(map, sep, null);
     }
 
+    /**
+     * 微信参数打包
+     *
+     * @param map         Map
+     * @param sep         String
+     * @param excludeKeys String[]
+     * @return String
+     */
     public static String packValue(Map<String, String> map, String sep, String[] excludeKeys) {
         if (map == null || map.isEmpty())
             return "";
@@ -197,10 +308,26 @@ public class WeixinSignTool {
         return Joiner.on(sep).join(list);
     }
 
+    /**
+     * 微信参数打包
+     *
+     * @param arr List
+     * @param sep String
+     * @return String
+     */
     public static String packValue(List<String> arr, String sep) {
         return packValue(arr, sep, null);
     }
 
+
+    /**
+     * 微信参数打包
+     *
+     * @param arr      List
+     * @param sep      String
+     * @param excludes String[]
+     * @return String
+     */
     public static String packValue(List<String> arr, String sep, String[] excludes) {
         if (arr == null || arr.isEmpty())
             return "";

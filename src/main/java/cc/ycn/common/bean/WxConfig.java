@@ -18,6 +18,8 @@ public final class WxConfig implements Serializable {
     private WxApiType type;
     private String appId;
     private String appSecret;
+    private String mchId;
+    private String paySecret;
     private String token;
     private String aesKey;
     private String salt;
@@ -92,5 +94,21 @@ public final class WxConfig implements Serializable {
 
     public void setComponentAppId(String componentAppId) {
         this.componentAppId = componentAppId;
+    }
+
+    public String getPaySecret() {
+        return paySecret;
+    }
+
+    public void setPaySecret(String paySecret) {
+        this.paySecret = paySecret;
+    }
+
+    public String getMchId() {
+        return mchId;
+    }
+
+    public void setMchId(String mchId) {
+        this.mchId = mchId;
     }
 }

@@ -5,7 +5,7 @@ package cc.ycn.common.constant;
  */
 public class WxConstant {
 
-    public final static int WX_CONNECT_TIMEOUT = 2;
-    public final static int WX_READ_TIMEOUT = 3;
-    public final static int WX_WRITE_TIMEOUT = 2;
+    public final static int WX_CONNECT_TIMEOUT = 3;
+    public final static int WX_READ_TIMEOUT = 10;
+    public final static int WX_WRITE_TIMEOUT = 5;
 }

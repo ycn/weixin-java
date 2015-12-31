@@ -95,22 +95,6 @@ public class StringTool {
      * @param origin 原始字符串
      * @return 经过MD5加密之后的结果
      */
-    public static String MD5Encode(String origin) {
-        String resultString = null;
-        try {
-            resultString = origin;
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(resultString.getBytes("UTF-8"));
-            resultString = byteArrayToHexString(md.digest());
-        } catch (Exception ignore) {
-        }
-        return resultString;
-    }
-
-    public static String MD5(String origin) {
-        return MD5(origin, 32);
-    }
-
     public static String MD5(String origin, int length) {
         String result = "";
         try {
@@ -121,10 +105,14 @@ public class StringTool {
         } catch (Exception ignore) {
         }
 
-        if (length > 32) return result;
+        if (length >= 32) return result;
 
         int start = (int) Math.ceil((32 - length) / 2);
         return result.substring(start, start + length);
+    }
+
+    public static String MD5(String origin) {
+        return MD5(origin, 32);
     }
 
     public static String SHA1(String origin) {
