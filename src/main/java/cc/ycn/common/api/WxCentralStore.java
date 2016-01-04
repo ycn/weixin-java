@@ -39,7 +39,16 @@ public class WxCentralStore extends DefaultRedisCentralStore {
     }
 
     private WxCentralStore(String host, int port) {
-        this(host, port, true);
+        super(host, port, 11);
+
+        WxConfigCache.init(this, 600, 10, 1000, 10, true);
+        WxVerifyTicketCache.init(this, 600, 5, 10, 5, true);
+        WxRefreshTokenCache.init(this, 600, 10, 1000, 10, true);
+
+        WxAccessTokenCache.init(this, 600, 10, 10000, 10, true);
+        WxJSTicketCache.init(this, 600, 10, 10000, 10, true);
+        WxCardTicketCache.init(this, 600, 10, 10000, 10, true);
+        WxPreAuthCodeCache.init(this, 600, 5, 10, 5, true);
     }
 
     private WxCentralStore(String host, int port, boolean readonly) {
