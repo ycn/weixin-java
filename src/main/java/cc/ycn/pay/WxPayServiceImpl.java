@@ -90,8 +90,8 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        req.setAppId(appId);
-        req.setMchId(config.getMchId());
+        req.setAppid(appId);
+        req.setMch_id(config.getMchId());
 
         // 签名
         String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
@@ -113,8 +113,8 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        req.setAppId(appId);
-        req.setMchId(config.getMchId());
+        req.setAppid(appId);
+        req.setMch_id(config.getMchId());
 
         // 签名
         String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
@@ -136,8 +136,8 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        req.setAppId(appId);
-        req.setMchId(config.getMchId());
+        req.setAppid(appId);
+        req.setMch_id(config.getMchId());
 
         // 签名
         String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
@@ -159,8 +159,8 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        req.setAppId(appId);
-        req.setMchId(config.getMchId());
+        req.setAppid(appId);
+        req.setMch_id(config.getMchId());
 
         // 签名
         String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
