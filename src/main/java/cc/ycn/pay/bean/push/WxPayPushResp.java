@@ -2,7 +2,6 @@ package cc.ycn.pay.bean.push;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.io.Serializable;
@@ -15,34 +14,32 @@ import java.io.Serializable;
 @JacksonXmlRootElement(localName = "xml")
 public class WxPayPushResp implements Serializable {
 
-    @JacksonXmlProperty(localName = "return_code")
-    private String returnCode;
+    protected String return_code;
 
-    @JacksonXmlProperty(localName = "return_msg")
-    private String returnMsg;
+    protected String return_msg;
 
     public WxPayPushResp() {
 
     }
 
     public WxPayPushResp(String code, String msg) {
-        this.returnCode = code;
-        this.returnMsg = msg;
+        this.return_code = code;
+        this.return_msg = msg;
     }
 
-    public String getReturnCode() {
-        return returnCode;
+    public String getReturn_code() {
+        return return_code;
     }
 
-    public void setReturnCode(String returnCode) {
-        this.returnCode = returnCode;
+    public void setReturn_code(String return_code) {
+        this.return_code = return_code;
     }
 
-    public String getReturnMsg() {
-        return returnMsg;
+    public String getReturn_msg() {
+        return return_msg;
     }
 
-    public void setReturnMsg(String returnMsg) {
-        this.returnMsg = returnMsg;
+    public void setReturn_msg(String return_msg) {
+        this.return_msg = return_msg;
     }
 }

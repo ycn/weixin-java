@@ -58,6 +58,7 @@ public class WxConfigCache extends PersistenceCache<WxConfig> {
             if (appId == null || appId.isEmpty())
                 return null;
             WxConfig config = getFromStore(appId, WxConfig.class);
+            log.info("{} reload success! (readonly) appId:{}, use newConfig", LOG_TAG, appId);
             return config == null ? oldConfig : config;
         }
 
@@ -66,6 +67,7 @@ public class WxConfigCache extends PersistenceCache<WxConfig> {
             if (appId == null || appId.isEmpty())
                 return null;
             WxConfig config = getFromStore(appId, WxConfig.class);
+            log.info("{} reload success! appId:{}, use newConfig", LOG_TAG, appId);
             return config == null ? oldConfig : config;
         }
     }

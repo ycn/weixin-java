@@ -2,10 +2,7 @@ package cc.ycn.pay.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
-import java.io.Serializable;
 
 /**
  * Created by andy on 12/31/15.
@@ -13,286 +10,141 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "xml")
-public class WxRefundResp implements Serializable {
+public class WxRefundResp extends WxPayBaseResp {
 
-    /* common */
-    @JacksonXmlProperty(localName = "return_code")
-    private String returnCode;
-
-    @JacksonXmlProperty(localName = "return_msg")
-    private String returnMsg;
-
-    @JacksonXmlProperty(localName = "appid")
-    private String appId;
-
-    @JacksonXmlProperty(localName = "mch_id")
-    private String mchId;
-
-    @JacksonXmlProperty(localName = "sub_appid")
-    private String subAppId;
-
-    @JacksonXmlProperty(localName = "sub_mch_id")
-    private String subMchId;
-
-    @JacksonXmlProperty(localName = "device_info")
-    private String deviceInfo;
-
-    @JacksonXmlProperty(localName = "nonce_str")
-    private String nonceStr;
-
-    private String sign;
-
-    @JacksonXmlProperty(localName = "result_code")
-    private String resultCode;
-
-    @JacksonXmlProperty(localName = "err_code")
-    private String errCode;
-
-    @JacksonXmlProperty(localName = "err_code_des")
-    private String errCodeDes;
-    
     /* private */
-    @JacksonXmlProperty(localName = "transaction_id")
-    private String transactionId;
+    protected String transaction_id;
 
-    @JacksonXmlProperty(localName = "out_trade_no")
-    private String outTradeNo;
+    protected String out_trade_no;
 
-    @JacksonXmlProperty(localName = "out_refund_no")
-    private String outRefundNo;
+    protected String out_refund_no;
 
-    @JacksonXmlProperty(localName = "refund_id")
-    private String refundId;
+    protected String refund_id;
 
-    @JacksonXmlProperty(localName = "refund_channel")
-    private String refundChannel;
+    protected String refund_channel;
 
-    @JacksonXmlProperty(localName = "refund_fee")
-    private Integer refundFee;
+    protected Integer refund_fee;
 
-    @JacksonXmlProperty(localName = "total_fee")
-    private Integer totalFee;
+    protected Integer total_fee;
 
-    @JacksonXmlProperty(localName = "fee_type")
-    private String feeType;
+    protected String fee_type;
 
-    @JacksonXmlProperty(localName = "cash_fee")
-    private Integer cashFee;
+    protected Integer cash_fee;
 
-    @JacksonXmlProperty(localName = "cash_refund_fee")
-    private Integer cashRefundFee;
+    protected Integer cash_refund_fee;
 
-    @JacksonXmlProperty(localName = "coupon_refund_fee")
-    private Integer couponRefundFee;
+    protected Integer coupon_refund_fee;
 
-    @JacksonXmlProperty(localName = "coupon_refund_count")
-    private Integer couponRefundCount;
+    protected Integer coupon_refund_count;
 
-    @JacksonXmlProperty(localName = "coupon_refund_id")
-    private String couponRefundId;
+    protected String coupon_refund_id;
 
 
     public WxRefundResp() {
 
     }
 
-    public String getReturnCode() {
-        return returnCode;
+    public String getTransaction_id() {
+        return transaction_id;
     }
 
-    public void setReturnCode(String returnCode) {
-        this.returnCode = returnCode;
+    public void setTransaction_id(String transaction_id) {
+        this.transaction_id = transaction_id;
     }
 
-    public String getReturnMsg() {
-        return returnMsg;
+    public String getOut_trade_no() {
+        return out_trade_no;
     }
 
-    public void setReturnMsg(String returnMsg) {
-        this.returnMsg = returnMsg;
+    public void setOut_trade_no(String out_trade_no) {
+        this.out_trade_no = out_trade_no;
     }
 
-    public String getAppId() {
-        return appId;
+    public String getOut_refund_no() {
+        return out_refund_no;
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setOut_refund_no(String out_refund_no) {
+        this.out_refund_no = out_refund_no;
     }
 
-    public String getMchId() {
-        return mchId;
+    public String getRefund_id() {
+        return refund_id;
     }
 
-    public void setMchId(String mchId) {
-        this.mchId = mchId;
+    public void setRefund_id(String refund_id) {
+        this.refund_id = refund_id;
     }
 
-    public String getSubAppId() {
-        return subAppId;
+    public String getRefund_channel() {
+        return refund_channel;
     }
 
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
+    public void setRefund_channel(String refund_channel) {
+        this.refund_channel = refund_channel;
     }
 
-    public String getSubMchId() {
-        return subMchId;
+    public Integer getRefund_fee() {
+        return refund_fee;
     }
 
-    public void setSubMchId(String subMchId) {
-        this.subMchId = subMchId;
+    public void setRefund_fee(Integer refund_fee) {
+        this.refund_fee = refund_fee;
     }
 
-    public String getDeviceInfo() {
-        return deviceInfo;
+    public Integer getTotal_fee() {
+        return total_fee;
     }
 
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
+    public void setTotal_fee(Integer total_fee) {
+        this.total_fee = total_fee;
     }
 
-    public String getNonceStr() {
-        return nonceStr;
+    public String getFee_type() {
+        return fee_type;
     }
 
-    public void setNonceStr(String nonceStr) {
-        this.nonceStr = nonceStr;
+    public void setFee_type(String fee_type) {
+        this.fee_type = fee_type;
     }
 
-    public String getSign() {
-        return sign;
+    public Integer getCash_fee() {
+        return cash_fee;
     }
 
-    public void setSign(String sign) {
-        this.sign = sign;
+    public void setCash_fee(Integer cash_fee) {
+        this.cash_fee = cash_fee;
     }
 
-    public String getResultCode() {
-        return resultCode;
+    public Integer getCash_refund_fee() {
+        return cash_refund_fee;
     }
 
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
+    public void setCash_refund_fee(Integer cash_refund_fee) {
+        this.cash_refund_fee = cash_refund_fee;
     }
 
-    public String getErrCode() {
-        return errCode;
+    public Integer getCoupon_refund_fee() {
+        return coupon_refund_fee;
     }
 
-    public void setErrCode(String errCode) {
-        this.errCode = errCode;
+    public void setCoupon_refund_fee(Integer coupon_refund_fee) {
+        this.coupon_refund_fee = coupon_refund_fee;
     }
 
-    public String getErrCodeDes() {
-        return errCodeDes;
+    public Integer getCoupon_refund_count() {
+        return coupon_refund_count;
     }
 
-    public void setErrCodeDes(String errCodeDes) {
-        this.errCodeDes = errCodeDes;
+    public void setCoupon_refund_count(Integer coupon_refund_count) {
+        this.coupon_refund_count = coupon_refund_count;
     }
 
-    public String getTransactionId() {
-        return transactionId;
+    public String getCoupon_refund_id() {
+        return coupon_refund_id;
     }
 
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public String getOutTradeNo() {
-        return outTradeNo;
-    }
-
-    public void setOutTradeNo(String outTradeNo) {
-        this.outTradeNo = outTradeNo;
-    }
-
-    public String getOutRefundNo() {
-        return outRefundNo;
-    }
-
-    public void setOutRefundNo(String outRefundNo) {
-        this.outRefundNo = outRefundNo;
-    }
-
-    public String getRefundId() {
-        return refundId;
-    }
-
-    public void setRefundId(String refundId) {
-        this.refundId = refundId;
-    }
-
-    public String getRefundChannel() {
-        return refundChannel;
-    }
-
-    public void setRefundChannel(String refundChannel) {
-        this.refundChannel = refundChannel;
-    }
-
-    public Integer getRefundFee() {
-        return refundFee;
-    }
-
-    public void setRefundFee(Integer refundFee) {
-        this.refundFee = refundFee;
-    }
-
-    public Integer getTotalFee() {
-        return totalFee;
-    }
-
-    public void setTotalFee(Integer totalFee) {
-        this.totalFee = totalFee;
-    }
-
-    public String getFeeType() {
-        return feeType;
-    }
-
-    public void setFeeType(String feeType) {
-        this.feeType = feeType;
-    }
-
-    public Integer getCashFee() {
-        return cashFee;
-    }
-
-    public void setCashFee(Integer cashFee) {
-        this.cashFee = cashFee;
-    }
-
-    public Integer getCashRefundFee() {
-        return cashRefundFee;
-    }
-
-    public void setCashRefundFee(Integer cashRefundFee) {
-        this.cashRefundFee = cashRefundFee;
-    }
-
-    public Integer getCouponRefundFee() {
-        return couponRefundFee;
-    }
-
-    public void setCouponRefundFee(Integer couponRefundFee) {
-        this.couponRefundFee = couponRefundFee;
-    }
-
-    public Integer getCouponRefundCount() {
-        return couponRefundCount;
-    }
-
-    public void setCouponRefundCount(Integer couponRefundCount) {
-        this.couponRefundCount = couponRefundCount;
-    }
-
-    public String getCouponRefundId() {
-        return couponRefundId;
-    }
-
-    public void setCouponRefundId(String couponRefundId) {
-        this.couponRefundId = couponRefundId;
+    public void setCoupon_refund_id(String coupon_refund_id) {
+        this.coupon_refund_id = coupon_refund_id;
     }
 }

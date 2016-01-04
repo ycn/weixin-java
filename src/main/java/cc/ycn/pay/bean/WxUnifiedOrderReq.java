@@ -2,10 +2,7 @@ package cc.ycn.pay.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
-import java.io.Serializable;
 
 /**
  * Created by andy on 12/31/15.
@@ -13,142 +10,44 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "xml")
-public class WxUnifiedOrderReq implements Serializable {
-
-    /* common */
-    @JacksonXmlProperty(localName = "appid")
-    private String appId;
-
-    @JacksonXmlProperty(localName = "mch_id")
-    private String mchId;
-
-    @JacksonXmlProperty(localName = "sub_appid")
-    private String subAppId;
-
-    @JacksonXmlProperty(localName = "sub_mch_id")
-    private String subMchId;
-
-    @JacksonXmlProperty(localName = "device_info")
-    private String deviceInfo;
-
-    @JacksonXmlProperty(localName = "nonce_str")
-    private String nonceStr;
-
-    private String sign;
+public class WxUnifiedOrderReq extends WxPayBaseReq {
 
     /* private */
-    private String body;
+    protected String body;
 
-    private String detail;
+    protected String detail;
 
-    private String attach;
+    protected String attach;
 
-    @JacksonXmlProperty(localName = "out_trade_no")
-    private String outTradeNo;
+    protected String out_trade_no;
 
-    @JacksonXmlProperty(localName = "fee_type")
-    private String feeType;
+    protected String fee_type;
 
-    @JacksonXmlProperty(localName = "total_fee")
-    private Integer totalFee;
+    protected Integer total_fee;
 
-    @JacksonXmlProperty(localName = "spbill_create_ip")
-    private String spBillCreateIp;
+    protected String spbill_create_ip;
 
-    @JacksonXmlProperty(localName = "time_start")
-    private String timeStart;
+    protected String time_start;
 
-    @JacksonXmlProperty(localName = "time_expire")
-    private String timeExpire;
+    protected String time_expire;
 
-    @JacksonXmlProperty(localName = "goods_tag")
-    private String goodsTag;
+    protected String goods_tag;
 
-    @JacksonXmlProperty(localName = "notify_url")
-    private String notifyUrl;
+    protected String notify_url;
 
-    @JacksonXmlProperty(localName = "trade_type")
-    private String tradeType;
+    protected String trade_type;
 
-    @JacksonXmlProperty(localName = "product_id")
-    private String productId;
+    protected String product_id;
 
-    @JacksonXmlProperty(localName = "limit_pay")
-    private String limitPay;
+    protected String limit_pay;
 
-    @JacksonXmlProperty(localName = "openid")
-    private String openId;
+    protected String openid;
 
-    @JacksonXmlProperty(localName = "sub_openid")
-    private String subOpenId;
+    protected String sub_openid;
 
 
     public WxUnifiedOrderReq() {
 
-    }
-
-    public String getSubOpenId() {
-        return subOpenId;
-    }
-
-    public void setSubOpenId(String subOpenId) {
-        this.subOpenId = subOpenId;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public String getMchId() {
-        return mchId;
-    }
-
-    public void setMchId(String mchId) {
-        this.mchId = mchId;
-    }
-
-    public String getSubAppId() {
-        return subAppId;
-    }
-
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
-    }
-
-    public String getSubMchId() {
-        return subMchId;
-    }
-
-    public void setSubMchId(String subMchId) {
-        this.subMchId = subMchId;
-    }
-
-    public String getDeviceInfo() {
-        return deviceInfo;
-    }
-
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
-    }
-
-    public String getNonceStr() {
-        return nonceStr;
-    }
-
-    public void setNonceStr(String nonceStr) {
-        this.nonceStr = nonceStr;
-    }
-
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
     }
 
     public String getBody() {
@@ -175,99 +74,107 @@ public class WxUnifiedOrderReq implements Serializable {
         this.attach = attach;
     }
 
-    public String getOutTradeNo() {
-        return outTradeNo;
+    public String getOut_trade_no() {
+        return out_trade_no;
     }
 
-    public void setOutTradeNo(String outTradeNo) {
-        this.outTradeNo = outTradeNo;
+    public void setOut_trade_no(String out_trade_no) {
+        this.out_trade_no = out_trade_no;
     }
 
-    public String getFeeType() {
-        return feeType;
+    public String getFee_type() {
+        return fee_type;
     }
 
-    public void setFeeType(String feeType) {
-        this.feeType = feeType;
+    public void setFee_type(String fee_type) {
+        this.fee_type = fee_type;
     }
 
-    public Integer getTotalFee() {
-        return totalFee;
+    public Integer getTotal_fee() {
+        return total_fee;
     }
 
-    public void setTotalFee(Integer totalFee) {
-        this.totalFee = totalFee;
+    public void setTotal_fee(Integer total_fee) {
+        this.total_fee = total_fee;
     }
 
-    public String getSpBillCreateIp() {
-        return spBillCreateIp;
+    public String getSpbill_create_ip() {
+        return spbill_create_ip;
     }
 
-    public void setSpBillCreateIp(String spBillCreateIp) {
-        this.spBillCreateIp = spBillCreateIp;
+    public void setSpbill_create_ip(String spbill_create_ip) {
+        this.spbill_create_ip = spbill_create_ip;
     }
 
-    public String getTimeStart() {
-        return timeStart;
+    public String getTime_start() {
+        return time_start;
     }
 
-    public void setTimeStart(String timeStart) {
-        this.timeStart = timeStart;
+    public void setTime_start(String time_start) {
+        this.time_start = time_start;
     }
 
-    public String getTimeExpire() {
-        return timeExpire;
+    public String getTime_expire() {
+        return time_expire;
     }
 
-    public void setTimeExpire(String timeExpire) {
-        this.timeExpire = timeExpire;
+    public void setTime_expire(String time_expire) {
+        this.time_expire = time_expire;
     }
 
-    public String getGoodsTag() {
-        return goodsTag;
+    public String getGoods_tag() {
+        return goods_tag;
     }
 
-    public void setGoodsTag(String goodsTag) {
-        this.goodsTag = goodsTag;
+    public void setGoods_tag(String goods_tag) {
+        this.goods_tag = goods_tag;
     }
 
-    public String getNotifyUrl() {
-        return notifyUrl;
+    public String getNotify_url() {
+        return notify_url;
     }
 
-    public void setNotifyUrl(String notifyUrl) {
-        this.notifyUrl = notifyUrl;
+    public void setNotify_url(String notify_url) {
+        this.notify_url = notify_url;
     }
 
-    public String getTradeType() {
-        return tradeType;
+    public String getTrade_type() {
+        return trade_type;
     }
 
-    public void setTradeType(String tradeType) {
-        this.tradeType = tradeType;
+    public void setTrade_type(String trade_type) {
+        this.trade_type = trade_type;
     }
 
-    public String getLimitPay() {
-        return limitPay;
+    public String getProduct_id() {
+        return product_id;
     }
 
-    public void setLimitPay(String limitPay) {
-        this.limitPay = limitPay;
+    public void setProduct_id(String product_id) {
+        this.product_id = product_id;
     }
 
-    public String getOpenId() {
-        return openId;
+    public String getLimit_pay() {
+        return limit_pay;
     }
 
-    public void setOpenId(String openId) {
-        this.openId = openId;
+    public void setLimit_pay(String limit_pay) {
+        this.limit_pay = limit_pay;
     }
 
-    public String getProductId() {
-        return productId;
+    public String getOpenid() {
+        return openid;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
+    public String getSub_openid() {
+        return sub_openid;
+    }
+
+    public void setSub_openid(String sub_openid) {
+        this.sub_openid = sub_openid;
     }
 }

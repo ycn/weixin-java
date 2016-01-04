@@ -68,6 +68,7 @@ public class WxAccessTokenCache extends ExpireCache<String> {
                 oldToken = "";
 
             String token = getFromStore(appId);
+            log.info("{} reload success! (readonly) appId:{}, use newAccessToken:{}, oldAccessToken:{}", LOG_TAG, appId, token, oldToken);
             return token == null ? oldToken : token;
         }
 
@@ -83,7 +84,7 @@ public class WxAccessTokenCache extends ExpireCache<String> {
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
             WxConfig config = wxConfigCache == null ? null : wxConfigCache.get(appId);
             if (config == null) {
-                log.warn("{} missing config, appId:{}, use oldToken:{}", LOG_TAG, appId, oldToken);
+                log.warn("{} missing config. appId:{}, use oldAccessToken:{}", LOG_TAG, appId, oldToken);
                 return oldToken;
             }
 
@@ -92,7 +93,7 @@ public class WxAccessTokenCache extends ExpireCache<String> {
             if (config.isAuthorizer()) {
                 String refreshToken = refreshTokenCache.get(appId);
                 if (refreshToken == null || refreshToken.isEmpty()) {
-                    log.warn("{} missing refreshToken, appId:{}, use oldToken:{}", LOG_TAG, appId, oldToken);
+                    log.warn("{} missing refreshToken. appId:{}, use oldAccessToken:{}", LOG_TAG, appId, oldToken);
                     return oldToken;
                 }
             }
@@ -107,10 +108,8 @@ public class WxAccessTokenCache extends ExpireCache<String> {
 
                     switch (config.getType()) {
                         case MP:
-                            if (!config.isAuthorizer()) {
-                                WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
-                                wxMpService.verifyAccessToken(token);
-                            }
+                            WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
+                            wxMpService.verifyAccessToken(token);
                             break;
                         case CP:
                             WxCpServiceImpl wxCpService = new WxCpServiceImpl(appId);
@@ -125,11 +124,11 @@ public class WxAccessTokenCache extends ExpireCache<String> {
                     }
 
                     // 有效继续使用
-                    log.info("{} use oldToken: {}", LOG_TAG, token);
+                    log.info("{} appId:{}, reuse oldAccessToken:{}", LOG_TAG, appId, token);
                     return token;
 
                 } catch (WxErrorException e) {
-                    log.warn("{} token invalid: {}, {}", LOG_TAG, token, e.getError());
+                    log.warn("{} appId:{}, invalid oldAccessToken:{}, error:{}", LOG_TAG, appId, token, e.getError());
                 }
             }
 
@@ -164,17 +163,20 @@ public class WxAccessTokenCache extends ExpireCache<String> {
                 }
 
             } catch (WxErrorException e) {
-                log.warn("{} request error: {}", LOG_TAG, e.getError());
+                log.warn("{} request error:{}, appId:{}, use oldAccessToken:{}", LOG_TAG, e.getError(), appId, oldToken);
                 return oldToken;
             }
 
-            if (accessToken == null || accessToken.getAccessToken() == null || accessToken.getAccessToken().isEmpty())
+            if (accessToken == null || accessToken.getAccessToken() == null || accessToken.getAccessToken().isEmpty()) {
+                log.warn("{} empty resp, appId:{}, use oldAccessToken:{}", LOG_TAG, appId, oldToken);
                 return oldToken;
+            }
 
             token = accessToken.getAccessToken();
 
             setToStore(appId, token, accessToken.getExpiresIn());
 
+            log.info("{} reload success! appId:{}, use newAccessToken:{}, oldAccessToken:{}", LOG_TAG, appId, token, oldToken);
             return token;
         }
     }

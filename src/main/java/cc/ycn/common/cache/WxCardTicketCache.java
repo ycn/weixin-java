@@ -65,6 +65,7 @@ public class WxCardTicketCache extends ExpireCache<String> {
                 oldTicket = "";
 
             String ticket = getFromStore(appId);
+            log.info("{} reload success! (readonly) appId:{}, use newCardTicket:{}, oldCardTicket:{}", LOG_TAG, appId, ticket, oldTicket);
             return ticket == null ? oldTicket : ticket;
         }
 
@@ -79,21 +80,25 @@ public class WxCardTicketCache extends ExpireCache<String> {
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
             WxConfig config = wxConfigCache == null ? null : wxConfigCache.get(appId);
-            if (config == null)
+            if (config == null) {
+                log.warn("{} missing config. appId:{}, use oldCardTicket:{}", LOG_TAG, appId, oldTicket);
                 return oldTicket;
+            }
 
             // 检查AccessToken
             WxAccessTokenCache wxAccessTokenCache = WxAccessTokenCache.getInstance();
             String accessToken = wxAccessTokenCache == null ? null : wxAccessTokenCache.get(appId);
-            if (accessToken == null)
+            if (accessToken == null) {
+                log.warn("{} missing AccessToken. appId:{}, use oldCardTicket:{}", LOG_TAG, appId, oldTicket);
                 return oldTicket;
+            }
 
             // ticket还未过期
             String ticket = getFromStore(appId);
 
             if (ticket != null && !ticket.isEmpty()) {
                 // 有效继续使用
-                log.info("{} use oldTicket: {}", LOG_TAG, ticket);
+                log.info("{} appId:{}, reuse oldCardTicket:{}", LOG_TAG, appId, ticket);
                 return ticket;
             }
 
@@ -112,17 +117,20 @@ public class WxCardTicketCache extends ExpireCache<String> {
                 }
 
             } catch (WxErrorException e) {
-                log.warn("{} request error: {}", LOG_TAG, e.getError());
+                log.warn("{} request error:{}, appId:{}, use oldCardTicket:{}", LOG_TAG, e.getError(), appId, oldTicket);
                 return oldTicket;
             }
 
-            if (cardTicket == null || cardTicket.getTicket() == null || cardTicket.getTicket().isEmpty())
+            if (cardTicket == null || cardTicket.getTicket() == null || cardTicket.getTicket().isEmpty()) {
+                log.warn("{} empty resp, appId:{}, use oldCardTicket:{}", LOG_TAG, appId, oldTicket);
                 return oldTicket;
+            }
 
             ticket = cardTicket.getTicket();
 
             setToStore(appId, ticket, cardTicket.getExpiresIn());
 
+            log.info("{} reload success! appId:{}, use newCardTicket:{}, oldCardTicket:{}", LOG_TAG, appId, ticket, oldTicket);
             return ticket;
         }
     }

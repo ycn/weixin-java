@@ -2,10 +2,7 @@ package cc.ycn.pay.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-
-import java.io.Serializable;
 
 /**
  * Created by andy on 12/31/15.
@@ -13,165 +10,81 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "xml")
-public class WxRefundReq implements Serializable {
+public class WxRefundReq extends WxPayBaseReq {
 
-    /* common */
-    @JacksonXmlProperty(localName = "appid")
-    private String appId;
-
-    @JacksonXmlProperty(localName = "mch_id")
-    private String mchId;
-
-    @JacksonXmlProperty(localName = "sub_appid")
-    private String subAppId;
-
-    @JacksonXmlProperty(localName = "sub_mch_id")
-    private String subMchId;
-
-    @JacksonXmlProperty(localName = "device_info")
-    private String deviceInfo;
-
-    @JacksonXmlProperty(localName = "nonce_str")
-    private String nonceStr;
-
-    private String sign;
-    
     /* private */
-    @JacksonXmlProperty(localName = "transaction_id")
-    private String transactionId;
+    protected String transaction_id;
 
-    @JacksonXmlProperty(localName = "out_trade_no")
-    private String outTradeNo;
+    protected String out_trade_no;
 
-    @JacksonXmlProperty(localName = "out_refund_no")
-    private String outRefundNo;
+    protected String out_refund_no;
 
-    @JacksonXmlProperty(localName = "total_fee")
-    private Integer totalFee;
+    protected Integer total_fee;
 
-    @JacksonXmlProperty(localName = "refund_fee")
-    private Integer refundFee;
+    protected Integer refund_fee;
 
-    @JacksonXmlProperty(localName = "refund_fee_type")
-    private String refundFeeType;
+    protected String refund_fee_type;
 
-    @JacksonXmlProperty(localName = "op_user_id")
-    private String opUserId;
+    protected String op_user_id;
 
 
     public WxRefundReq() {
 
     }
 
-    public String getAppId() {
-        return appId;
+    public String getTransaction_id() {
+        return transaction_id;
     }
 
-    public void setAppId(String appId) {
-        this.appId = appId;
+    public void setTransaction_id(String transaction_id) {
+        this.transaction_id = transaction_id;
     }
 
-    public String getMchId() {
-        return mchId;
+    public String getOut_trade_no() {
+        return out_trade_no;
     }
 
-    public void setMchId(String mchId) {
-        this.mchId = mchId;
+    public void setOut_trade_no(String out_trade_no) {
+        this.out_trade_no = out_trade_no;
     }
 
-    public String getSubAppId() {
-        return subAppId;
+    public String getOut_refund_no() {
+        return out_refund_no;
     }
 
-    public void setSubAppId(String subAppId) {
-        this.subAppId = subAppId;
+    public void setOut_refund_no(String out_refund_no) {
+        this.out_refund_no = out_refund_no;
     }
 
-    public String getSubMchId() {
-        return subMchId;
+    public Integer getTotal_fee() {
+        return total_fee;
     }
 
-    public void setSubMchId(String subMchId) {
-        this.subMchId = subMchId;
+    public void setTotal_fee(Integer total_fee) {
+        this.total_fee = total_fee;
     }
 
-    public String getDeviceInfo() {
-        return deviceInfo;
+    public Integer getRefund_fee() {
+        return refund_fee;
     }
 
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
+    public void setRefund_fee(Integer refund_fee) {
+        this.refund_fee = refund_fee;
     }
 
-    public String getNonceStr() {
-        return nonceStr;
+    public String getRefund_fee_type() {
+        return refund_fee_type;
     }
 
-    public void setNonceStr(String nonceStr) {
-        this.nonceStr = nonceStr;
+    public void setRefund_fee_type(String refund_fee_type) {
+        this.refund_fee_type = refund_fee_type;
     }
 
-    public String getSign() {
-        return sign;
+    public String getOp_user_id() {
+        return op_user_id;
     }
 
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public String getOutTradeNo() {
-        return outTradeNo;
-    }
-
-    public void setOutTradeNo(String outTradeNo) {
-        this.outTradeNo = outTradeNo;
-    }
-
-    public String getOutRefundNo() {
-        return outRefundNo;
-    }
-
-    public void setOutRefundNo(String outRefundNo) {
-        this.outRefundNo = outRefundNo;
-    }
-
-    public Integer getTotalFee() {
-        return totalFee;
-    }
-
-    public void setTotalFee(Integer totalFee) {
-        this.totalFee = totalFee;
-    }
-
-    public Integer getRefundFee() {
-        return refundFee;
-    }
-
-    public void setRefundFee(Integer refundFee) {
-        this.refundFee = refundFee;
-    }
-
-    public String getRefundFeeType() {
-        return refundFeeType;
-    }
-
-    public void setRefundFeeType(String refundFeeType) {
-        this.refundFeeType = refundFeeType;
-    }
-
-    public String getOpUserId() {
-        return opUserId;
-    }
-
-    public void setOpUserId(String opUserId) {
-        this.opUserId = opUserId;
+    public void setOp_user_id(String op_user_id) {
+        this.op_user_id = op_user_id;
     }
 }

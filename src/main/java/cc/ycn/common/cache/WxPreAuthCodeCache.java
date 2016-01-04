@@ -65,6 +65,7 @@ public class WxPreAuthCodeCache extends ExpireCache<String> {
                 oldCode = "";
 
             String code = getFromStore(appId);
+            log.info("{} reload success! (readonly) appId:{}, use newPreAuthCode:{}, oldPreAuthCode:{}", LOG_TAG, appId, code, oldCode);
             return code == null ? oldCode : code;
         }
 
@@ -79,21 +80,25 @@ public class WxPreAuthCodeCache extends ExpireCache<String> {
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
             WxConfig config = wxConfigCache == null ? null : wxConfigCache.get(appId);
-            if (config == null)
+            if (config == null) {
+                log.warn("{} missing config. appId:{}, use oldPreAuthCode:{}", LOG_TAG, appId, oldCode);
                 return oldCode;
+            }
 
             // 检查AccessToken
             WxAccessTokenCache wxAccessTokenCache = WxAccessTokenCache.getInstance();
             String accessToken = wxAccessTokenCache == null ? null : wxAccessTokenCache.get(appId);
-            if (accessToken == null)
+            if (accessToken == null) {
+                log.warn("{} missing AccessToken. appId:{}, use oldPreAuthCode:{}", LOG_TAG, appId, oldCode);
                 return oldCode;
+            }
 
             // code还未过期
             String code = getFromStore(appId);
 
             if (code != null && !code.isEmpty()) {
                 // 有效继续使用
-                log.info("{} use oldCode: {}", LOG_TAG, code);
+                log.info("{} appId:{}, reuse oldPreAuthCode:{}", LOG_TAG, appId, code);
                 return code;
             }
 
@@ -113,17 +118,20 @@ public class WxPreAuthCodeCache extends ExpireCache<String> {
                 }
 
             } catch (WxErrorException e) {
-                log.warn("{} request error: {}", LOG_TAG, e.getError());
+                log.warn("{} request error:{}, appId:{}, use oldPreAuthCode:{}", LOG_TAG, e.getError(), appId, oldCode);
                 return oldCode;
             }
 
-            if (preAuthCode == null || preAuthCode.getPreAuthCode() == null || preAuthCode.getPreAuthCode().isEmpty())
+            if (preAuthCode == null || preAuthCode.getPreAuthCode() == null || preAuthCode.getPreAuthCode().isEmpty()) {
+                log.warn("{} empty resp, appId:{}, use oldPreAuthCode:{}", LOG_TAG, appId, oldCode);
                 return oldCode;
+            }
 
             code = preAuthCode.getPreAuthCode();
 
             setToStore(appId, code, preAuthCode.getExpiresIn());
 
+            log.info("{} reload success! appId:{}, use newPreAuthCode:{}, oldPreAuthCode:{}", LOG_TAG, appId, code, oldCode);
             return code;
         }
     }

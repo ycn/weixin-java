@@ -66,6 +66,7 @@ public class WxJSTicketCache extends ExpireCache<String> {
                 oldTicket = "";
 
             String ticket = getFromStore(appId);
+            log.info("{} reload success! (readonly) appId:{}, use newJSTicket:{}, oldJSTicket:{}", LOG_TAG, appId, ticket, oldTicket);
             return ticket == null ? oldTicket : ticket;
         }
 
@@ -80,21 +81,25 @@ public class WxJSTicketCache extends ExpireCache<String> {
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
             WxConfig config = wxConfigCache == null ? null : wxConfigCache.get(appId);
-            if (config == null)
+            if (config == null) {
+                log.warn("{} missing config. appId:{}, use oldJSTicket:{}", LOG_TAG, appId, oldTicket);
                 return oldTicket;
+            }
 
             // 检查AccessToken
             WxAccessTokenCache wxAccessTokenCache = WxAccessTokenCache.getInstance();
             String accessToken = wxAccessTokenCache == null ? null : wxAccessTokenCache.get(appId);
-            if (accessToken == null)
+            if (accessToken == null) {
+                log.warn("{} missing AccessToken. appId:{}, use oldJSTicket:{}", LOG_TAG, appId, oldTicket);
                 return oldTicket;
+            }
 
             // ticket还未过期
             String ticket = getFromStore(appId);
 
             if (ticket != null && !ticket.isEmpty()) {
                 // 有效继续使用
-                log.info("{} use oldTicket: {}", LOG_TAG, ticket);
+                log.info("{} appId:{}, reuse oldJSTicket:{}", LOG_TAG, appId, ticket);
                 return ticket;
             }
 
@@ -117,17 +122,20 @@ public class WxJSTicketCache extends ExpireCache<String> {
                 }
 
             } catch (WxErrorException e) {
-                log.warn("{} request error: {}", LOG_TAG, e.getError());
+                log.warn("{} request error:{}, appId:{}, use oldJSTicket:{}", LOG_TAG, e.getError(), appId, oldTicket);
                 return oldTicket;
             }
 
-            if (jsTicket == null || jsTicket.getTicket() == null || jsTicket.getTicket().isEmpty())
+            if (jsTicket == null || jsTicket.getTicket() == null || jsTicket.getTicket().isEmpty()) {
+                log.warn("{} empty resp, appId:{}, use oldJSTicket:{}", LOG_TAG, appId, oldTicket);
                 return oldTicket;
+            }
 
             ticket = jsTicket.getTicket();
 
             setToStore(appId, ticket, jsTicket.getExpiresIn());
 
+            log.info("{} reload success! appId:{}, use newJSTicket:{}, oldJSTicket:{}", LOG_TAG, appId, ticket, oldTicket);
             return ticket;
         }
     }

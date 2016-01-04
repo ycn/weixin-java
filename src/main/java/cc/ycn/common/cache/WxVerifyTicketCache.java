@@ -61,6 +61,7 @@ public class WxVerifyTicketCache extends PersistenceCache<String> {
                 oldTicket = "";
 
             String ticket = getFromStore(appId);
+            log.info("{} reload success! (readonly) appId:{}, use newVerifyTicket:{}, oldVerifyTicket:{}", LOG_TAG, appId, ticket, oldTicket);
             return ticket == null ? oldTicket : ticket;
         }
 
@@ -73,6 +74,7 @@ public class WxVerifyTicketCache extends PersistenceCache<String> {
                 oldTicket = "";
 
             String ticket = getFromStore(appId);
+            log.info("{} reload success! appId:{}, use newVerifyTicket:{}, oldVerifyTicket:{}", LOG_TAG, appId, ticket, oldTicket);
             return ticket == null ? oldTicket : ticket;
         }
     }

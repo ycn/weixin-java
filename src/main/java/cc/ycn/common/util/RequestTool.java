@@ -121,7 +121,7 @@ public class RequestTool {
 
                             log.error("{} WXERR-{} http_code:{}, req:{} body:{}",
                                     tag, reqSign, response.code(), bodyStr, respBody);
-                            
+
                             throw new WxErrorException(new WxError(1002, "get errmsg:" + subTag));
                         }
                         break;
