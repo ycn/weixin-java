@@ -8,12 +8,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.io.Serializable;
 
 /**
- * Created by andy on 12/31/15.
+ * Created by andy on 1/4/16.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "xml")
-public class WxUnifiedOrderResp implements Serializable {
+public class WxCloseResp implements Serializable {
 
     /* common */
     @JacksonXmlProperty(localName = "return_code")
@@ -51,18 +51,8 @@ public class WxUnifiedOrderResp implements Serializable {
     @JacksonXmlProperty(localName = "err_code_des")
     private String errCodeDes;
 
-    /* private */
-    @JacksonXmlProperty(localName = "trade_type")
-    private String tradeType;
 
-    @JacksonXmlProperty(localName = "prepay_id")
-    private String prepayId;
-
-    @JacksonXmlProperty(localName = "code_url")
-    private String codeUrl;
-
-
-    public WxUnifiedOrderResp() {
+    public WxCloseResp() {
 
     }
 
@@ -114,14 +104,6 @@ public class WxUnifiedOrderResp implements Serializable {
         this.subMchId = subMchId;
     }
 
-    public String getDeviceInfo() {
-        return deviceInfo;
-    }
-
-    public void setDeviceInfo(String deviceInfo) {
-        this.deviceInfo = deviceInfo;
-    }
-
     public String getNonceStr() {
         return nonceStr;
     }
@@ -136,14 +118,6 @@ public class WxUnifiedOrderResp implements Serializable {
 
     public void setSign(String sign) {
         this.sign = sign;
-    }
-
-    public String getResultCode() {
-        return resultCode;
-    }
-
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
     }
 
     public String getErrCode() {
@@ -162,27 +136,19 @@ public class WxUnifiedOrderResp implements Serializable {
         this.errCodeDes = errCodeDes;
     }
 
-    public String getTradeType() {
-        return tradeType;
+    public String getDeviceInfo() {
+        return deviceInfo;
     }
 
-    public void setTradeType(String tradeType) {
-        this.tradeType = tradeType;
+    public void setDeviceInfo(String deviceInfo) {
+        this.deviceInfo = deviceInfo;
     }
 
-    public String getPrepayId() {
-        return prepayId;
+    public String getResultCode() {
+        return resultCode;
     }
 
-    public void setPrepayId(String prepayId) {
-        this.prepayId = prepayId;
-    }
-
-    public String getCodeUrl() {
-        return codeUrl;
-    }
-
-    public void setCodeUrl(String codeUrl) {
-        this.codeUrl = codeUrl;
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
     }
 }

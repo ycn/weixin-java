@@ -15,6 +15,7 @@ import java.io.Serializable;
 @JacksonXmlRootElement(localName = "xml")
 public class WxUnifiedOrderReq implements Serializable {
 
+    /* common */
     @JacksonXmlProperty(localName = "appid")
     private String appId;
 
@@ -35,6 +36,7 @@ public class WxUnifiedOrderReq implements Serializable {
 
     private String sign;
 
+    /* private */
     private String body;
 
     private String detail;
@@ -69,7 +71,7 @@ public class WxUnifiedOrderReq implements Serializable {
     private String tradeType;
 
     @JacksonXmlProperty(localName = "product_id")
-    private String product_id;
+    private String productId;
 
     @JacksonXmlProperty(localName = "limit_pay")
     private String limitPay;
@@ -245,14 +247,6 @@ public class WxUnifiedOrderReq implements Serializable {
         this.tradeType = tradeType;
     }
 
-    public String getProduct_id() {
-        return product_id;
-    }
-
-    public void setProduct_id(String product_id) {
-        this.product_id = product_id;
-    }
-
     public String getLimitPay() {
         return limitPay;
     }
@@ -267,5 +261,13 @@ public class WxUnifiedOrderReq implements Serializable {
 
     public void setOpenId(String openId) {
         this.openId = openId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 }

@@ -2,10 +2,7 @@ package cc.ycn.pay;
 
 import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.exception.WxErrorException;
-import cc.ycn.pay.bean.WxRefundReq;
-import cc.ycn.pay.bean.WxRefundResp;
-import cc.ycn.pay.bean.WxUnifiedOrderReq;
-import cc.ycn.pay.bean.WxUnifiedOrderResp;
+import cc.ycn.pay.bean.*;
 
 /**
  * 微信支付Service
@@ -42,4 +39,24 @@ public interface WxPayService {
      * @throws WxErrorException
      */
     WxRefundResp refund(WxRefundReq req) throws WxErrorException;
+
+
+    /**
+     * 关闭订单
+     *
+     * @param req WxCloseReq
+     * @return WxCloseResp
+     * @throws WxErrorException
+     */
+    WxCloseResp close(WxCloseReq req) throws WxErrorException;
+
+
+    /**
+     * 二维码转换短链接
+     *
+     * @param req WxShortUrlReq
+     * @return WxShortUrlResp
+     * @throws WxErrorException
+     */
+    WxShortUrlResp shortUrl(WxShortUrlReq req) throws WxErrorException;
 }

@@ -1,5 +1,6 @@
 package cc.ycn.pay;
 
+import cc.ycn.common.WeixinSignTool;
 import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.cache.WxConfigCache;
@@ -7,12 +8,16 @@ import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.RequestTool;
-import cc.ycn.pay.bean.WxRefundReq;
-import cc.ycn.pay.bean.WxRefundResp;
-import cc.ycn.pay.bean.WxUnifiedOrderReq;
-import cc.ycn.pay.bean.WxUnifiedOrderResp;
+import cc.ycn.pay.bean.*;
 import com.squareup.okhttp.OkHttpClient;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
+import java.io.InputStream;
+import java.security.KeyStore;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WxPayServiceImpl implements WxPayService {
 
+    private final static Logger log = LoggerFactory.getLogger(WxPayServiceImpl.class);
     private final static String LOG_TAG = "[WxPayService]";
 
     private String appId;
@@ -42,6 +48,35 @@ public class WxPayServiceImpl implements WxPayService {
         httpClient.setReadTimeout(WxConstant.WX_READ_TIMEOUT, TimeUnit.SECONDS);
         httpClient.setWriteTimeout(WxConstant.WX_WRITE_TIMEOUT, TimeUnit.SECONDS);
 
+        String mchId = this.config.getMchId();
+
+        try {
+            KeyStore keyStore = KeyStore.getInstance("PKCS12");
+            InputStream stream = ClassLoader.getSystemResourceAsStream(mchId + ".p12");
+            try {
+                keyStore.load(stream, mchId.toCharArray());
+            } finally {
+                if (stream != null)
+                    stream.close();
+            }
+
+            // Trust own CA and all self-signed certs
+            SSLContext sslcontext = SSLContexts.custom()
+                    .loadKeyMaterial(keyStore, mchId.toCharArray())
+                    .build();
+            // Allow TLSv1 protocol only
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                    sslcontext,
+                    new String[]{"TLSv1"},
+                    null,
+                    SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+
+            httpClient.setSslSocketFactory(sslcontext.getSocketFactory());
+
+        } catch (Exception e) {
+            throw new WxErrorException(new WxError(1001, "ssl config failed:" + appId + ", check your " + mchId + ".p12"));
+        }
+
         requestTool = new RequestTool(LOG_TAG, httpClient);
     }
 
@@ -57,6 +92,10 @@ public class WxPayServiceImpl implements WxPayService {
 
         req.setAppId(appId);
         req.setMchId(config.getMchId());
+
+        // 签名
+        String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
+        req.setSign(sign);
 
         String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
@@ -74,8 +113,12 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-//        req.setAppId(appId);
-//        req.setMchId(config.getMchId());
+        req.setAppId(appId);
+        req.setMchId(config.getMchId());
+
+        // 签名
+        String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
+        req.setSign(sign);
 
         String url = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
@@ -83,6 +126,52 @@ public class WxPayServiceImpl implements WxPayService {
                 "refund",
                 url,
                 WxRefundResp.class,
+                ContentType.MEDIA_XML,
+                req
+        );
+    }
+
+    @Override
+    public WxCloseResp close(WxCloseReq req) throws WxErrorException {
+        if (req == null)
+            throw new WxErrorException(new WxError(1004, "null req"));
+
+        req.setAppId(appId);
+        req.setMchId(config.getMchId());
+
+        // 签名
+        String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
+        req.setSign(sign);
+
+        String url = "https://api.mch.weixin.qq.com/pay/closeorder";
+
+        return requestTool.post(
+                "close",
+                url,
+                WxCloseResp.class,
+                ContentType.MEDIA_XML,
+                req
+        );
+    }
+
+    @Override
+    public WxShortUrlResp shortUrl(WxShortUrlReq req) throws WxErrorException {
+        if (req == null)
+            throw new WxErrorException(new WxError(1004, "null req"));
+
+        req.setAppId(appId);
+        req.setMchId(config.getMchId());
+
+        // 签名
+        String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
+        req.setSign(sign);
+
+        String url = "https://api.mch.weixin.qq.com/tools/shorturl";
+
+        return requestTool.post(
+                "shortUrl",
+                url,
+                WxShortUrlResp.class,
                 ContentType.MEDIA_XML,
                 req
         );

@@ -14,7 +14,7 @@ public enum WxMsgType {
     NEWS("news"),
     MPNEWS("mpnews"),
     WXCARD("wxcard"),
-    TEMPLATE("template");
+    TEMPLATE(null);
 
     private String info;
 

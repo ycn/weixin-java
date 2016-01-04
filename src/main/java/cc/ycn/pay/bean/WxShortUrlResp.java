@@ -8,12 +8,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import java.io.Serializable;
 
 /**
- * Created by andy on 12/31/15.
+ * Created by andy on 1/4/16.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "xml")
-public class WxUnifiedOrderResp implements Serializable {
+public class WxShortUrlResp implements Serializable {
 
     /* common */
     @JacksonXmlProperty(localName = "return_code")
@@ -52,17 +52,11 @@ public class WxUnifiedOrderResp implements Serializable {
     private String errCodeDes;
 
     /* private */
-    @JacksonXmlProperty(localName = "trade_type")
-    private String tradeType;
-
-    @JacksonXmlProperty(localName = "prepay_id")
-    private String prepayId;
-
-    @JacksonXmlProperty(localName = "code_url")
-    private String codeUrl;
+    @JacksonXmlProperty(localName = "short_url")
+    private String shortUrl;
 
 
-    public WxUnifiedOrderResp() {
+    public WxShortUrlResp() {
 
     }
 
@@ -162,27 +156,11 @@ public class WxUnifiedOrderResp implements Serializable {
         this.errCodeDes = errCodeDes;
     }
 
-    public String getTradeType() {
-        return tradeType;
+    public String getShortUrl() {
+        return shortUrl;
     }
 
-    public void setTradeType(String tradeType) {
-        this.tradeType = tradeType;
-    }
-
-    public String getPrepayId() {
-        return prepayId;
-    }
-
-    public void setPrepayId(String prepayId) {
-        this.prepayId = prepayId;
-    }
-
-    public String getCodeUrl() {
-        return codeUrl;
-    }
-
-    public void setCodeUrl(String codeUrl) {
-        this.codeUrl = codeUrl;
+    public void setShortUrl(String shortUrl) {
+        this.shortUrl = shortUrl;
     }
 }

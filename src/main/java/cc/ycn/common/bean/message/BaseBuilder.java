@@ -47,8 +47,6 @@ public abstract class BaseBuilder<T> {
 
     public WxMessage build() throws WxErrorException {
         WxMsgType type = getType();
-        if (type == null)
-            throw new WxErrorException(new WxError(1004, "missing msgType"));
 
         if (isEmpty(message.toUser) && isEmpty(message.toParty) && isEmpty(message.toTag))
             throw new WxErrorException(new WxError(1004, "missing toUser/toParty/toTag"));

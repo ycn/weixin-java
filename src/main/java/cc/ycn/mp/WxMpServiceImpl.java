@@ -3,7 +3,6 @@ package cc.ycn.mp;
 import cc.ycn.common.bean.*;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
-import cc.ycn.common.bean.message.WxMsgType;
 import cc.ycn.common.cache.WxAccessTokenCache;
 import cc.ycn.common.cache.WxCardTicketCache;
 import cc.ycn.common.cache.WxConfigCache;
@@ -102,7 +101,7 @@ public class WxMpServiceImpl implements WxMpService {
             throw new WxErrorException(new WxError(1004, "invalid message type"));
 
         // 发送模板消息
-        if (WxMsgType.TEMPLATE.info().equals(message.getMsgType())) {
+        if (message.getMsgType() == null) {
             WxError error = null;
             try {
                 WxMsgIdRef idRef = sendTemplateMessage(message);
@@ -132,7 +131,7 @@ public class WxMpServiceImpl implements WxMpService {
 
     @Override
     public WxMsgIdRef sendTemplateMessage(WxMessage message) throws WxErrorException {
-        if (message == null || !WxMsgType.TEMPLATE.info().equals(message.getMsgType()))
+        if (message == null || message.getMsgType() != null)
             throw new WxErrorException(new WxError(1004, "invalid message type"));
 
         String accessToken = getAccessToken();
