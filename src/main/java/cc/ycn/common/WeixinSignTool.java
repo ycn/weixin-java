@@ -7,6 +7,8 @@ import cc.ycn.weixin.aes.WXBizMsgCrypt;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.StandardToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -16,6 +18,9 @@ import java.util.*;
  * @author andy
  */
 public class WeixinSignTool {
+
+    private final static Logger log = LoggerFactory.getLogger(WeixinSignTool.class);
+    private final static String LOG_TAG = "[WeixinSignTool]";
 
     /**
      * 验证推送消息的正确性
@@ -265,7 +270,9 @@ public class WeixinSignTool {
 
         Collections.sort(list);
 
-        return Joiner.on(sep).join(list);
+        String packVal = Joiner.on(sep).join(list);
+        log.info("{} packVal={}", LOG_TAG, packVal);
+        return packVal;
     }
 
     /**
@@ -305,7 +312,9 @@ public class WeixinSignTool {
 
         Collections.sort(list);
 
-        return Joiner.on(sep).join(list);
+        String packVal = Joiner.on(sep).join(list);
+        log.info("{} packVal={}", LOG_TAG, packVal);
+        return packVal;
     }
 
     /**
@@ -346,6 +355,8 @@ public class WeixinSignTool {
 
         Collections.sort(list);
 
-        return Joiner.on(sep).join(list);
+        String packVal = Joiner.on(sep).join(list);
+        log.info("{} packVal={}", LOG_TAG, packVal);
+        return packVal;
     }
 }

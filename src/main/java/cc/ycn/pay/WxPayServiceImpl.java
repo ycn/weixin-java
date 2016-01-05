@@ -1,6 +1,5 @@
 package cc.ycn.pay;
 
-import cc.ycn.common.WeixinSignTool;
 import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.cache.WxConfigCache;
@@ -92,10 +91,7 @@ public class WxPayServiceImpl implements WxPayService {
 
         req.setAppid(appId);
         req.setMch_id(config.getMchId());
-
-        // 签名
-        String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
-        req.setSign(sign);
+        req.setSign(config);
 
         String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
@@ -115,10 +111,7 @@ public class WxPayServiceImpl implements WxPayService {
 
         req.setAppid(appId);
         req.setMch_id(config.getMchId());
-
-        // 签名
-        String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
-        req.setSign(sign);
+        req.setSign(config);
 
         String url = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
@@ -138,10 +131,7 @@ public class WxPayServiceImpl implements WxPayService {
 
         req.setAppid(appId);
         req.setMch_id(config.getMchId());
-
-        // 签名
-        String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
-        req.setSign(sign);
+        req.setSign(config);
 
         String url = "https://api.mch.weixin.qq.com/pay/closeorder";
 
@@ -161,10 +151,7 @@ public class WxPayServiceImpl implements WxPayService {
 
         req.setAppid(appId);
         req.setMch_id(config.getMchId());
-
-        // 签名
-        String sign = WeixinSignTool.createPaySignature(this.config, req, new String[]{"sign"});
-        req.setSign(sign);
+        req.setSign(config);
 
         String url = "https://api.mch.weixin.qq.com/tools/shorturl";
 

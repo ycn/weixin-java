@@ -1,5 +1,8 @@
 package cc.ycn.pay.bean;
 
+import cc.ycn.common.WeixinSignTool;
+import cc.ycn.common.bean.WxConfig;
+
 import java.io.Serializable;
 
 /**
@@ -78,7 +81,8 @@ public abstract class WxPayBaseReq implements Serializable {
         return sign;
     }
 
-    public void setSign(String sign) {
-        this.sign = sign;
+    public void setSign(WxConfig config) {
+        if (config == null) return;
+        this.sign = WeixinSignTool.createPaySignature(config, this, new String[]{"sign"});
     }
 }

@@ -1,5 +1,6 @@
 package cc.ycn.common.util;
 
+import cc.ycn.common.api.WxErrorHandler;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.exception.WxErrorException;
@@ -18,13 +19,21 @@ import java.io.IOException;
 public class RequestTool {
 
     private final static Logger log = LoggerFactory.getLogger(RequestTool.class);
+    private final static int MAX_RETRY = 3;
 
     private final String tag;
     private final OkHttpClient httpClient;
+    private WxErrorHandler errorHandler;
 
     public RequestTool(String tag, OkHttpClient httpClient) {
         this.tag = tag;
         this.httpClient = httpClient;
+    }
+
+    public RequestTool(String tag, OkHttpClient httpClient, WxErrorHandler handler) {
+        this.tag = tag;
+        this.httpClient = httpClient;
+        this.errorHandler = handler;
     }
 
     public <T> T get(String subTag, String url, Class<T> respType) throws WxErrorException {
@@ -98,6 +107,21 @@ public class RequestTool {
         String reqSign = getReqSign(request);
 
 
+        // 递归重试
+        T result = sendRequest(request,
+                subTag, reqSign, respType, contentType,
+                bodyStr, 1);
+
+        return result;
+    }
+
+    private <T> T sendRequest(Request request,
+                              String subTag, String reqSign,
+                              Class<T> respType, ContentType contentType,
+                              String bodyStr, int retry) {
+
+        if (retry < 1) retry = 1;
+
         T result = null;
 
         try {
@@ -119,10 +143,19 @@ public class RequestTool {
                         WxError wxError = JsonConverter.json2pojo(respBody, WxError.class);
                         if (wxError != null && wxError.getErrcode() > 0) {
 
-                            log.error("{} WXERR-{} http_code:{}, req:{} body:{}",
-                                    tag, reqSign, response.code(), bodyStr, respBody);
+                            if (retry < MAX_RETRY && errorHandler != null && errorHandler.shouldRetryOnWxError(wxError)) {
+                                log.info("{} WXRETRY-{} http_code:{}, req:{} body:{} retry:{}",
+                                        tag, reqSign, response.code(), bodyStr, respBody, retry);
 
-                            throw new WxErrorException(new WxError(1002, "get errmsg:" + subTag));
+                                // RETRY
+                                return sendRequest(request, subTag, reqSign, respType, contentType, bodyStr, ++retry);
+
+                            } else {
+                                log.error("{} WXERR-{} http_code:{}, req:{} body:{}",
+                                        tag, reqSign, response.code(), bodyStr, respBody);
+
+                                throw new WxErrorException(new WxError(1002, "get errmsg:" + subTag));
+                            }
                         }
                         break;
                     case MEDIA_XML:
@@ -132,6 +165,7 @@ public class RequestTool {
 
             result = getObject(respBody, contentType, respType, reqSign);
 
+
         } catch (IOException e) {
             log.error("{} EX-{} e:{}", tag, reqSign, e.getMessage());
             throw new WxErrorException(new WxError(1002, "request failed:" + subTag));
@@ -139,7 +173,6 @@ public class RequestTool {
 
         return result;
     }
-
 
     private String getReqSign(Request request) {
         String sign = StringTool.MD5(System.currentTimeMillis() + request.httpUrl().toString(), 16);

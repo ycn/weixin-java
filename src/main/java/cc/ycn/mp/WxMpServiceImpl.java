@@ -1,12 +1,10 @@
 package cc.ycn.mp;
 
+import cc.ycn.common.api.WxErrorHandler;
 import cc.ycn.common.bean.*;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
-import cc.ycn.common.cache.WxAccessTokenCache;
-import cc.ycn.common.cache.WxCardTicketCache;
-import cc.ycn.common.cache.WxConfigCache;
-import cc.ycn.common.cache.WxJSTicketCache;
+import cc.ycn.common.cache.*;
 import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
@@ -14,6 +12,8 @@ import cc.ycn.common.util.RequestTool;
 import cc.ycn.common.util.StringTool;
 import cc.ycn.mp.bean.*;
 import com.squareup.okhttp.OkHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -24,8 +24,9 @@ import java.util.concurrent.TimeUnit;
  *
  * @author andy
  */
-public class WxMpServiceImpl implements WxMpService {
+public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
 
+    private final static Logger log = LoggerFactory.getLogger(WxMpServiceImpl.class);
     private final static String LOG_TAG = "[WxMpService]";
 
     private String appId;
@@ -46,7 +47,7 @@ public class WxMpServiceImpl implements WxMpService {
         httpClient.setReadTimeout(WxConstant.WX_READ_TIMEOUT, TimeUnit.SECONDS);
         httpClient.setWriteTimeout(WxConstant.WX_WRITE_TIMEOUT, TimeUnit.SECONDS);
 
-        requestTool = new RequestTool(LOG_TAG, httpClient);
+        requestTool = new RequestTool(LOG_TAG, httpClient, this);
     }
 
     @Override
@@ -537,4 +538,26 @@ public class WxMpServiceImpl implements WxMpService {
         );
     }
 
+    @Override
+    public boolean shouldRetryOnWxError(WxError error) {
+        if (error == null) return false;
+
+        switch ((int) error.getErrcode()) {
+            // access_token无效
+            case 40001:
+            case 40014:
+            case 41001:
+            case 42001:
+                WxAccessTokenCache.getInstance().refresh(appId);
+                return true;
+            // refresh_token无效
+            case 40030:
+            case 41003:
+            case 42002:
+                WxRefreshTokenCache.getInstance().refresh(appId);
+                return true;
+        }
+
+        return false;
+    }
 }
