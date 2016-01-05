@@ -37,14 +37,14 @@ public class RequestTool {
     }
 
     public <T> T get(String subTag, String url, Class<T> respType) throws WxErrorException {
-        return send(subTag, url, respType, ContentType.URL_PARAM, null);
+        return send(subTag, url, respType, ContentType.URL_PARAM, null, 1);
     }
 
     public <T, D> T post(String subTag, String url, Class<T> respType, ContentType contentType, D reqData) throws WxErrorException {
-        return send(subTag, url, respType, contentType, reqData);
+        return send(subTag, url, respType, contentType, reqData, 1);
     }
 
-    private <T, D> T send(String subTag, String url, Class<T> respType, ContentType contentType, D reqData) throws WxErrorException {
+    private <T, D> T send(String subTag, String url, Class<T> respType, ContentType contentType, D reqData, int retry) throws WxErrorException {
 
         if (subTag == null || subTag.isEmpty()) {
             log.warn("{} ERR_ARG subTag:null", tag);
@@ -72,6 +72,8 @@ public class RequestTool {
                 throw new WxErrorException(new WxError(1003, "request failed:" + subTag));
             }
         }
+
+        if (retry < 1) retry = 1;
 
         // BUILD REQUEST
         Request request = null;
@@ -107,21 +109,6 @@ public class RequestTool {
         String reqSign = getReqSign(request);
 
 
-        // 递归重试
-        T result = sendRequest(request,
-                subTag, reqSign, respType, contentType,
-                bodyStr, 1);
-
-        return result;
-    }
-
-    private <T> T sendRequest(Request request,
-                              String subTag, String reqSign,
-                              Class<T> respType, ContentType contentType,
-                              String bodyStr, int retry) {
-
-        if (retry < 1) retry = 1;
-
         T result = null;
 
         try {
@@ -143,12 +130,13 @@ public class RequestTool {
                         WxError wxError = JsonConverter.json2pojo(respBody, WxError.class);
                         if (wxError != null && wxError.getErrcode() > 0) {
 
-                            if (retry < MAX_RETRY && errorHandler != null && errorHandler.shouldRetryOnWxError(wxError)) {
+                            if (retry <= MAX_RETRY && errorHandler != null && errorHandler.shouldRetryOnWxError(wxError)) {
                                 log.info("{} WXRETRY-{} http_code:{}, req:{} body:{} retry:{}",
                                         tag, reqSign, response.code(), bodyStr, respBody, retry);
 
                                 // RETRY
-                                return sendRequest(request, subTag, reqSign, respType, contentType, bodyStr, ++retry);
+                                String retryUrl = errorHandler.getRetryUrl(url, wxError);
+                                return send(subTag, retryUrl, respType, contentType, reqData, ++retry);
 
                             } else {
                                 log.error("{} WXERR-{} http_code:{}, req:{} body:{}",

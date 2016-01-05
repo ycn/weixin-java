@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
 
 /**
  * 微信企业号Service
@@ -301,5 +302,28 @@ public class WxCpServiceImpl implements WxCpService, WxErrorHandler {
         }
 
         return false;
+    }
+
+    @Override
+    public String getRetryUrl(String url, WxError error) {
+        String retryUrl = url;
+
+        if (error == null) return retryUrl;
+
+        switch ((int) error.getErrcode()) {
+            // access_token无效
+            case 40001:
+            case 40014:
+            case 41001:
+            case 42001:
+                Matcher matcher = WxConstant.ACCESS_TOKEN_PARAM_PATTERN.matcher(url);
+                if (matcher.find()) {
+                    String accessToken = WxAccessTokenCache.getInstance().get(appId);
+                    retryUrl = url.replace(matcher.group(1), accessToken);
+                }
+                break;
+        }
+
+        return retryUrl;
     }
 }

@@ -8,4 +8,6 @@ import cc.ycn.common.bean.WxError;
 public interface WxErrorHandler {
 
     boolean shouldRetryOnWxError(WxError error);
+
+    String getRetryUrl(String url, WxError error);
 }
