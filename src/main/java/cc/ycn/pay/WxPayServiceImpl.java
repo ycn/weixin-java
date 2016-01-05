@@ -89,7 +89,12 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        req.setAppid(appId);
+        if (config.isAuthorizer()) {
+            req.setAppid(config.getComponentAppId());
+            req.setSub_appid(appId);
+        } else {
+            req.setAppid(appId);
+        }
         req.setMch_id(config.getMchId());
         req.setSign(config);
 
@@ -109,7 +114,12 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        req.setAppid(appId);
+        if (config.isAuthorizer()) {
+            req.setAppid(config.getComponentAppId());
+            req.setSub_appid(appId);
+        } else {
+            req.setAppid(appId);
+        }
         req.setMch_id(config.getMchId());
         req.setSign(config);
 
@@ -129,7 +139,12 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        req.setAppid(appId);
+        if (config.isAuthorizer()) {
+            req.setAppid(config.getComponentAppId());
+            req.setSub_appid(appId);
+        } else {
+            req.setAppid(appId);
+        }
         req.setMch_id(config.getMchId());
         req.setSign(config);
 
@@ -149,7 +164,12 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        req.setAppid(appId);
+        if (config.isAuthorizer()) {
+            req.setAppid(config.getComponentAppId());
+            req.setSub_appid(appId);
+        } else {
+            req.setAppid(appId);
+        }
         req.setMch_id(config.getMchId());
         req.setSign(config);
 
