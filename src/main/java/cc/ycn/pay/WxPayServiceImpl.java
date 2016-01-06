@@ -48,7 +48,7 @@ public class WxPayServiceImpl implements WxPayService {
         httpClient.setReadTimeout(WxConstant.WX_READ_TIMEOUT, TimeUnit.SECONDS);
         httpClient.setWriteTimeout(WxConstant.WX_WRITE_TIMEOUT, TimeUnit.SECONDS);
 
-        String mchId = this.config.getMchId();
+        String mchId = config.isAuthorizer() ? config.getComponentMchId() : config.getMchId();
 
         try {
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
