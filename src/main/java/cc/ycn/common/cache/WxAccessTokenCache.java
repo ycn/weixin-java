@@ -102,34 +102,9 @@ public class WxAccessTokenCache extends ExpireCache<String> {
             String token = getFromStore(appId);
 
             if (token != null && !token.isEmpty()) {
-
-                // 测试accessToken是否有效
-                try {
-
-                    switch (config.getType()) {
-                        case MP:
-                            WxMpServiceImpl wxMpService = new WxMpServiceImpl(appId);
-                            wxMpService.verifyAccessToken(token);
-                            break;
-                        case CP:
-                            WxCpServiceImpl wxCpService = new WxCpServiceImpl(appId);
-                            wxCpService.verifyAccessToken(token);
-                            break;
-                        case COMPONENT:
-                            WxComponentServiceImpl wxComponentService = new WxComponentServiceImpl(appId);
-                            wxComponentService.verifyAccessToken(token);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    // 有效继续使用
-                    log.info("{} appId:{}, reuse oldAccessToken:{}", LOG_TAG, appId, token);
-                    return token;
-
-                } catch (WxErrorException e) {
-                    log.warn("{} appId:{}, invalid oldAccessToken:{}, error:{}", LOG_TAG, appId, token, e.getError());
-                }
+                // 有效继续使用
+                log.info("{} appId:{}, reuse oldAccessToken:{}", LOG_TAG, appId, token);
+                return token;
             }
 
             // accessToken已过期

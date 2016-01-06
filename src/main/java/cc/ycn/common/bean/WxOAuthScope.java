@@ -6,7 +6,8 @@ package cc.ycn.common.bean;
 public enum WxOAuthScope {
 
     BASE("snsapi_base"),
-    USER_INFO("snsapi_userinfo");
+    USER_INFO("snsapi_userinfo"),
+    WEB("snsapi_login");
 
     private String info;
 
