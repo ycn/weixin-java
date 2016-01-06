@@ -48,7 +48,7 @@ public class WxPayServiceImpl implements WxPayService {
         httpClient.setReadTimeout(WxConstant.WX_READ_TIMEOUT, TimeUnit.SECONDS);
         httpClient.setWriteTimeout(WxConstant.WX_WRITE_TIMEOUT, TimeUnit.SECONDS);
 
-        String mchId = config.isAuthorizer() ? config.getComponentMchId() : config.getMchId();
+        String mchId = config.isAuthorizer() ? config.getPayMchId() : config.getMchId();
 
         try {
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
@@ -160,8 +160,8 @@ public class WxPayServiceImpl implements WxPayService {
     private void updateSign(WxPayBaseReq req) {
 
         if (config.isAuthorizer()) {
-            req.setAppid(config.getComponentAppId());
-            req.setMch_id(config.getComponentMchId());
+            req.setAppid(config.getPayAppId());
+            req.setMch_id(config.getPayMchId());
             req.setSub_appid(appId);
             if (!StringTool.isEmpty(config.getMchId()))
                 req.setSub_mch_id(config.getMchId());

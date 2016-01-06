@@ -19,13 +19,14 @@ public final class WxConfig implements Serializable {
     private String appId;
     private String appSecret;
     private String mchId;
+    private String payAppId;
+    private String payMchId;
     private String paySecret;
     private String token;
     private String aesKey;
     private String salt;
     // 有componentAppId为第三方代理模式处理
     private String componentAppId;
-    private String componentMchId;
 
     public WxConfig() {
 
@@ -113,11 +114,19 @@ public final class WxConfig implements Serializable {
         this.mchId = mchId;
     }
 
-    public String getComponentMchId() {
-        return componentMchId;
+    public String getPayAppId() {
+        return payAppId;
     }
 
-    public void setComponentMchId(String componentMchId) {
-        this.componentMchId = componentMchId;
+    public void setPayAppId(String payAppId) {
+        this.payAppId = payAppId;
+    }
+
+    public String getPayMchId() {
+        return payMchId;
+    }
+
+    public void setPayMchId(String payMchId) {
+        this.payMchId = payMchId;
     }
 }
