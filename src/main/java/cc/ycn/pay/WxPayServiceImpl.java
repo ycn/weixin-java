@@ -7,6 +7,7 @@ import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.RequestTool;
+import cc.ycn.common.util.StringTool;
 import cc.ycn.pay.bean.*;
 import com.squareup.okhttp.OkHttpClient;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -89,14 +90,7 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        if (config.isAuthorizer()) {
-            req.setAppid(config.getComponentAppId());
-            req.setSub_appid(appId);
-        } else {
-            req.setAppid(appId);
-        }
-        req.setMch_id(config.getMchId());
-        req.setSign(config);
+        updateSign(req);
 
         String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
@@ -114,14 +108,7 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        if (config.isAuthorizer()) {
-            req.setAppid(config.getComponentAppId());
-            req.setSub_appid(appId);
-        } else {
-            req.setAppid(appId);
-        }
-        req.setMch_id(config.getMchId());
-        req.setSign(config);
+        updateSign(req);
 
         String url = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
@@ -139,14 +126,7 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        if (config.isAuthorizer()) {
-            req.setAppid(config.getComponentAppId());
-            req.setSub_appid(appId);
-        } else {
-            req.setAppid(appId);
-        }
-        req.setMch_id(config.getMchId());
-        req.setSign(config);
+        updateSign(req);
 
         String url = "https://api.mch.weixin.qq.com/pay/closeorder";
 
@@ -164,14 +144,7 @@ public class WxPayServiceImpl implements WxPayService {
         if (req == null)
             throw new WxErrorException(new WxError(1004, "null req"));
 
-        if (config.isAuthorizer()) {
-            req.setAppid(config.getComponentAppId());
-            req.setSub_appid(appId);
-        } else {
-            req.setAppid(appId);
-        }
-        req.setMch_id(config.getMchId());
-        req.setSign(config);
+        updateSign(req);
 
         String url = "https://api.mch.weixin.qq.com/tools/shorturl";
 
@@ -182,5 +155,22 @@ public class WxPayServiceImpl implements WxPayService {
                 ContentType.MEDIA_XML,
                 req
         );
+    }
+
+    private void updateSign(WxPayBaseReq req) {
+
+        if (config.isAuthorizer()) {
+            req.setAppid(config.getComponentAppId());
+            req.setMch_id(config.getComponentMchId());
+            req.setSub_appid(appId);
+            if (!StringTool.isEmpty(config.getMchId()))
+                req.setSub_mch_id(config.getMchId());
+        } else {
+            req.setAppid(appId);
+            if (!StringTool.isEmpty(config.getMchId()))
+                req.setMch_id(config.getMchId());
+        }
+
+        req.setSign(config);
     }
 }

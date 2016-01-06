@@ -25,6 +25,7 @@ public final class WxConfig implements Serializable {
     private String salt;
     // 有componentAppId为第三方代理模式处理
     private String componentAppId;
+    private String componentMchId;
 
     public WxConfig() {
 
@@ -110,5 +111,13 @@ public final class WxConfig implements Serializable {
 
     public void setMchId(String mchId) {
         this.mchId = mchId;
+    }
+
+    public String getComponentMchId() {
+        return componentMchId;
+    }
+
+    public void setComponentMchId(String componentMchId) {
+        this.componentMchId = componentMchId;
     }
 }
