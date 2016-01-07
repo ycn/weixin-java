@@ -264,7 +264,7 @@ public class WeixinSignTool {
 
         List<String> list = new ArrayList<String>();
         for (String part : parts) {
-            if (part.contains("<null>")) continue;
+            if (part == null || part.isEmpty() || part.contains("<null>")) continue;
             list.add(part);
         }
 
