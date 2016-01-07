@@ -63,4 +63,8 @@ public final class MathTool {
         BigDecimal bB = new BigDecimal(b);
         return bA.divide(bB, 2, RoundingMode.DOWN);
     }
+
+    public static BigDecimal formattedByScale(int wei,BigDecimal bigDecimal) {
+        return bigDecimal.setScale(wei, BigDecimal.ROUND_UP);
+    }
 }
