@@ -264,7 +264,11 @@ public class WeixinSignTool {
 
         List<String> list = new ArrayList<String>();
         for (String part : parts) {
-            if (part == null || part.isEmpty() || part.contains("<null>")) continue;
+            System.out.println(part);
+            if (part == null
+                    || part.isEmpty()
+                    || part.contains("<null>")
+                    || (part.indexOf("=") == (part.length() - 1))) continue;
             list.add(part);
         }
 
@@ -359,4 +363,5 @@ public class WeixinSignTool {
         log.info("{} packVal={}", LOG_TAG, packVal);
         return packVal;
     }
+
 }
