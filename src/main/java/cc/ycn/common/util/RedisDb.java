@@ -155,7 +155,10 @@ public class RedisDb {
         Map<String, String> result = new HashMap<String, String>();
 
         try {
-            result = safeJedis.hgetAll(key);
+            Map<String, String> map = safeJedis.hgetAll(key);
+            for (String field : map.keySet()) {
+                result.put(field, StringEscapeUtils.unescapeJava(map.get(field)));
+            }
         } catch (JedisException ignore) {
         }
         return result;
@@ -175,10 +178,14 @@ public class RedisDb {
     public String hget(String key, String field) {
         String value = null;
         try {
-            value = safeJedis.hget(key, field);
+            value = StringEscapeUtils.unescapeJava(safeJedis.hget(key, field));
         } catch (JedisException ignore) {
         }
         return value;
+    }
+
+    public long hdel(String key, String field) {
+        return safeJedis.hdel(key, field);
     }
 
     public long dailyIncr(String key) {
