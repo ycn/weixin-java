@@ -65,7 +65,7 @@ public final class MathTool {
     }
 
     public static BigDecimal formattedByScale(int wei,BigDecimal bigDecimal) {
-        if(bigDecimal.compareTo(BigDecimal.ZERO)>1&&bigDecimal.compareTo(new BigDecimal("0.01"))<1)
+        if(bigDecimal.compareTo(BigDecimal.ZERO)==1&&bigDecimal.compareTo(new BigDecimal("0.01"))<1)
             return new BigDecimal("0.01");
         return bigDecimal.setScale(wei, BigDecimal.ROUND_UP);
     }
