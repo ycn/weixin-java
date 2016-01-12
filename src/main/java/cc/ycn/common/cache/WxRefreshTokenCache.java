@@ -57,9 +57,6 @@ public class WxRefreshTokenCache extends PersistenceCache<String> {
             if (appId == null || appId.isEmpty())
                 return null;
 
-            if (oldToken == null)
-                oldToken = "";
-
             String token = getFromStore(appId);
             log.info("{} reload success! (readonly) appId:{}, use newRefreshToken:{}, oldRefreshToken:{}", LOG_TAG, appId, token, oldToken);
             return token == null ? oldToken : token;
@@ -69,9 +66,6 @@ public class WxRefreshTokenCache extends PersistenceCache<String> {
         protected String loadOne(String appId, String oldToken, boolean sync) {
             if (appId == null || appId.isEmpty())
                 return null;
-
-            if (oldToken == null)
-                oldToken = "";
 
             String token = getFromStore(appId);
             log.info("{} reload success! appId:{}, use newRefreshToken:{}, oldRefreshToken:{}", LOG_TAG, appId, token, oldToken);

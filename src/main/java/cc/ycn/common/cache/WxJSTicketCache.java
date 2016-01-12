@@ -62,9 +62,6 @@ public class WxJSTicketCache extends ExpireCache<String> {
             if (appId == null || appId.isEmpty())
                 return null;
 
-            if (oldTicket == null)
-                oldTicket = "";
-
             String ticket = getFromStore(appId);
             log.info("{} reload success! (readonly) appId:{}, use newJSTicket:{}, oldJSTicket:{}", LOG_TAG, appId, ticket, oldTicket);
             return ticket == null ? oldTicket : ticket;
@@ -73,10 +70,7 @@ public class WxJSTicketCache extends ExpireCache<String> {
         @Override
         protected String loadOne(String appId, String oldTicket, boolean sync) {
             if (appId == null || appId.isEmpty())
-                return "";
-
-            if (oldTicket == null)
-                oldTicket = "";
+                return null;
 
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();

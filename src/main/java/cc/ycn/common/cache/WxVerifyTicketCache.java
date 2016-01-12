@@ -57,9 +57,6 @@ public class WxVerifyTicketCache extends PersistenceCache<String> {
             if (appId == null || appId.isEmpty())
                 return null;
 
-            if (oldTicket == null)
-                oldTicket = "";
-
             String ticket = getFromStore(appId);
             log.info("{} reload success! (readonly) appId:{}, use newVerifyTicket:{}, oldVerifyTicket:{}", LOG_TAG, appId, ticket, oldTicket);
             return ticket == null ? oldTicket : ticket;
@@ -69,9 +66,6 @@ public class WxVerifyTicketCache extends PersistenceCache<String> {
         protected String loadOne(String appId, String oldTicket, boolean sync) {
             if (appId == null || appId.isEmpty())
                 return null;
-
-            if (oldTicket == null)
-                oldTicket = "";
 
             String ticket = getFromStore(appId);
             log.info("{} reload success! appId:{}, use newVerifyTicket:{}, oldVerifyTicket:{}", LOG_TAG, appId, ticket, oldTicket);

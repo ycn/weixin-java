@@ -64,9 +64,6 @@ public class WxAccessTokenCache extends ExpireCache<String> {
             if (appId == null || appId.isEmpty())
                 return null;
 
-            if (oldToken == null)
-                oldToken = "";
-
             String token = getFromStore(appId);
             log.info("{} reload success! (readonly) appId:{}, use newAccessToken:{}, oldAccessToken:{}", LOG_TAG, appId, token, oldToken);
             return token == null ? oldToken : token;
@@ -75,10 +72,7 @@ public class WxAccessTokenCache extends ExpireCache<String> {
         @Override
         protected String loadOne(String appId, String oldToken, boolean sync) {
             if (appId == null || appId.isEmpty())
-                return "";
-
-            if (oldToken == null)
-                oldToken = "";
+                return null;
 
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();
