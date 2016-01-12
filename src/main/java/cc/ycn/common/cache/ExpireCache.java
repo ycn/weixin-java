@@ -81,11 +81,16 @@ public abstract class ExpireCache<T> {
     }
 
     final protected String getFromStore(String key) {
-        return centralStore.get(keyPrefix + key);
+        String realKey = keyPrefix + key;
+        String value = centralStore.get(realKey);
+        if (value == null || value.isEmpty()) {
+            centralStore.set(realKey, "", 1);
+        }
+        return value;
     }
 
     final protected T getFromStore(String key, Class<T> clazz) {
-        String json = centralStore.get(keyPrefix + key);
+        String json = getFromStore(key);
         return (json == null || json.isEmpty()) ? null : JsonConverter.json2pojo(json, clazz);
     }
 }
