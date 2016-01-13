@@ -157,6 +157,42 @@ public class WxPayServiceImpl implements WxPayService {
         );
     }
 
+    @Override
+    public WxOrderQueryResp orderQuery(WxOrderQueryReq req) throws WxErrorException {
+        if (req == null)
+            throw new WxErrorException(new WxError(1004, "null req"));
+
+        updateSign(req);
+
+        String url = "https://api.mch.weixin.qq.com/pay/orderquery";
+
+        return requestTool.post(
+                "orderQuery",
+                url,
+                WxOrderQueryResp.class,
+                ContentType.MEDIA_XML,
+                req
+        );
+    }
+
+    @Override
+    public WxRefundQueryResp refundQuery(WxRefundQueryReq req) throws WxErrorException {
+        if (req == null)
+            throw new WxErrorException(new WxError(1004, "null req"));
+
+        updateSign(req);
+
+        String url = "https://api.mch.weixin.qq.com/pay/refundquery";
+
+        return requestTool.post(
+                "refundQuery",
+                url,
+                WxRefundQueryResp.class,
+                ContentType.MEDIA_XML,
+                req
+        );
+    }
+
     private void updateSign(WxPayBaseReq req) {
 
         if (config.isAuthorizer()) {

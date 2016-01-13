@@ -46,6 +46,10 @@ public class WxPayPushMsg extends WxPayBaseResp {
 
     protected Integer coupon_count;
 
+    protected String coupon_id_0;
+
+    protected Integer coupon_fee_0;
+
     protected String coupon_id_1;
 
     protected Integer coupon_fee_1;
@@ -198,6 +202,22 @@ public class WxPayPushMsg extends WxPayBaseResp {
     public void setCoupon_count(Integer coupon_count) {
         this.coupon_count = coupon_count;
     }
+
+    public String getCoupon_id_0() {
+        return coupon_id_0;
+    }
+
+    public void setCoupon_id_0(String coupon_id_0) {
+        this.coupon_id_0 = coupon_id_0;
+    }
+    public Integer getCoupon_fee_0() {
+        return coupon_fee_0;
+    }
+
+    public void setCoupon_fee_0(Integer coupon_fee_0) {
+        this.coupon_fee_0 = coupon_fee_0;
+    }
+
 
     public String getCoupon_id_1() {
         return coupon_id_1;

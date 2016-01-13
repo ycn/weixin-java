@@ -59,4 +59,22 @@ public interface WxPayService {
      * @throws WxErrorException
      */
     WxShortUrlResp shortUrl(WxShortUrlReq req) throws WxErrorException;
+
+    /**
+     * 查询订单
+     *
+     * @param req WxOrderQueryReq
+     * @return WxOrderQueryResp
+     * @throws WxErrorException
+     */
+    WxOrderQueryResp orderQuery(WxOrderQueryReq req) throws WxErrorException;
+
+    /**
+     * 查询退款
+     *
+     * @param req WxRefundQueryReq
+     * @return WxRefundQueryResp
+     * @throws WxErrorException
+     */
+    WxRefundQueryResp refundQuery(WxRefundQueryReq req) throws WxErrorException;
 }
