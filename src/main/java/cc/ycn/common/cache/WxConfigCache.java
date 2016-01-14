@@ -55,8 +55,12 @@ public class WxConfigCache extends PersistenceCache<WxConfig> {
 
         @Override
         protected WxConfig loadOneReadonly(String appId, WxConfig oldConfig, boolean sync) {
+            if (oldConfig == null)
+                oldConfig = new WxConfig();
+
             if (appId == null || appId.isEmpty())
-                return null;
+                return oldConfig;
+
             WxConfig config = getFromStore(appId, WxConfig.class);
             log.info("{} reload success! (readonly) appId:{}, use newConfig", LOG_TAG, appId);
             return config == null ? oldConfig : config;
@@ -64,8 +68,12 @@ public class WxConfigCache extends PersistenceCache<WxConfig> {
 
         @Override
         protected WxConfig loadOne(String appId, WxConfig oldConfig, boolean sync) {
+            if (oldConfig == null)
+                oldConfig = new WxConfig();
+
             if (appId == null || appId.isEmpty())
-                return null;
+                return oldConfig;
+            
             WxConfig config = getFromStore(appId, WxConfig.class);
             log.info("{} reload success! appId:{}, use newConfig", LOG_TAG, appId);
             return config == null ? oldConfig : config;

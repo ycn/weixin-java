@@ -54,8 +54,11 @@ public class WxRefreshTokenCache extends PersistenceCache<String> {
 
         @Override
         protected String loadOneReadonly(String appId, String oldToken, boolean sync) {
+            if (oldToken == null)
+                oldToken = "";
+
             if (appId == null || appId.isEmpty())
-                return null;
+                return oldToken;
 
             String token = getFromStore(appId);
             log.info("{} reload success! (readonly) appId:{}, use newRefreshToken:{}, oldRefreshToken:{}", LOG_TAG, appId, token, oldToken);
@@ -64,8 +67,11 @@ public class WxRefreshTokenCache extends PersistenceCache<String> {
 
         @Override
         protected String loadOne(String appId, String oldToken, boolean sync) {
+            if (oldToken == null)
+                oldToken = "";
+
             if (appId == null || appId.isEmpty())
-                return null;
+                return oldToken;
 
             String token = getFromStore(appId);
             log.info("{} reload success! appId:{}, use newRefreshToken:{}, oldRefreshToken:{}", LOG_TAG, appId, token, oldToken);

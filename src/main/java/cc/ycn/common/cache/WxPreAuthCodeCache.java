@@ -58,8 +58,11 @@ public class WxPreAuthCodeCache extends ExpireCache<String> {
 
         @Override
         protected String loadOneReadonly(String appId, String oldCode, boolean sync) {
+            if (oldCode == null)
+                oldCode = "";
+
             if (appId == null || appId.isEmpty())
-                return null;
+                return oldCode;
 
             String code = getFromStore(appId);
             log.info("{} reload success! (readonly) appId:{}, use newPreAuthCode:{}, oldPreAuthCode:{}", LOG_TAG, appId, code, oldCode);
@@ -68,8 +71,11 @@ public class WxPreAuthCodeCache extends ExpireCache<String> {
 
         @Override
         protected String loadOne(String appId, String oldCode, boolean sync) {
+            if (oldCode == null)
+                oldCode = "";
+
             if (appId == null || appId.isEmpty())
-                return null;
+                return oldCode;
 
             // 检查微信配置信息
             WxConfigCache wxConfigCache = WxConfigCache.getInstance();

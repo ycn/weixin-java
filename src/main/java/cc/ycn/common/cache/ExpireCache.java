@@ -44,7 +44,11 @@ public abstract class ExpireCache<T> {
     }
 
     final public T get(String key) {
-        return cache.getUnchecked(key);
+        T t = cache.getUnchecked(key);
+        if (t instanceof String && ((String) t).isEmpty()) {
+            invalidate(key);
+        }
+        return t;
     }
 
     final public void invalidate(String key) {
@@ -84,7 +88,7 @@ public abstract class ExpireCache<T> {
         String realKey = keyPrefix + key;
         String value = centralStore.get(realKey);
         if (value == null || value.isEmpty()) {
-            centralStore.set(realKey, "", 1);
+            centralStore.set(realKey, "", 10);
         }
         return value;
     }
