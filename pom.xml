@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cc.ycn</groupId>
     <artifactId>weixin-java</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Weixin Java API</name>
     <description>微信公众号API</description>
@@ -112,15 +112,27 @@
         </dependency>
     </dependencies>
 
+    <!--<distributionManagement>-->
+        <!--<snapshotRepository>-->
+            <!--<id>ossrh</id>-->
+            <!--<url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+        <!--</snapshotRepository>-->
+        <!--<repository>-->
+            <!--<id>ossrh</id>-->
+            <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+        <!--</repository>-->
+    <!--</distributionManagement>-->
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>khw-nexus-releases</id>
+            <name>Khw Nexus Release Repository</name>
+            <url>http://10.3.0.17:8081/content/repositories/khw-nexus-releases/</url>
         </repository>
+        <snapshotRepository>
+            <id>khw-nexus-snapshots</id>
+            <name>Khw Nexus Snapshot Repository</name>
+            <url>http://10.3.0.17:8081/content/repositories/khw-nexus-snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <build>
