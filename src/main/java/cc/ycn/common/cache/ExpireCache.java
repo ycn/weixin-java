@@ -5,6 +5,8 @@ import cc.ycn.common.constant.CacheKeyPrefix;
 import cc.ycn.common.util.JsonConverter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +14,9 @@ import java.util.concurrent.TimeUnit;
  * Created by andy on 12/24/15.
  */
 public abstract class ExpireCache<T> {
+
+    private final static Logger log = LoggerFactory.getLogger(ExpireCache.class);
+    private final static String LOG_TAG = "[ExpireCache]";
 
     private CentralStore centralStore;
     private LoadingCache<String, T> cache;
@@ -88,7 +93,10 @@ public abstract class ExpireCache<T> {
         String realKey = keyPrefix + key;
         String value = centralStore.get(realKey);
         if (value == null || value.isEmpty()) {
-            centralStore.set(realKey, "", 10);
+            // SOS
+            centralStore.set("SOS:" + realKey, "", 10);
+            log.warn("{} SOS:{}", LOG_TAG, realKey);
+            value = null;
         }
         return value;
     }

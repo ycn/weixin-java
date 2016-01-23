@@ -5,6 +5,8 @@ import cc.ycn.common.constant.CacheKeyPrefix;
 import cc.ycn.common.util.JsonConverter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +14,9 @@ import java.util.concurrent.TimeUnit;
  * Created by andy on 12/24/15.
  */
 public abstract class PersistenceCache<T> {
+
+    private final static Logger log = LoggerFactory.getLogger(PersistenceCache.class);
+    private final static String LOG_TAG = "[PersistenceCache]";
 
     private CentralStore centralStore;
     private LoadingCache<String, T> cache;
@@ -85,7 +90,15 @@ public abstract class PersistenceCache<T> {
     }
 
     final protected String getFromStore(String key) {
-        return centralStore.get(keyPrefix + key);
+        String realKey = keyPrefix + key;
+        String value = centralStore.get(realKey);
+        if (value == null || value.isEmpty()) {
+            // SOS
+            centralStore.set("SOS:" + realKey, "", 10);
+            log.warn("{} SOS:{}", LOG_TAG, realKey);
+            value = null;
+        }
+        return value;
     }
 
     final protected T getFromStore(String key, Class<T> clazz) {
