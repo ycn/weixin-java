@@ -25,8 +25,10 @@ public final class WxConfig implements Serializable {
     private String token;
     private String aesKey;
     private String salt;
-    // 有componentAppId为第三方代理模式处理
+    // 消息代理商appID
     private String componentAppId;
+    // 支付代理商appID
+    private String componentPayAppId;
 
     public WxConfig() {
 
@@ -37,9 +39,14 @@ public final class WxConfig implements Serializable {
         this.type = type;
     }
 
-    // 第三方代理模式:授权方
+    // 消息是否为代理模式
     public boolean isAuthorizer() {
         return componentAppId != null && !componentAppId.isEmpty();
+    }
+
+    // 支付是否为代理模式
+    public boolean isPayAuthorizer() {
+        return componentPayAppId != null && !componentPayAppId.isEmpty();
     }
 
     public WxApiType getType() {
@@ -96,6 +103,14 @@ public final class WxConfig implements Serializable {
 
     public void setComponentAppId(String componentAppId) {
         this.componentAppId = componentAppId;
+    }
+
+    public String getPayComponentAppId() {
+        return componentPayAppId;
+    }
+
+    public void setPayComponentAppId(String componentPayAppId) {
+        this.componentPayAppId = componentPayAppId;
     }
 
     public String getPaySecret() {
