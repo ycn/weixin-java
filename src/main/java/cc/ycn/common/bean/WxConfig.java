@@ -105,11 +105,11 @@ public final class WxConfig implements Serializable {
         this.componentAppId = componentAppId;
     }
 
-    public String getPayComponentAppId() {
+    public String getComponentPayAppId() {
         return componentPayAppId;
     }
 
-    public void setPayComponentAppId(String componentPayAppId) {
+    public void setComponentPayAppId(String componentPayAppId) {
         this.componentPayAppId = componentPayAppId;
     }
 
