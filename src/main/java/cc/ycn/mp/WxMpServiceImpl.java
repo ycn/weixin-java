@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -453,6 +454,12 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
         if (longUrl == null || longUrl.isEmpty())
             return "";
 
+        try {
+            longUrl = URLDecoder.decode(longUrl, "UTF-8");
+        } catch (UnsupportedEncodingException ignore) {
+            throw new WxErrorException(new WxError(1003, "invalid longUrl"));
+        }
+
         String accessToken = getAccessToken();
 
         if (accessToken == null || accessToken.isEmpty())
@@ -502,6 +509,12 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     public WxJSSignature createJSSignature(String url) {
         if (url == null || url.isEmpty())
             return null;
+
+        try {
+            url = URLDecoder.decode(url, "UTF-8");
+        } catch (UnsupportedEncodingException ignore) {
+            throw new WxErrorException(new WxError(1003, "invalid url"));
+        }
 
         int ts = (int) (System.currentTimeMillis() / 1000);
 

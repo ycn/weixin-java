@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -266,6 +267,12 @@ public class WxCpServiceImpl implements WxCpService, WxErrorHandler {
     public WxJSSignature createJSSignature(String url) {
         if (url == null || url.isEmpty())
             return null;
+
+        try {
+            url = URLDecoder.decode(url, "UTF-8");
+        } catch (UnsupportedEncodingException ignore) {
+            throw new WxErrorException(new WxError(1003, "invalid url"));
+        }
 
         int ts = (int) (System.currentTimeMillis() / 1000);
 
