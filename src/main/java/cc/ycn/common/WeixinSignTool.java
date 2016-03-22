@@ -139,6 +139,23 @@ public class WeixinSignTool {
     }
 
     /**
+     * 加密微信回复消息
+     *
+     * @param config   WxConfig
+     * @param replyMsg xml-formatted-string
+     * @return xml-formatted-string
+     * @throws AesException
+     */
+    public static String encryptMsg(WxConfig config, String replyMsg) throws AesException {
+        if (config == null || replyMsg == null || replyMsg.isEmpty())
+            return "";
+        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId(), config.getComponentAppId());
+        String randomStr = StringTool.getRandomStr(8);
+        return msgCrypt.EncryptMsg(replyMsg, "", randomStr);
+    }
+
+
+    /**
      * 计算微信参数SHA1签名
      *
      * @param params String[]
