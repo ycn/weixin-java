@@ -2,6 +2,7 @@ package cc.ycn.common.bean.push;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -65,6 +66,7 @@ public class WxPushMsg implements Serializable {
     @JacksonXmlProperty(localName = "Status")
     private String status;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "EventKey")
     private String eventKey;
 
@@ -85,9 +87,11 @@ public class WxPushMsg implements Serializable {
 
     /* 普通消息字段 */
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Content")
     private String content;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "PicUrl")
     private String picUrl;
 
@@ -109,15 +113,19 @@ public class WxPushMsg implements Serializable {
     @JacksonXmlProperty(localName = "Scale")
     private Integer scale;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Label")
     private String label;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Title")
     private String title;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Description")
     private String description;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Url")
     private String url;
 

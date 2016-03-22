@@ -3,7 +3,7 @@ package cc.ycn.common.bean;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -17,15 +17,19 @@ import java.io.Serializable;
 @JacksonXmlRootElement(localName = "xml")
 public class WxArticle implements Serializable {
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Title")
     private String title;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Description")
     private String description;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Url")
     private String url;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "PicUrl")
     @JSONField(name = "picurl")
     private String picUrl;

@@ -2,6 +2,7 @@ package cc.ycn.common.bean.push;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -21,6 +22,7 @@ public class WxScanCodeInfo implements Serializable {
     @JacksonXmlProperty(localName = "ScanType")
     private String scanType;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "ScanResult")
     private String scanResult;
 

@@ -3,6 +3,7 @@ package cc.ycn.common.bean.push;
 import cc.ycn.common.bean.WxArticle;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -30,6 +31,7 @@ public class WxAnswerMsg implements Serializable {
     @JacksonXmlProperty(localName = "MsgType")
     String msgType;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Content")
     String content;
 
@@ -138,18 +140,22 @@ public class WxAnswerMsg implements Serializable {
     @JacksonXmlRootElement(localName = "")
     class WxMsgMusic implements Serializable {
 
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "MusicUrl")
         String musicUrl;
 
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "HQMusicUrl")
         String hqMusicUrl;
 
         @JacksonXmlProperty(localName = "ThumbMediaId")
         String thumbMediaId;
 
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "Title")
         String title;
 
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "Description")
         String description;
 
@@ -181,12 +187,15 @@ public class WxAnswerMsg implements Serializable {
 
     @JacksonXmlRootElement(localName = "")
     class WxMsgVideo implements Serializable {
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "MediaId")
         String mediaId;
 
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "Title")
         String title;
 
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "Description")
         String description;
 
@@ -207,4 +216,5 @@ public class WxAnswerMsg implements Serializable {
     public static NewsBuilder NEWS() {
         return new NewsBuilder();
     }
+
 }

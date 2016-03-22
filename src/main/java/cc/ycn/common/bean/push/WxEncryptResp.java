@@ -2,6 +2,7 @@ package cc.ycn.common.bean.push;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
@@ -15,15 +16,19 @@ import java.io.Serializable;
 @JacksonXmlRootElement(localName = "xml")
 public class WxEncryptResp implements Serializable {
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "MsgSignature")
     private String msgSignature;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "TimeStamp")
     private String timeStamp;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Nonce")
     private String nonce;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "Encrypt")
     private String encrypt;
 
