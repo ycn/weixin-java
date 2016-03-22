@@ -19,15 +19,18 @@ import java.util.List;
 @JacksonXmlRootElement(localName = "xml")
 public class WxAnswerMsg implements Serializable {
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "ToUserName")
     String toUserName;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "FromUserName")
     String fromUserName;
 
     @JacksonXmlProperty(localName = "CreateTime")
     Long createTime;
 
+    @JacksonXmlCData
     @JacksonXmlProperty(localName = "MsgType")
     String msgType;
 
@@ -109,6 +112,7 @@ public class WxAnswerMsg implements Serializable {
 
     @JacksonXmlRootElement(localName = "")
     class WxMsgImage implements Serializable {
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "MediaId")
         String mediaId;
 
@@ -124,6 +128,7 @@ public class WxAnswerMsg implements Serializable {
 
     @JacksonXmlRootElement(localName = "")
     class WxMsgVoice implements Serializable {
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "MediaId")
         String mediaId;
 
@@ -148,6 +153,7 @@ public class WxAnswerMsg implements Serializable {
         @JacksonXmlProperty(localName = "HQMusicUrl")
         String hqMusicUrl;
 
+        @JacksonXmlCData
         @JacksonXmlProperty(localName = "ThumbMediaId")
         String thumbMediaId;
 
@@ -216,5 +222,4 @@ public class WxAnswerMsg implements Serializable {
     public static NewsBuilder NEWS() {
         return new NewsBuilder();
     }
-
 }
