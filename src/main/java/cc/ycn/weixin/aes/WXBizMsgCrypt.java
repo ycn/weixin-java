@@ -1,5 +1,6 @@
 package cc.ycn.weixin.aes;
 
+import cc.ycn.common.util.StringTool;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
@@ -92,7 +93,7 @@ public class WXBizMsgCrypt {
         byte[] randomStrBytes = randomStr.getBytes(CHARSET);
         byte[] textBytes = text.getBytes(CHARSET);
         byte[] networkBytesOrder = getNetworkBytesOrder(textBytes.length);
-        byte[] appIdBytes = appId.getBytes(CHARSET);
+        byte[] appIdBytes = !StringTool.isEmpty(componentAppId) ? componentAppId.getBytes(CHARSET) : appId.getBytes(CHARSET);
 
         // randomStr + networkBytesOrder + text + corpid
         byteCollector.addBytes(randomStrBytes);
