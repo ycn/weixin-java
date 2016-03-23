@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Created by andy on 1/4/16.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JacksonXmlRootElement(localName = "xml")
 public class WxPayPushResp implements Serializable {

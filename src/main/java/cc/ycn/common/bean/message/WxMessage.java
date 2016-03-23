@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author andy
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WxMessage implements Serializable {
 

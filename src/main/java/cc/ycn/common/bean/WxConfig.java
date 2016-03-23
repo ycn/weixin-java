@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author andy
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class WxConfig implements Serializable {
 

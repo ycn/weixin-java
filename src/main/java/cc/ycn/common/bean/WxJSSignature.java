@@ -11,7 +11,7 @@ import java.util.Arrays;
 /**
  * Created by andy on 12/17/15.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WxJSSignature implements Serializable {
 

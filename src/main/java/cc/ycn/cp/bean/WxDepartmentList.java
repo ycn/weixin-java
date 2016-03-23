@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by andy on 12/14/15.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WxDepartmentList implements Serializable {
 

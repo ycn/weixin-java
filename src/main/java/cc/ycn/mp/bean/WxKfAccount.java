@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Created by andy on 12/14/15.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WxKfAccount implements Serializable {
 
