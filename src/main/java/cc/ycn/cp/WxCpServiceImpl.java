@@ -268,12 +268,6 @@ public class WxCpServiceImpl implements WxCpService, WxErrorHandler {
         if (url == null || url.isEmpty())
             return null;
 
-        try {
-            url = URLDecoder.decode(url, "UTF-8");
-        } catch (UnsupportedEncodingException ignore) {
-            throw new WxErrorException(new WxError(1003, "invalid url"));
-        }
-
         int ts = (int) (System.currentTimeMillis() / 1000);
 
         WxJSSignature sign = new WxJSSignature();
