@@ -238,7 +238,7 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
 
         WxTemplateIdRef req = new WxTemplateIdRef(templateId);
 
-        String fUrl = "https://api,weixin.qq.com/cgi-bin/template/del_private_template?access_token={}";
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
         return requestTool.post(
