@@ -93,6 +93,22 @@ public interface WxMpService {
     WxTemplateIdRef addTemplate(String templateIdShort) throws WxErrorException;
 
     /**
+     * 获取现有模板列表
+     *
+     * @return WxTemplateInfo
+     * @throws WxErrorException
+     */
+    WxTemplateInfo getTemplateInfo() throws WxErrorException;
+
+    /**
+     * 删除模版
+     *
+     * @return WxTemplateErrorMsg
+     * @throws WxErrorException
+     */
+    WxError delTemplate(String templateId) throws WxErrorException;
+
+    /**
      * 添加客服帐号
      *
      * @param account WxKfAccount

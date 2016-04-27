@@ -209,6 +209,48 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     }
 
     @Override
+    public WxTemplateInfo getTemplateInfo() throws WxErrorException {
+
+        String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.get(
+                "getTemplateInfo",
+                url,
+                WxTemplateInfo.class
+        );
+    }
+
+    @Override
+    public WxError delTemplate(String templateId) throws WxErrorException {
+        if (StringTool.isEmpty(templateId))
+            throw new WxErrorException(new WxError(1004, "invalid templateId"));
+
+        String accessToken = getAccessToken();
+
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
+        WxTemplateIdRef req = new WxTemplateIdRef(templateId);
+
+        String fUrl = "https://api,weixin.qq.com/cgi-bin/template/del_private_template?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.post(
+                "delTemplate",
+                url,
+                WxError.class,
+                ContentType.MEDIA_JSON,
+                req
+        );
+    }
+
+    @Override
     public WxError createKfAccount(WxKfAccount account) throws WxErrorException {
         String accessToken = getAccessToken();
 
