@@ -169,6 +169,14 @@ public interface WxMpService {
 
 
     /**
+     * @param openId String
+     * @return WxUserInfo
+     * @throws WxErrorException
+     */
+    WxUserInfo getUserInfo(String openId) throws WxErrorException;
+
+
+    /**
      * 检验授权凭证（access_token）是否有效
      *
      * @param oauthAccessToken String

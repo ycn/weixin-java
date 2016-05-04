@@ -14,6 +14,8 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WxUserInfo implements Serializable {
 
+    private String appId;
+
     @JSONField(name = "openid")
     private String openId;
 
@@ -111,5 +113,13 @@ public class WxUserInfo implements Serializable {
 
     public void setPrivilege(List<String> privilege) {
         this.privilege = privilege;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 }

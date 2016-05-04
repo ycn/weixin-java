@@ -387,11 +387,29 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     }
 
     @Override
-    public WxError checkOAuthAccessToken(String oauthAccessToken, String openId) throws WxErrorException {
-        if (oauthAccessToken == null || oauthAccessToken.isEmpty())
-            throw new WxErrorException(new WxError(1003, "invalid oauthAccessToken"));
+    public WxUserInfo getUserInfo(String openId) throws WxErrorException {
+
+        String accessToken = getAccessToken();
 
         if (openId == null || openId.isEmpty())
+            throw new WxErrorException(new WxError(1003, "invalid openId"));
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/user/info?access_token={}&openid={}&lang=zh_CN ";
+        String url = StringTool.formatString(fUrl, accessToken, openId);
+
+        return requestTool.get(
+                "getUserInfo",
+                url,
+                WxUserInfo.class
+        );
+    }
+
+    @Override
+    public WxError checkOAuthAccessToken(String oauthAccessToken, String openId) throws WxErrorException {
+        if (StringTool.isEmpty(oauthAccessToken))
+            throw new WxErrorException(new WxError(1003, "invalid oauthAccessToken"));
+
+        if (StringTool.isEmpty(openId))
             throw new WxErrorException(new WxError(1003, "invalid openId"));
 
         String fUrl = "https://api.weixin.qq.com/sns/auth?access_token={}&openid={}";
