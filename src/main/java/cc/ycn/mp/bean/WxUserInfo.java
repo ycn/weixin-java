@@ -16,6 +16,8 @@ public class WxUserInfo implements Serializable {
 
     private String appId;
 
+    private String subscribe;
+
     @JSONField(name = "openid")
     private String openId;
 
@@ -121,5 +123,13 @@ public class WxUserInfo implements Serializable {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public String getSubscribe() {
+        return subscribe;
+    }
+
+    public void setSubscribe(String subscribe) {
+        this.subscribe = subscribe;
     }
 }
