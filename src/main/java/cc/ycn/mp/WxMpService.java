@@ -283,4 +283,11 @@ public interface WxMpService {
      */
     WxCardTicket fetchCardTicket() throws WxErrorException;
 
+    /**
+     * 获取公众号连网URL
+     *
+     * @return WxConnectUrl
+     * @throws WxErrorException
+     */
+    WxConnectUrl getConnectUrl() throws WxErrorException;
 }

@@ -601,6 +601,23 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     }
 
     @Override
+    public WxConnectUrl getConnectUrl() throws WxErrorException {
+
+        String accessToken = getAccessToken();
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
+        String fUrl = "https://api.weixin.qq.com/bizwifi/account/get_connecturl?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+        return requestTool.get(
+                "connectUrl",
+                url,
+                WxConnectUrl.class
+        );
+    }
+
+    @Override
     public boolean shouldRetryOnWxError(WxError error) {
         if (error == null) return false;
 
