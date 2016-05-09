@@ -289,5 +289,5 @@ public interface WxMpService {
      * @return WxConnectUrl
      * @throws WxErrorException
      */
-    WxConnectUrl getConnectUrl() throws WxErrorException;
+    WxWifiConnectUrl getConnectUrl() throws WxErrorException;
 }

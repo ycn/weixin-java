@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WxConnectUrlContent implements Serializable {
+public class WxWifiConnectUrlContent implements Serializable {
     @JSONField(name = "connect_url")
     private String connectUrl;
 

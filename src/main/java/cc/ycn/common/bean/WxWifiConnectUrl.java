@@ -11,20 +11,20 @@ import java.io.Serializable;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WxConnectUrl implements Serializable {
+public class WxWifiConnectUrl implements Serializable {
 
     @JSONField(name = "errcode")
     private String errorCode;
 
     @JSONField(name = "data")
-    private WxConnectUrlContent wxConnectUrlContent;
+    private WxWifiConnectUrlContent wxConnectUrlContent;
 
 
-    public WxConnectUrlContent getWxConnectUrlContent() {
+    public WxWifiConnectUrlContent getWxConnectUrlContent() {
         return wxConnectUrlContent;
     }
 
-    public void setWxConnectUrlContent(WxConnectUrlContent wxConnectUrlContent) {
+    public void setWxConnectUrlContent(WxWifiConnectUrlContent wxConnectUrlContent) {
         this.wxConnectUrlContent = wxConnectUrlContent;
     }
 

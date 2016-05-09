@@ -601,7 +601,7 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     }
 
     @Override
-    public WxConnectUrl getConnectUrl() throws WxErrorException {
+    public WxWifiConnectUrl getConnectUrl() throws WxErrorException {
 
         String accessToken = getAccessToken();
         if (accessToken == null || accessToken.isEmpty())
@@ -613,7 +613,7 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
         return requestTool.get(
                 "connectUrl",
                 url,
-                WxConnectUrl.class
+                WxWifiConnectUrl.class
         );
     }
 
