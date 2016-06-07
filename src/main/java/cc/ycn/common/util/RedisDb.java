@@ -13,6 +13,7 @@ import redis.clients.jedis.exceptions.JedisException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by andy on 6/9/15.
@@ -326,5 +327,13 @@ public class RedisDb {
         if (retry && retryTimes > 0) {
             doTransaction(lockKeys, callback, context, --retryTimes);
         }
+    }
+
+    public void sadd(String key, String value) {
+        safeJedis.sadd(key, value);
+    }
+
+    public Set<String> smembers(String key) {
+        return safeJedis.smembers(key);
     }
 }
