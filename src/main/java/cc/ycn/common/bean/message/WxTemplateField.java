@@ -14,6 +14,10 @@ public class WxTemplateField implements Serializable {
     private String value;
     private String color;
 
+    public WxTemplateField() {
+
+    }
+
     public WxTemplateField(String value) {
         this(value, "#000000");
     }
