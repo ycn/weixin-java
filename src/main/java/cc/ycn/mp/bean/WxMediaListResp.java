@@ -12,7 +12,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WxMedia implements Serializable {
+public class WxMediaListResp implements Serializable {
     @JSONField(name = "total_count")
     private int totalCount;
 
@@ -20,9 +20,9 @@ public class WxMedia implements Serializable {
     private int itemCount;
 
     @JSONField(name = "item")
-    private List<MediaItem> mediaItemList;
+    private List<WxMediaRef> wxMediaRefs;
 
-    public WxMedia() {
+    public WxMediaListResp() {
     }
 
     public int getTotalCount() {
@@ -41,11 +41,11 @@ public class WxMedia implements Serializable {
         this.itemCount = itemCount;
     }
 
-    public List<MediaItem> getMediaItemList() {
-        return mediaItemList;
+    public List<WxMediaRef> getWxMediaRefs() {
+        return wxMediaRefs;
     }
 
-    public void setMediaItemList(List<MediaItem> mediaItemList) {
-        this.mediaItemList = mediaItemList;
+    public void setWxMediaRefs(List<WxMediaRef> wxMediaRefs) {
+        this.wxMediaRefs = wxMediaRefs;
     }
 }

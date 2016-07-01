@@ -618,7 +618,7 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     }
 
     @Override
-    public WxMedia getWxMaterialList(WxGetMediaList wxGetMediaList) throws WxErrorException {
+    public WxMediaListResp wxMaterialReq(WxMediaListReq wxMediaListReq) throws WxErrorException {
 
         String accessToken = getAccessToken();
         if (accessToken == null || accessToken.isEmpty())
@@ -630,11 +630,11 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
 
 
         return requestTool.post(
-                "getWxMaterialList",
+                "wxMaterialReq",
                 url,
-                WxMedia.class,
+                WxMediaListResp.class,
                 ContentType.MEDIA_JSON,
-                wxGetMediaList
+                wxMediaListReq
         );
     }
 

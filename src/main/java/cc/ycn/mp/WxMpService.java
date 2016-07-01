@@ -295,8 +295,8 @@ public interface WxMpService {
      * 获取素材列表
      * 只支持永久素材
      *
-     * @return WxMedia
+     * @return WxMediaListResp
      * @throws WxErrorException
      */
-    WxMedia getWxMaterialList(WxGetMediaList wxGetMediaList) throws WxErrorException;
+    WxMediaListResp wxMaterialReq(WxMediaListReq wxMediaListReq) throws WxErrorException;
 }
