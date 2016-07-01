@@ -618,6 +618,27 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     }
 
     @Override
+    public WxMedia getWxMaterialList(WxGetMediaList wxGetMediaList) throws WxErrorException {
+
+        String accessToken = getAccessToken();
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
+
+
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token={}";
+        String url = StringTool.formatString(fUrl, accessToken);
+
+
+        return requestTool.post(
+                "getWxMaterialList",
+                url,
+                WxMedia.class,
+                ContentType.MEDIA_JSON,
+                wxGetMediaList
+        );
+    }
+
+    @Override
     public boolean shouldRetryOnWxError(WxError error) {
         if (error == null) return false;
 

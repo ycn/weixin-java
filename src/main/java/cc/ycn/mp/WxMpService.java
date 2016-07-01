@@ -290,4 +290,13 @@ public interface WxMpService {
      * @throws WxErrorException
      */
     WxWifiConnectUrl getConnectUrl() throws WxErrorException;
+
+    /**
+     * 获取素材列表
+     * 只支持永久素材
+     *
+     * @return WxMedia
+     * @throws WxErrorException
+     */
+    WxMedia getWxMaterialList(WxGetMediaList wxGetMediaList) throws WxErrorException;
 }
