@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cc.ycn</groupId>
     <artifactId>weixin-java</artifactId>
-    <version>1.0.s</version>
+    <version>1.0.t</version>
     <packaging>jar</packaging>
     <name>Weixin Java API</name>
     <description>微信公众号API</description>
