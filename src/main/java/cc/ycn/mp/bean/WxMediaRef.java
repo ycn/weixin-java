@@ -21,6 +21,10 @@ public class WxMediaRef implements Serializable {
     @JSONField(name = "update_time")
     private long updateTime;
 
+    private WxMediaContent content;
+
+    private String url;
+
 
     public WxMediaRef() {
     }
@@ -47,5 +51,21 @@ public class WxMediaRef implements Serializable {
 
     public void setUpdateTime(long updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public WxMediaContent getContent() {
+        return content;
+    }
+
+    public void setContent(WxMediaContent content) {
+        this.content = content;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
