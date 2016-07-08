@@ -3,15 +3,15 @@ package cc.ycn.common.util;
 import cc.ycn.common.api.WxErrorHandler;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.constant.ContentType;
+import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import com.squareup.okhttp.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Created by andy on 12/14/15.
@@ -20,6 +20,7 @@ public class RequestTool {
 
     private final static Logger log = LoggerFactory.getLogger(RequestTool.class);
     private final static int MAX_RETRY = 3;
+
 
     private final String tag;
     private final OkHttpClient httpClient;
@@ -37,14 +38,19 @@ public class RequestTool {
     }
 
     public <T> T get(String subTag, String url, Class<T> respType) throws WxErrorException {
-        return send(subTag, url, respType, ContentType.URL_PARAM, null, 1);
+        return send(subTag, url, respType, ContentType.URL_PARAM, null, 1, false);
     }
 
     public <T, D> T post(String subTag, String url, Class<T> respType, ContentType contentType, D reqData) throws WxErrorException {
-        return send(subTag, url, respType, contentType, reqData, 1);
+        return send(subTag, url, respType, contentType, reqData, 1, false);
     }
 
-    private <T, D> T send(String subTag, String url, Class<T> respType, ContentType contentType, D reqData, int retry) throws WxErrorException {
+    public <T> T upload(String subTag, String url, Class<T> respType, ContentType contentType, String filePath) throws WxErrorException {
+        return send(subTag, url, respType, contentType, filePath, 1, true);
+    }
+
+
+    private <T, D> T send(String subTag, String url, Class<T> respType, ContentType contentType, D reqData, int retry, boolean isUpload) throws WxErrorException {
 
         if (subTag == null || subTag.isEmpty()) {
             log.warn("{} ERR_ARG subTag:null", tag);
@@ -80,31 +86,58 @@ public class RequestTool {
         RequestBody body = null;
         String bodyStr = null;
 
+        if (!isUpload) {
+            switch (contentType) {
+                case MEDIA_JSON:
+                    bodyStr = JsonConverter.pojo2json(reqData);
+                    body = RequestBody.create(contentType.getMediaType(), bodyStr);
+                    request = new Request.Builder()
+                            .url(url)
+                            .post(body)
+                            .build();
+                    break;
+                case MEDIA_XML:
+                    bodyStr = XmlConverter.pojo2xml(reqData);
+                    body = RequestBody.create(contentType.getMediaType(), bodyStr);
+                    request = new Request.Builder()
+                            .url(url)
+                            .post(body)
+                            .build();
+                    break;
+                default:
+                    request = new Request.Builder()
+                            .url(url)
+                            .build();
+                    break;
+            }
+        } else {
 
-        switch (contentType) {
-            case MEDIA_JSON:
-                bodyStr = JsonConverter.pojo2json(reqData);
-                body = RequestBody.create(contentType.getMediaType(), bodyStr);
-                request = new Request.Builder()
-                        .url(url)
-                        .post(body)
-                        .build();
-                break;
-            case MEDIA_XML:
-                bodyStr = XmlConverter.pojo2xml(reqData);
-                body = RequestBody.create(contentType.getMediaType(), bodyStr);
-                request = new Request.Builder()
-                        .url(url)
-                        .post(body)
-                        .build();
-                break;
-            default:
-                request = new Request.Builder()
-                        .url(url)
-                        .build();
-                break;
+            String filePath = (String) reqData;
+            String[] parts = filePath.split("/");
+            if (parts.length == 0) {
+                log.error("{} WXERR-400 filePath error. filePath:{}", tag, filePath);
+                throw new WxErrorException(new WxError(1002, "get errmsg:" + subTag));
+            }
+            String fileName = parts[parts.length - 1];
+
+            File file = new File(filePath);
+            if (!file.exists() || !file.canRead()) {
+                log.error("{} WXERR-400 file cannot read. filePath:{}", tag, filePath);
+                throw new WxErrorException(new WxError(1002, "get errmsg:" + subTag));
+            }
+
+            body = new MultipartBuilder()
+                    .type(MultipartBuilder.FORM)
+                    .addPart(
+                            Headers.of("Content-Disposition", "form-data; name=\"image\"; filename=\"" + fileName + "\""),
+                            RequestBody.create(WxConstant.MEDIA_TYPE_PNG, file))
+                    .build();
+
+            request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
         }
-
 
         String reqSign = getReqSign(request);
 
@@ -136,7 +169,7 @@ public class RequestTool {
 
                                 // RETRY
                                 String retryUrl = errorHandler.getRetryUrl(url, wxError);
-                                return send(subTag, retryUrl, respType, contentType, reqData, ++retry);
+                                return send(subTag, retryUrl, respType, contentType, reqData, ++retry, isUpload);
 
                             } else {
                                 log.error("{} WXERR-{} http_code:{}, req:{} body:{}",

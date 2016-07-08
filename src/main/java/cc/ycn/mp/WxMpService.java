@@ -1,6 +1,7 @@
 package cc.ycn.mp;
 
 import cc.ycn.common.bean.*;
+import cc.ycn.common.bean.WxMediaRef;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.exception.WxErrorException;
@@ -292,11 +293,19 @@ public interface WxMpService {
     WxWifiConnectUrl getConnectUrl() throws WxErrorException;
 
     /**
+     * 上传临时素材
+     *
+     * @return WxMediaListResp
+     * @throws WxErrorException
+     */
+    WxMediaRef uploadTempMedia(WxTempMediaReq wxTempMediaReq) throws WxErrorException;
+
+    /**
      * 获取素材列表
      * 只支持永久素材
      *
      * @return WxMediaListResp
      * @throws WxErrorException
      */
-    WxMediaListResp wxMaterialReq(WxMediaListReq wxMediaListReq) throws WxErrorException;
+    WxMediaListResp getPermMediaList(WxMediaListReq wxMediaListReq) throws WxErrorException;
 }

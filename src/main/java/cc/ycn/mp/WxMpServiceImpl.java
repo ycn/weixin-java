@@ -2,6 +2,7 @@ package cc.ycn.mp;
 
 import cc.ycn.common.api.WxErrorHandler;
 import cc.ycn.common.bean.*;
+import cc.ycn.common.bean.WxMediaRef;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.cache.*;
@@ -11,12 +12,11 @@ import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.RequestTool;
 import cc.ycn.common.util.StringTool;
 import cc.ycn.mp.bean.*;
-import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -618,19 +618,35 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     }
 
     @Override
-    public WxMediaListResp wxMaterialReq(WxMediaListReq wxMediaListReq) throws WxErrorException {
-
+    public WxMediaRef uploadTempMedia(WxTempMediaReq wxTempMediaReq) {
         String accessToken = getAccessToken();
         if (accessToken == null || accessToken.isEmpty())
             throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
+        String fUrl = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token={}&type={}";
+        String url = StringTool.formatString(fUrl, accessToken, wxTempMediaReq.getType());
+
+        return requestTool.upload(
+                "uploadTempMedia",
+                url,
+                WxMediaRef.class,
+                ContentType.MEDIA_JSON,
+                wxTempMediaReq.getFilePath());
+    }
+
+    @Override
+    public WxMediaListResp getPermMediaList(WxMediaListReq wxMediaListReq) throws WxErrorException {
+
+        String accessToken = getAccessToken();
+        if (accessToken == null || accessToken.isEmpty())
+            throw new WxErrorException(new WxError(1004, "invalid accessToken"));
 
         String fUrl = "https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token={}";
         String url = StringTool.formatString(fUrl, accessToken);
 
 
         return requestTool.post(
-                "wxMaterialReq",
+                "getPermMediaList",
                 url,
                 WxMediaListResp.class,
                 ContentType.MEDIA_JSON,
