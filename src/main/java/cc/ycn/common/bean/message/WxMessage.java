@@ -149,6 +149,8 @@ public class WxMessage implements Serializable {
     class WxMsgText implements Serializable {
         String content;
 
+        public WxMsgText(){}
+
         public String getContent() {
             return content;
         }
@@ -163,6 +165,8 @@ public class WxMessage implements Serializable {
         @JSONField(name = "media_id")
         String mediaId;
 
+        public WxMsgImage(){}
+
         public String getMediaId() {
             return mediaId;
         }
@@ -176,6 +180,8 @@ public class WxMessage implements Serializable {
     class WxMsgVoice implements Serializable {
         @JSONField(name = "media_id")
         String mediaId;
+
+        public WxMsgVoice(){}
 
         public String getMediaId() {
             return mediaId;
@@ -197,6 +203,8 @@ public class WxMessage implements Serializable {
         String title;
 
         String description;
+
+        public WxMsgVideo(){}
 
         public String getMediaId() {
             return mediaId;
@@ -224,6 +232,8 @@ public class WxMessage implements Serializable {
         @JSONField(name = "media_id")
         String mediaId;
 
+        public WxMsgFile(){}
+
         public String getMediaId() {
             return mediaId;
         }
@@ -247,6 +257,8 @@ public class WxMessage implements Serializable {
         String title;
 
         String description;
+
+        public WxMsgMusic(){}
 
         public String getMusicUrl() {
             return musicUrl;
@@ -277,6 +289,8 @@ public class WxMessage implements Serializable {
     class WxMsgNews implements Serializable {
         List<WxArticle> articles;
 
+        public WxMsgNews(){}
+
         public List<WxArticle> getArticles() {
             return articles;
         }
@@ -290,6 +304,8 @@ public class WxMessage implements Serializable {
     class WxMsgMpnews implements Serializable {
         @JSONField(name = "media_id")
         String mediaId;
+
+        public WxMsgMpnews(){}
 
         public String getMediaId() {
             return mediaId;
@@ -308,6 +324,8 @@ public class WxMessage implements Serializable {
         @JSONField(name = "card_ext")
         String cardExt;
 
+        public WxMsgWxcard(){}
+
         public String getCardId() {
             return cardId;
         }
@@ -321,6 +339,8 @@ public class WxMessage implements Serializable {
     class WxMsgKf implements Serializable {
         @JSONField(name = "kf_account")
         String kfAccount;
+
+        public WxMsgKf(){}
 
         public WxMsgKf(String kfAccount) {
             this.kfAccount = kfAccount;
