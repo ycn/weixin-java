@@ -62,6 +62,15 @@ public class RedisDb {
         return value;
     }
 
+    public boolean exists(String key) {
+        boolean keyIsExist = false;
+        try {
+            keyIsExist = safeJedis.exists(key);
+        } catch (JedisException ignore) {
+        }
+        return keyIsExist;
+    }
+
     public Map<String, String> getAll(Iterable<? extends String> keys) {
         Map<String, String> map = new HashMap<String, String>();
         for (String key : keys) {
