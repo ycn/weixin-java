@@ -66,7 +66,8 @@ public class RedisDb {
         boolean keyIsExist = false;
         try {
             keyIsExist = safeJedis.exists(key);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return keyIsExist;
     }
@@ -91,7 +92,8 @@ public class RedisDb {
                 safeJedis.setex(key, seconds, value);
             else
                 safeJedis.set(key, value);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return this;
     }
@@ -106,7 +108,8 @@ public class RedisDb {
                 safeJedis.setex(key, seconds, value);
             else
                 safeJedis.set(key, value);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return this;
     }
@@ -116,7 +119,8 @@ public class RedisDb {
 
         try {
             result = safeJedis.incr(key);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -126,7 +130,8 @@ public class RedisDb {
 
         try {
             result = safeJedis.incrByFailOnZero(key, amount);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -136,7 +141,8 @@ public class RedisDb {
 
         try {
             result = safeJedis.decr(key);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -146,7 +152,8 @@ public class RedisDb {
 
         try {
             result = safeJedis.hincrBy(key, field, amount);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -156,7 +163,8 @@ public class RedisDb {
 
         try {
             result = safeJedis.hincrByFailOnZero(key, field, amount);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -169,7 +177,8 @@ public class RedisDb {
             for (String field : map.keySet()) {
                 result.put(field, StringEscapeUtils.unescapeJava(map.get(field)));
             }
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -180,7 +189,8 @@ public class RedisDb {
             // 中文转换unicode
             value = StringEscapeUtils.escapeJava(value);
             result = safeJedis.hset(key, field, value);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -189,7 +199,8 @@ public class RedisDb {
         String value = null;
         try {
             value = StringEscapeUtils.unescapeJava(safeJedis.hget(key, field));
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return value;
     }
@@ -208,7 +219,8 @@ public class RedisDb {
                 long tomorrowTime = DateTool.getTomorrowTime();
                 safeJedis.expireAt(key, tomorrowTime / 1000);
             }
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -222,7 +234,8 @@ public class RedisDb {
             if (result < 1) {
                 safeJedis.set(key, "0");
             }
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -232,7 +245,8 @@ public class RedisDb {
 
         try {
             result = safeJedis.rpush(key, vals);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
@@ -250,7 +264,8 @@ public class RedisDb {
 
         try {
             result = safeJedis.publish(channel, message);
-        } catch (JedisException ignore) {
+        } catch (JedisException e) {
+            e.printStackTrace();
         }
         return result;
     }
