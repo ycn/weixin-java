@@ -15,5 +15,5 @@ public class WxConstant {
 
     public final static Pattern ACCESS_TOKEN_PARAM_PATTERN = Pattern.compile("access_token=([a-zA-Z0-9-_]+).*$");
 
-    public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("image/png");
+    public static final MediaType MEDIA_TYPE_PNG = MediaType.parse("multipart/form-data");
 }
