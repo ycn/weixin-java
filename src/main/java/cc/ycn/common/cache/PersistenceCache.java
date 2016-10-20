@@ -103,6 +103,9 @@ public abstract class PersistenceCache<T> {
 
     final protected T getFromStore(String key, Class<T> clazz) {
         String json = centralStore.get(keyPrefix + key);
+        log.info("[PersistenceCache] before convert json:{}", json);
+        if (json != null && !json.isEmpty())
+            log.info("[PersistenceCache] after convert json:{}", JsonConverter.json2pojo(json, clazz));
         return (json == null || json.isEmpty()) ? null : JsonConverter.json2pojo(json, clazz);
     }
 }
