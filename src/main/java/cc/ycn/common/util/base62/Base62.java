@@ -9,6 +9,8 @@ public class Base62 {
 
     private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
+    private static final int ALPLEN = ALPHABET.length();
+
     private Base62() {
     }
 
@@ -85,5 +87,35 @@ public class Base62 {
         stream.read(result, 0, result.length * 8);
         return result;
     }
-    
+
+    public static String encodeLongToStr(long original) {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.insert(0, ALPHABET.charAt((int) original % ALPLEN));
+
+        long div = original / ALPLEN;
+
+        if (div > ALPLEN) {
+            sb.insert(0, encodeLongToStr(div));
+        } else {
+            sb.insert(0, ALPHABET.charAt((int) div));
+        }
+        return sb.toString();
+    }
+
+    public static long decodeStrToLong(String base62) {
+        if (base62 == null || base62.equals(""))
+            return 0;
+
+        long dist = 0;
+
+        for (char c : base62.toCharArray()) {
+            int pos = ALPHABET.indexOf(c);
+            if (pos == -1) continue;
+
+            dist = (dist * ALPLEN + pos);
+        }
+        return dist;
+    }
 }
