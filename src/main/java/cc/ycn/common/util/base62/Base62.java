@@ -14,7 +14,7 @@ public class Base62 {
     private Base62() {
     }
 
-    public static String encode(byte[] original) {
+    public static String encodeStr(byte[] original) {
 
         StringBuilder sb = new StringBuilder();
         BitStream stream = new BitStream(original);             // Set up the BitStream
@@ -44,7 +44,7 @@ public class Base62 {
         return sb.toString();
     }
 
-    public static byte[] decode(String base62) throws IOException {
+    public static byte[] decodeStr(String base62) throws IOException {
         // Character count
         int count = 0;
 
@@ -88,7 +88,7 @@ public class Base62 {
         return result;
     }
 
-    public static String encodeLongToStr(long original) {
+    public static String encode(long original) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -97,14 +97,14 @@ public class Base62 {
         long div = original / ALPLEN;
 
         if (div > ALPLEN) {
-            sb.insert(0, encodeLongToStr(div));
+            sb.insert(0, encode(div));
         } else {
             sb.insert(0, ALPHABET.charAt((int) div));
         }
         return sb.toString();
     }
 
-    public static long decodeStrToLong(String base62) {
+    public static long decode(String base62) {
         if (base62 == null || base62.equals(""))
             return 0;
 
