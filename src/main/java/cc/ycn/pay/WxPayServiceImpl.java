@@ -1,8 +1,10 @@
 package cc.ycn.pay;
 
-import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.bean.WxError;
-import cc.ycn.common.cache.WxConfigCache;
+import cc.ycn.common.bean.WxMsgConfig;
+import cc.ycn.common.bean.WxPayConfig;
+import cc.ycn.common.cache.WxMsgConfigCache;
+import cc.ycn.common.cache.WxPayConfigCache;
 import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
@@ -30,17 +32,30 @@ public class WxPayServiceImpl implements WxPayService {
     private final static Logger log = LoggerFactory.getLogger(WxPayServiceImpl.class);
     private final static String LOG_TAG = "[WxPayService]";
 
-    private String appId;
-    private WxConfig config;
+    private String appId; // 自己的appId
+    private String mchId; // 自己的mchId
+    private WxMsgConfig config;
+    private WxPayConfig payConfig;
     private final RequestTool requestTool;
 
     public WxPayServiceImpl(String appId) throws WxErrorException {
         this.appId = appId;
 
-        WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-        this.config = wxConfigCache == null ? null : wxConfigCache.get(appId);
+        WxMsgConfigCache wxMsgConfigCache = WxMsgConfigCache.getInstance();
+        this.config = wxMsgConfigCache == null ? null : wxMsgConfigCache.get(appId);
         if (this.config == null) {
             throw new WxErrorException(new WxError(1001, "missing config:" + appId));
+        }
+
+        WxPayConfigCache wxPayConfigCache = WxPayConfigCache.getInstance();
+        this.payConfig = wxPayConfigCache == null ? null : wxPayConfigCache.get(appId);
+        if (payConfig != null && payConfig.isAuthorizer()) { // 使用服务商的payConfig
+            mchId = payConfig.getMchid();
+            payConfig = wxPayConfigCache.get(payConfig.getComAppid());
+        }
+
+        if (payConfig == null) {
+            throw new WxErrorException(new WxError(1001, "missing pay config:" + appId));
         }
 
         OkHttpClient httpClient = new OkHttpClient();
@@ -48,7 +63,7 @@ public class WxPayServiceImpl implements WxPayService {
         httpClient.setReadTimeout(WxConstant.WX_READ_TIMEOUT, TimeUnit.SECONDS);
         httpClient.setWriteTimeout(WxConstant.WX_WRITE_TIMEOUT, TimeUnit.SECONDS);
 
-        String mchId = config.isAuthorizer() ? config.getPayMchId() : config.getMchId();
+        String mchId = payConfig.getMchid();
 
         try {
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
@@ -81,7 +96,7 @@ public class WxPayServiceImpl implements WxPayService {
     }
 
     @Override
-    public WxConfig getConfig() {
+    public WxMsgConfig getConfig() {
         return config;
     }
 
@@ -195,18 +210,18 @@ public class WxPayServiceImpl implements WxPayService {
 
     private void updateSign(WxPayBaseReq req) {
 
-        if (config.isAuthorizer()) {
-            req.setAppid(config.getPayAppId());
-            req.setMch_id(config.getPayMchId());
+        if (payConfig.isAuthorizer()) {
+            req.setAppid(payConfig.getAppid());
+            req.setMch_id(payConfig.getMchid());
             req.setSub_appid(appId);
-            if (!StringTool.isEmpty(config.getMchId()))
-                req.setSub_mch_id(config.getMchId());
+            if (!StringTool.isEmpty(mchId))
+                req.setSub_mch_id(mchId);
         } else {
             req.setAppid(appId);
-            if (!StringTool.isEmpty(config.getMchId()))
-                req.setMch_id(config.getMchId());
+            if (!StringTool.isEmpty(mchId))
+                req.setMch_id(mchId);
         }
 
-        req.setSign(config);
+        req.setSign(config, payConfig);
     }
 }

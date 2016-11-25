@@ -5,7 +5,7 @@ import cc.ycn.common.bean.*;
 import cc.ycn.common.bean.menu.WxMenu;
 import cc.ycn.common.bean.message.WxMessage;
 import cc.ycn.common.cache.WxAccessTokenCache;
-import cc.ycn.common.cache.WxConfigCache;
+import cc.ycn.common.cache.WxMsgConfigCache;
 import cc.ycn.common.cache.WxJSTicketCache;
 import cc.ycn.common.cache.WxRefreshTokenCache;
 import cc.ycn.common.constant.ContentType;
@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -36,14 +35,14 @@ public class WxCpServiceImpl implements WxCpService, WxErrorHandler {
     private final static String LOG_TAG = "[WxCpService]";
 
     private String appId;
-    private WxConfig config;
+    private WxMsgConfig config;
     private final RequestTool requestTool;
 
     public WxCpServiceImpl(String appId) throws WxErrorException {
         this.appId = appId;
 
-        WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-        this.config = wxConfigCache == null ? null : wxConfigCache.get(appId);
+        WxMsgConfigCache wxMsgConfigCache = WxMsgConfigCache.getInstance();
+        this.config = wxMsgConfigCache == null ? null : wxMsgConfigCache.get(appId);
         if (this.config == null)
             throw new WxErrorException(new WxError(1001, "missing config:" + appId));
 
@@ -56,7 +55,7 @@ public class WxCpServiceImpl implements WxCpService, WxErrorHandler {
     }
 
     @Override
-    public WxConfig getConfig() {
+    public WxMsgConfig getConfig() {
         return config;
     }
 
@@ -68,7 +67,7 @@ public class WxCpServiceImpl implements WxCpService, WxErrorHandler {
     @Override
     public WxAccessToken fetchAccessToken() {
         String fUrl = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={}&corpsecret={}";
-        String url = StringTool.formatString(fUrl, appId, config.getAppSecret());
+        String url = StringTool.formatString(fUrl, appId, config.getSecret());
 
         return requestTool.get(
                 "fetchAccessToken",

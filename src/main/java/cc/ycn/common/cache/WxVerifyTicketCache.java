@@ -1,6 +1,8 @@
 package cc.ycn.common.cache;
 
-import cc.ycn.common.api.CentralStore;
+import cc.ycn.common.api.WxTokenHandler;
+import cc.ycn.common.cache.base.ExpireCache;
+import cc.ycn.common.cache.base.WxCacheLoader;
 import cc.ycn.common.constant.CacheKeyPrefix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,72 +12,77 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Created by andy on 12/22/15.
  */
-public class WxVerifyTicketCache extends PersistenceCache<String> {
+public class WxVerifyTicketCache extends ExpireCache<String> {
     private final static Logger log = LoggerFactory.getLogger(WxVerifyTicketCache.class);
     private final static String LOG_TAG = "[WxVerifyTicketCache]";
     private static final AtomicReference<WxVerifyTicketCache> instance = new AtomicReference<WxVerifyTicketCache>();
 
-    public static void init(CentralStore centralStore,
-                            int refreshSeconds,
-                            int concurrencyLevel,
-                            long maximumSize,
-                            int executorSize,
-                            boolean readonly) {
-        if (instance.get() == null)
-            instance.compareAndSet(null, new WxVerifyTicketCache(centralStore,
-                    refreshSeconds, concurrencyLevel, maximumSize, executorSize, readonly));
+    public static WxVerifyTicketCache init(WxTokenHandler wxTokenHandler,
+                                           int refreshSeconds,
+                                           int concurrencyLevel,
+                                           long maximumSize,
+                                           int executorSize) {
+
+        WxVerifyTicketCache obj = instance.get();
+
+        if (obj == null) {
+            obj = new WxVerifyTicketCache(
+                    wxTokenHandler,
+                    refreshSeconds,
+                    concurrencyLevel,
+                    maximumSize,
+                    executorSize
+            );
+            instance.compareAndSet(null, obj);
+        }
+
+        return obj;
     }
 
     public static WxVerifyTicketCache getInstance() {
         return instance.get();
     }
 
-    private WxVerifyTicketCache(CentralStore centralStore,
+    private WxVerifyTicketCache(WxTokenHandler wxTokenHandler,
                                 int refreshSeconds,
                                 int concurrencyLevel,
                                 long maximumSize,
-                                int executorSize,
-                                boolean readonly) {
-        init(centralStore,
+                                int executorSize) {
+        init(wxTokenHandler,
                 refreshSeconds,
                 concurrencyLevel,
                 maximumSize,
-                new WxVerifyTicketCacheLoader(executorSize, readonly),
-                CacheKeyPrefix.VERIFY_TICKET,
-                readonly
+                new WxVerifyTicketCacheLoader(executorSize),
+                CacheKeyPrefix.VERIFY_TICKET
         );
     }
 
     class WxVerifyTicketCacheLoader extends WxCacheLoader<String> {
 
-        public WxVerifyTicketCacheLoader(int executorSize, boolean readonly) {
-            super(executorSize, readonly);
+        public WxVerifyTicketCacheLoader(int executorSize) {
+            super(executorSize);
         }
 
         @Override
-        protected String loadOneReadonly(String appId, String oldTicket, boolean sync) {
-            if (oldTicket == null)
-                oldTicket = "";
+        protected String loadOne(String appId, String oldToken, boolean sync) {
+            if (oldToken == null)
+                oldToken = "";
 
             if (appId == null || appId.isEmpty())
-                return oldTicket;
+                return oldToken;
 
-            String ticket = getFromStore(appId);
-            log.info("{} reload success! (readonly) appId:{}, use newVerifyTicket:{}, oldVerifyTicket:{}", LOG_TAG, appId, ticket, oldTicket);
-            return ticket == null ? oldTicket : ticket;
-        }
+            String token = getFromStore(appId);
 
-        @Override
-        protected String loadOne(String appId, String oldTicket, boolean sync) {
-            if (oldTicket == null)
-                oldTicket = "";
+            if (token == null || token.isEmpty()) {
+                token = oldToken;
+                log.error("{} (reload_cache) failed! appId:{}, current:{}, old:{}",
+                        LOG_TAG, appId, token, oldToken);
+            } else {
+                log.info("{} (reload_cache) success! appId:{}, current:{}, old:{}",
+                        LOG_TAG, appId, token, oldToken);
+            }
 
-            if (appId == null || appId.isEmpty())
-                return oldTicket;
-
-            String ticket = getFromStore(appId);
-            log.info("{} reload success! appId:{}, use newVerifyTicket:{}, oldVerifyTicket:{}", LOG_TAG, appId, ticket, oldTicket);
-            return ticket == null ? oldTicket : ticket;
+            return token;
         }
     }
 }

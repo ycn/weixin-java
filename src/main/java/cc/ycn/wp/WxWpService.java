@@ -1,6 +1,6 @@
 package cc.ycn.wp;
 
-import cc.ycn.common.bean.WxConfig;
+import cc.ycn.common.bean.WxMsgConfig;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.bean.WxOAuthScope;
 import cc.ycn.common.exception.WxErrorException;
@@ -20,7 +20,7 @@ public interface WxWpService {
      *
      * @return WxConfig
      */
-    WxConfig getConfig();
+    WxMsgConfig getConfig();
 
 
     /**

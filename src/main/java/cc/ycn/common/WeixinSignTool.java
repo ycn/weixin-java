@@ -1,6 +1,7 @@
 package cc.ycn.common;
 
-import cc.ycn.common.bean.WxConfig;
+import cc.ycn.common.bean.WxMsgConfig;
+import cc.ycn.common.bean.WxPayConfig;
 import cc.ycn.common.util.StringTool;
 import cc.ycn.weixin.aes.AesException;
 import cc.ycn.weixin.aes.WXBizMsgCrypt;
@@ -27,7 +28,7 @@ public class WeixinSignTool {
      *
      * @return boolean
      */
-    public static boolean checkSignature(WxConfig config, String signature, String timeStamp, String nonce) {
+    public static boolean checkSignature(WxMsgConfig config, String signature, String timeStamp, String nonce) {
         if (config == null)
             return false;
 
@@ -50,7 +51,7 @@ public class WeixinSignTool {
      *
      * @return boolean
      */
-    public static boolean checkMsgSignature(WxConfig config, String msgSignature, String timeStamp, String nonce, String msgEncrypt) {
+    public static boolean checkMsgSignature(WxMsgConfig config, String msgSignature, String timeStamp, String nonce, String msgEncrypt) {
         if (config == null)
             return false;
 
@@ -82,7 +83,7 @@ public class WeixinSignTool {
      * @return String 明文echoStr
      * @throws cc.ycn.common.exception.WxErrorException
      */
-    public static String verifyUrl(WxConfig config, String msgSignature, String timeStamp, String nonce, String echoStrEncrypt) {
+    public static String verifyUrl(WxMsgConfig config, String msgSignature, String timeStamp, String nonce, String echoStrEncrypt) {
         if (config == null)
             return null;
 
@@ -100,7 +101,7 @@ public class WeixinSignTool {
 
         String echoStr = null;
         try {
-            WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId(), config.getComponentAppId());
+            WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppid(), config.getComAppid());
             echoStr = msgCrypt.VerifyURL(msgSignature, timeStamp, nonce, echoStrEncrypt);
         } catch (Exception ignore) {
         }
@@ -116,10 +117,10 @@ public class WeixinSignTool {
      * @return String
      * @throws AesException
      */
-    public static String encrypt(WxConfig config, String text) throws AesException {
+    public static String encrypt(WxMsgConfig config, String text) throws AesException {
         if (config == null || text == null || text.isEmpty())
             return "";
-        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId(), config.getComponentAppId());
+        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppid(), config.getComAppid());
         return msgCrypt.encrypt(text);
     }
 
@@ -131,10 +132,10 @@ public class WeixinSignTool {
      * @return String
      * @throws AesException
      */
-    public static String decrypt(WxConfig config, String text) throws AesException {
+    public static String decrypt(WxMsgConfig config, String text) throws AesException {
         if (config == null || text == null || text.isEmpty())
             return "";
-        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId(), config.getComponentAppId());
+        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppid(), config.getComAppid());
         return msgCrypt.decrypt(text);
     }
 
@@ -146,10 +147,10 @@ public class WeixinSignTool {
      * @return xml-formatted-string
      * @throws AesException
      */
-    public static String encryptMsg(WxConfig config, String replyMsg) throws AesException {
+    public static String encryptMsg(WxMsgConfig config, String replyMsg) throws AesException {
         if (config == null || replyMsg == null || replyMsg.isEmpty())
             return "";
-        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppId(), config.getComponentAppId());
+        WXBizMsgCrypt msgCrypt = new WXBizMsgCrypt(config.getToken(), config.getAesKey(), config.getAppid(), config.getComAppid());
         String randomStr = StringTool.getRandomStr(8);
         return msgCrypt.EncryptMsg(replyMsg, "", randomStr);
     }
@@ -195,10 +196,10 @@ public class WeixinSignTool {
      * @param excludeFields String[]
      * @return String
      */
-    public static String createPaySignature(WxConfig config, Object obj, String[] excludeFields) {
+    public static String createPaySignature(WxMsgConfig config, WxPayConfig payConfig, Object obj, String[] excludeFields) {
         if (config == null || obj == null)
             return "";
-        String packVal = packValue(obj, "&", excludeFields) + "&key=" + config.getPaySecret();
+        String packVal = packValue(obj, "&", excludeFields) + "&key=" + payConfig.getSecret();
         return StringTool.MD5(packVal).toUpperCase();
     }
 
@@ -210,10 +211,10 @@ public class WeixinSignTool {
      * @param excludeFields String[]
      * @return String
      */
-    public static String createPaySignature(WxConfig config, Map<String, String> map, String[] excludeFields) {
+    public static String createPaySignature(WxMsgConfig config, WxPayConfig payConfig, Map<String, String> map, String[] excludeFields) {
         if (config == null || map == null || map.isEmpty())
             return "";
-        String packVal = packValue(map, "&", excludeFields) + "&key=" + config.getPaySecret();
+        String packVal = packValue(map, "&", excludeFields) + "&key=" + payConfig.getSecret();
         return StringTool.MD5(packVal).toUpperCase();
     }
 
@@ -225,10 +226,10 @@ public class WeixinSignTool {
      * @param excludeFields String[]
      * @return String
      */
-    public static String createPaySignature(WxConfig config, List<String> arr, String[] excludeFields) {
+    public static String createPaySignature(WxMsgConfig config, WxPayConfig payConfig, List<String> arr, String[] excludeFields) {
         if (config == null || arr == null || arr.isEmpty())
             return "";
-        String packVal = packValue(arr, "&", excludeFields) + "&key=" + config.getPaySecret();
+        String packVal = packValue(arr, "&", excludeFields) + "&key=" + payConfig.getSecret();
         return StringTool.MD5(packVal).toUpperCase();
     }
 

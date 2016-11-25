@@ -12,6 +12,7 @@ import java.io.Serializable;
  * <tr><td>返回码</td><td>说明</td></tr>
  * <tr><td>-1</td><td>系统繁忙，此时请开发者稍候再试</td></tr>
  * <tr><td>0</td><td>请求成功</td></tr>
+ * <tr><td>1000</td><td>初始化失败</td></tr>
  * <tr><td>1001</td><td>缺少配置信息</td></tr>
  * <tr><td>1002</td><td>微信接口请求异常</td></tr>
  * <tr><td>1003</td><td>请求参数异常(接收时)</td></tr>

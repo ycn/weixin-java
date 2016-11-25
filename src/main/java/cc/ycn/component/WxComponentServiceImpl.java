@@ -1,7 +1,7 @@
 package cc.ycn.component;
 
-import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.bean.WxError;
+import cc.ycn.common.bean.WxMsgConfig;
 import cc.ycn.common.cache.*;
 import cc.ycn.common.constant.ContentType;
 import cc.ycn.common.constant.WxConstant;
@@ -25,14 +25,14 @@ public class WxComponentServiceImpl implements WxComponentService {
     private final static String LOG_TAG = "[WxComponentService]";
 
     private String appId;
-    private WxConfig config;
+    private WxMsgConfig config;
     private final RequestTool requestTool;
 
     public WxComponentServiceImpl(String appId) throws WxErrorException {
         this.appId = appId;
 
-        WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-        this.config = wxConfigCache == null ? null : wxConfigCache.get(appId);
+        WxMsgConfigCache wxMsgConfigCache = WxMsgConfigCache.getInstance();
+        this.config = wxMsgConfigCache == null ? null : wxMsgConfigCache.get(appId);
         if (this.config == null) {
             throw new WxErrorException(new WxError(1001, "missing config:" + appId));
         }
@@ -46,7 +46,7 @@ public class WxComponentServiceImpl implements WxComponentService {
     }
 
     @Override
-    public WxConfig getConfig() {
+    public WxMsgConfig getConfig() {
         return config;
     }
 
@@ -69,7 +69,7 @@ public class WxComponentServiceImpl implements WxComponentService {
 
         WxComponentAccessTokenReq req = new WxComponentAccessTokenReq();
         req.setComponentAppId(appId);
-        req.setComponentAppSecret(config.getAppSecret());
+        req.setComponentAppSecret(config.getSecret());
         req.setComponentVerifyTicket(verifyTicket);
 
         String url = "https://api.weixin.qq.com/cgi-bin/component/api_component_token";

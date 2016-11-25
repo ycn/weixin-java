@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 /**
  * Created by andy on 12/14/15.
@@ -130,7 +129,7 @@ public class RequestTool {
                     .type(MultipartBuilder.FORM)
                     .addPart(
                             Headers.of("Content-Disposition", "form-data; name=\"image\"; filename=\"" + fileName + "\""),
-                            RequestBody.create(WxConstant.MEDIA_TYPE_PNG, file))
+                            RequestBody.create(WxConstant.MEDIA_TYPE_FORM, file))
                     .build();
 
             request = new Request.Builder()

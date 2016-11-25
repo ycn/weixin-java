@@ -1,5 +1,6 @@
 package cc.ycn.component.bean;
 
+import cc.ycn.common.bean.WxToken;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,6 +22,11 @@ public class WxPreAuthCode implements Serializable {
 
     public WxPreAuthCode() {
 
+    }
+
+    public WxPreAuthCode(WxToken wxToken) {
+        this.preAuthCode = wxToken.getToken();
+        this.expiresIn = wxToken.getExpiresIn();
     }
 
 

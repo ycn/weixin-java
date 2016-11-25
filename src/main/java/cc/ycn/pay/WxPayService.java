@@ -1,6 +1,6 @@
 package cc.ycn.pay;
 
-import cc.ycn.common.bean.WxConfig;
+import cc.ycn.common.bean.WxMsgConfig;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.pay.bean.*;
 
@@ -18,7 +18,7 @@ public interface WxPayService {
      *
      * @return WxConfig
      */
-    WxConfig getConfig();
+    WxMsgConfig getConfig();
 
 
     /**

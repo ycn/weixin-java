@@ -14,7 +14,7 @@ public class JsonConverter {
 
     private final static Logger log = LoggerFactory.getLogger(JsonConverter.class);
     private final static String LOG_TAG = "[JsonConverter]";
-    
+
 
     public static String pojo2json(Object o) {
         if (o == null) return null;

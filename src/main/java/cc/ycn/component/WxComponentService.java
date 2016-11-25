@@ -1,6 +1,6 @@
 package cc.ycn.component;
 
-import cc.ycn.common.bean.WxConfig;
+import cc.ycn.common.bean.WxMsgConfig;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.component.bean.*;
@@ -19,7 +19,7 @@ public interface WxComponentService {
      *
      * @return WxConfig
      */
-    WxConfig getConfig();
+    WxMsgConfig getConfig();
 
     /**
      * 从缓存里获取VerifyTicket

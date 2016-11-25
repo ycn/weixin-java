@@ -25,6 +25,16 @@ public class WxAccessToken implements Serializable {
 
     }
 
+    public WxAccessToken(String accessToken, long expiresIn) {
+        this.accessToken = accessToken;
+        this.expiresIn = expiresIn;
+    }
+
+    public WxAccessToken(WxToken wxToken) {
+        this.accessToken = wxToken.getToken();
+        this.expiresIn = wxToken.getExpiresIn();
+    }
+
     public WxAccessToken(WxComponentAccessToken componentAccessToken) {
         if (componentAccessToken != null) {
             this.accessToken = componentAccessToken.getComponentAccessToken();

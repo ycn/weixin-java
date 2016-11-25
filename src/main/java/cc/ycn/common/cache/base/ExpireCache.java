@@ -1,6 +1,7 @@
-package cc.ycn.common.cache;
+package cc.ycn.common.cache.base;
 
-import cc.ycn.common.api.CentralStore;
+import cc.ycn.common.api.WxTokenHandler;
+import cc.ycn.common.bean.WxToken;
 import cc.ycn.common.constant.CacheKeyPrefix;
 import cc.ycn.common.util.JsonConverter;
 import com.google.common.cache.CacheBuilder;
@@ -18,24 +19,21 @@ public abstract class ExpireCache<T> {
     private final static Logger log = LoggerFactory.getLogger(ExpireCache.class);
     private final static String LOG_TAG = "[ExpireCache]";
 
-    private CentralStore centralStore;
+    private WxTokenHandler wxTokenHandler;
     private LoadingCache<String, T> cache;
-    private String keyPrefix;
-    private boolean readonly;
+    private CacheKeyPrefix keyPrefix;
 
     protected ExpireCache() {
-
     }
 
-    protected void init(CentralStore centralStore,
+    protected void init(WxTokenHandler wxTokenHandler,
                         int refreshSeconds,
                         int concurrencyLevel,
                         long maximumCacheSize,
                         WxCacheLoader<T> cacheLoader,
-                        CacheKeyPrefix keyPrefix,
-                        boolean readonly) {
+                        CacheKeyPrefix keyPrefix) {
 
-        this.centralStore = centralStore;
+        this.wxTokenHandler = wxTokenHandler;
 
         // reload after expired
         this.cache = CacheBuilder.newBuilder()
@@ -44,8 +42,7 @@ public abstract class ExpireCache<T> {
                 .refreshAfterWrite(refreshSeconds, TimeUnit.SECONDS)
                 .build(cacheLoader);
 
-        this.keyPrefix = keyPrefix.prefix();
-        this.readonly = readonly;
+        this.keyPrefix = keyPrefix;
     }
 
     final public T get(String key) {
@@ -65,37 +62,14 @@ public abstract class ExpireCache<T> {
         return get(key);
     }
 
-    final public void setToStore(String key, T value, long expiredIn) {
-        if (readonly)
-            return;
-        if (key == null || key.isEmpty())
-            return;
-        if (value == null)
-            return;
-
-        if (value instanceof String) {
-            centralStore.set(keyPrefix + key, (String) value, expiredIn);
-        } else {
-            centralStore.set(keyPrefix + key, JsonConverter.pojo2json(value), expiredIn);
-        }
-
-        cache.invalidate(key);
-    }
-
-    final public void delFromStore(String key) {
-        if (readonly)
-            return;
-        centralStore.del(keyPrefix + key);
-        cache.invalidate(key);
-    }
-
     final protected String getFromStore(String key) {
-        String realKey = keyPrefix + key;
-        String value = centralStore.get(realKey);
+        String realKey = keyPrefix.key(key);
+        WxToken wxToken = wxTokenHandler.get(realKey);
+        if (wxToken == null) {
+            return null;
+        }
+        String value = wxToken.getToken();
         if (value == null || value.isEmpty()) {
-            // SOS
-            centralStore.set("SOS:" + realKey, "", 10);
-            log.warn("{} SOS:{}", LOG_TAG, realKey);
             value = null;
         }
         return value;
@@ -104,5 +78,15 @@ public abstract class ExpireCache<T> {
     final protected T getFromStore(String key, Class<T> clazz) {
         String json = getFromStore(key);
         return (json == null || json.isEmpty()) ? null : JsonConverter.json2pojo(json, clazz);
+    }
+
+    final public void setToStore(String key, String token, long expiresIn) {
+        String realKey = keyPrefix.key(key);
+        Boolean result = wxTokenHandler.set(realKey, new WxToken(token, expiresIn));
+        if (result == null || !result) {
+            log.error("{} (WX_SET) set failed! {}={}, expiresIn:{}", LOG_TAG, realKey, token, expiresIn);
+        } else {
+            log.info("{} (WX_SET) set success! {}={}, expiresIn:{}", LOG_TAG, realKey, token, expiresIn);
+        }
     }
 }

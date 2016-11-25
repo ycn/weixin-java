@@ -1,9 +1,9 @@
 package cc.ycn.wp;
 
-import cc.ycn.common.bean.WxConfig;
+import cc.ycn.common.bean.WxMsgConfig;
 import cc.ycn.common.bean.WxError;
 import cc.ycn.common.bean.WxOAuthScope;
-import cc.ycn.common.cache.WxConfigCache;
+import cc.ycn.common.cache.WxMsgConfigCache;
 import cc.ycn.common.constant.WxConstant;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.RequestTool;
@@ -27,14 +27,14 @@ public class WxWpServiceImpl implements WxWpService {
     private final static String LOG_TAG = "[WxWpService]";
 
     private String appId;
-    private WxConfig config;
+    private WxMsgConfig config;
     private final RequestTool requestTool;
 
     public WxWpServiceImpl(String appId) throws WxErrorException {
         this.appId = appId;
 
-        WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-        this.config = wxConfigCache == null ? null : wxConfigCache.get(appId);
+        WxMsgConfigCache wxMsgConfigCache = WxMsgConfigCache.getInstance();
+        this.config = wxMsgConfigCache == null ? null : wxMsgConfigCache.get(appId);
         if (this.config == null) {
             throw new WxErrorException(new WxError(1001, "missing config:" + appId));
         }
@@ -48,7 +48,7 @@ public class WxWpServiceImpl implements WxWpService {
     }
 
     @Override
-    public WxConfig getConfig() {
+    public WxMsgConfig getConfig() {
         return config;
     }
 
@@ -85,7 +85,7 @@ public class WxWpServiceImpl implements WxWpService {
             throw new WxErrorException(new WxError(1003, "invalid code"));
 
         String fUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={}&secret={}&code={}&grant_type=authorization_code";
-        String url = StringTool.formatString(fUrl, appId, config.getAppSecret(), code);
+        String url = StringTool.formatString(fUrl, appId, config.getSecret(), code);
 
         return requestTool.get(
                 "getOAuthAccessToken",

@@ -20,7 +20,7 @@ public interface WxCpService {
      *
      * @return WxConfig
      */
-    WxConfig getConfig();
+    WxMsgConfig getConfig();
 
     /**
      * 从缓存里获取AccessToken

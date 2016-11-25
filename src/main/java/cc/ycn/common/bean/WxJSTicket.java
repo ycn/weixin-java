@@ -22,6 +22,11 @@ public class WxJSTicket implements Serializable {
 
     }
 
+    public WxJSTicket(WxToken wxToken) {
+        this.ticket = wxToken.getToken();
+        this.expiresIn = wxToken.getExpiresIn();
+    }
+
     public String getTicket() {
         return ticket;
     }
@@ -29,7 +34,7 @@ public class WxJSTicket implements Serializable {
     public void setTicket(String ticket) {
         this.ticket = ticket;
     }
-    
+
     public long getExpiresIn() {
         return expiresIn;
     }

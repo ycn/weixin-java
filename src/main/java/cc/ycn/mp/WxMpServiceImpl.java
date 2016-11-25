@@ -12,7 +12,7 @@ import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.RequestTool;
 import cc.ycn.common.util.StringTool;
 import cc.ycn.mp.bean.*;
-import com.squareup.okhttp.*;
+import com.squareup.okhttp.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,14 +32,14 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     private final static String LOG_TAG = "[WxMpService]";
 
     private String appId;
-    private WxConfig config;
+    private WxMsgConfig config;
     private final RequestTool requestTool;
 
     public WxMpServiceImpl(String appId) throws WxErrorException {
         this.appId = appId;
 
-        WxConfigCache wxConfigCache = WxConfigCache.getInstance();
-        this.config = wxConfigCache == null ? null : wxConfigCache.get(appId);
+        WxMsgConfigCache wxMsgConfigCache = WxMsgConfigCache.getInstance();
+        this.config = wxMsgConfigCache == null ? null : wxMsgConfigCache.get(appId);
         if (this.config == null) {
             throw new WxErrorException(new WxError(1001, "missing config:" + appId));
         }
@@ -53,7 +53,7 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     }
 
     @Override
-    public WxConfig getConfig() {
+    public WxMsgConfig getConfig() {
         return config;
     }
 
@@ -65,7 +65,7 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
     @Override
     public WxAccessToken fetchAccessToken() throws WxErrorException {
         String fUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={}&secret={}";
-        String url = StringTool.formatString(fUrl, appId, config.getAppSecret());
+        String url = StringTool.formatString(fUrl, appId, config.getSecret());
 
         return requestTool.get(
                 "fetchAccessToken",
@@ -332,7 +332,7 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
 
         String appendix = "";
         if (config.isAuthorizer()) {
-            appendix = "&component_appid=" + config.getComponentAppId();
+            appendix = "&component_appid=" + config.getComAppid();
         }
 
         String fUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid={}&redirect_uri={}&response_type=code&scope={}&state={}{}#wechat_redirect";
@@ -349,16 +349,16 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
 
         if (config.isAuthorizer()) {
 
-            String accessToken = WxAccessTokenCache.getInstance().get(config.getComponentAppId());
+            String accessToken = WxAccessTokenCache.getInstance().get(config.getComAppid());
 
             if (accessToken == null || accessToken.isEmpty())
                 throw new WxErrorException(new WxError(1004, "invalid component accessToken"));
 
             fUrl = "https://api.weixin.qq.com/sns/oauth2/component/access_token?appid={}&code={}&grant_type=authorization_code&component_appid={}&component_access_token={}";
-            url = StringTool.formatString(fUrl, appId, code, config.getComponentAppId(), accessToken);
+            url = StringTool.formatString(fUrl, appId, code, config.getComAppid(), accessToken);
         } else {
             fUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={}&secret={}&code={}&grant_type=authorization_code";
-            url = StringTool.formatString(fUrl, appId, config.getAppSecret(), code);
+            url = StringTool.formatString(fUrl, appId, config.getSecret(), code);
         }
 
         return requestTool.get(

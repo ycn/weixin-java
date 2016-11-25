@@ -33,7 +33,7 @@ public final class MathTool {
     public static BigDecimal divide(double a, double b) {
         BigDecimal bA = new BigDecimal(String.valueOf(a));
         BigDecimal bB = new BigDecimal(String.valueOf(b));
-        return bA.divide(bB, 2, RoundingMode.DOWN);
+        return bA.divide(bB, 2, RoundingMode.HALF_UP);
     }
 
     // 高精度加法
@@ -61,11 +61,11 @@ public final class MathTool {
     public static BigDecimal divide(String a, String b) {
         BigDecimal bA = new BigDecimal(a);
         BigDecimal bB = new BigDecimal(b);
-        return bA.divide(bB, 2, RoundingMode.DOWN);
+        return bA.divide(bB, 2, RoundingMode.HALF_UP);
     }
 
-    public static BigDecimal formattedByScale(int wei,BigDecimal bigDecimal) {
-        if(bigDecimal.compareTo(BigDecimal.ZERO)==1&&bigDecimal.compareTo(new BigDecimal("0.01"))<1)
+    public static BigDecimal formattedByScale(int wei, BigDecimal bigDecimal) {
+        if (bigDecimal.compareTo(BigDecimal.ZERO) == 1 && bigDecimal.compareTo(new BigDecimal("0.01")) < 1)
             return new BigDecimal("0.01");
         return bigDecimal.setScale(wei, BigDecimal.ROUND_UP);
     }

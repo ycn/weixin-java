@@ -11,7 +11,8 @@ public enum CacheKeyPrefix {
     PRE_AUTHCODE("PreAuthCode:"),
     REFRESH_TOKEN("RefreshToken:"),
     VERIFY_TICKET("VerifyTicket:"),
-    CONFIG("");
+    MSG_CONFIG("MsgConfig:"),
+    PAY_CONFIG("PayConfig:");
 
     private String prefix;
 
@@ -21,5 +22,9 @@ public enum CacheKeyPrefix {
 
     public String prefix() {
         return prefix;
+    }
+
+    public String key(String key) {
+        return prefix + key;
     }
 }
