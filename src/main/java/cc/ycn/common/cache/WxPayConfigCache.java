@@ -4,7 +4,7 @@ import cc.ycn.common.api.WxTokenHandler;
 import cc.ycn.common.bean.WxPayConfig;
 import cc.ycn.common.cache.base.ExpireCache;
 import cc.ycn.common.cache.base.WxCacheLoader;
-import cc.ycn.common.constant.CacheKeyPrefix;
+import cc.ycn.common.constant.WxCacheType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public class WxPayConfigCache extends ExpireCache<WxPayConfig> {
                 concurrencyLevel,
                 maximumSize,
                 new WxPayConfigCacheLoader(executorSize),
-                CacheKeyPrefix.PAY_CONFIG
+                WxCacheType.PAY_CONFIG
         );
     }
 

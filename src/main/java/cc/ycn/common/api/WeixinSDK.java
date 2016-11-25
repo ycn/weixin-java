@@ -2,7 +2,7 @@ package cc.ycn.common.api;
 
 import cc.ycn.common.bean.*;
 import cc.ycn.common.cache.*;
-import cc.ycn.common.constant.CacheKeyPrefix;
+import cc.ycn.common.constant.WxCacheType;
 import cc.ycn.common.exception.WxErrorException;
 import cc.ycn.common.util.JsonConverter;
 import cc.ycn.common.util.StringTool;
@@ -59,7 +59,7 @@ public class WeixinSDK {
 
     public static WxMsgConfig fetchMsgConfig(String appId) {
         WxMsgConfig wxMsgConfig = null;
-        WxToken wxToken = WX_TOKEN_HANDLER.get(CacheKeyPrefix.MSG_CONFIG.key(appId));
+        WxToken wxToken = WX_TOKEN_HANDLER.get(WxCacheType.MSG_CONFIG.key(appId));
         if (wxToken == null) {
             log.error("{} (WX_FETCH) fetchMsgConfig: empty WxToken from store", LOG_TAG);
             return null;
@@ -82,7 +82,7 @@ public class WeixinSDK {
 
     public static WxPayConfig fetchPayConfig(String appId) {
         WxPayConfig wxPayConfig = null;
-        WxToken wxToken = WX_TOKEN_HANDLER.get(CacheKeyPrefix.PAY_CONFIG.key(appId));
+        WxToken wxToken = WX_TOKEN_HANDLER.get(WxCacheType.PAY_CONFIG.key(appId));
         if (wxToken == null) {
             log.error("{} (WX_FETCH) fetchPayConfig: empty WxToken from store", LOG_TAG);
             return null;
@@ -104,15 +104,15 @@ public class WeixinSDK {
     }
 
     public static String fetchRefreshToken(String appId) {
-        return fetchToken(appId, CacheKeyPrefix.REFRESH_TOKEN, "fetchRefreshToken");
+        return fetchToken(appId, WxCacheType.REFRESH_TOKEN, "fetchRefreshToken");
     }
 
     public static String fetchVerifyTicket(String appId) {
-        return fetchToken(appId, CacheKeyPrefix.VERIFY_TICKET, "fetchVerifyTicket");
+        return fetchToken(appId, WxCacheType.VERIFY_TICKET, "fetchVerifyTicket");
     }
 
     public static WxAccessToken fetchAccessToken(String appId) {
-        String tokenKey = CacheKeyPrefix.ACCESS_TOKEN.key(appId);
+        String tokenKey = WxCacheType.ACCESS_TOKEN.key(appId);
         WxToken wxToken = WX_TOKEN_HANDLER.get(tokenKey);
         WxAccessToken oldAccessToken = new WxAccessToken(wxToken);
         String oldAccessTokenStr = JsonConverter.pojo2json(oldAccessToken);
@@ -175,7 +175,7 @@ public class WeixinSDK {
     }
 
     public static WxCardTicket fetchCardTicket(String appId, WxAccessToken wxAccessToken) {
-        String tokenKey = CacheKeyPrefix.CARD_TICKET.key(appId);
+        String tokenKey = WxCacheType.CARD_TICKET.key(appId);
         WxToken wxToken = WX_TOKEN_HANDLER.get(tokenKey);
         WxCardTicket oldCardTicket = new WxCardTicket(wxToken);
         String oldCardTicketStr = JsonConverter.pojo2json(oldCardTicket);
@@ -226,7 +226,7 @@ public class WeixinSDK {
     }
 
     public static WxJSTicket fetchJSTicket(String appId, WxAccessToken wxAccessToken) {
-        String tokenKey = CacheKeyPrefix.JS_TICKET.key(appId);
+        String tokenKey = WxCacheType.JS_TICKET.key(appId);
         WxToken wxToken = WX_TOKEN_HANDLER.get(tokenKey);
         WxJSTicket oldJSTicket = new WxJSTicket(wxToken);
         String oldJSTicketStr = JsonConverter.pojo2json(oldJSTicket);
@@ -281,7 +281,7 @@ public class WeixinSDK {
     }
 
     public static WxPreAuthCode fetchPreAuthCode(String appId, WxAccessToken wxAccessToken) {
-        String tokenKey = CacheKeyPrefix.PRE_AUTHCODE.key(appId);
+        String tokenKey = WxCacheType.PRE_AUTHCODE.key(appId);
         WxToken wxToken = WX_TOKEN_HANDLER.get(tokenKey);
         WxPreAuthCode oldPreAuthCode = new WxPreAuthCode(wxToken);
         String oldPreAuthCodeStr = JsonConverter.pojo2json(oldPreAuthCode);
@@ -357,7 +357,7 @@ public class WeixinSDK {
         return true;
     }
 
-    private static String fetchToken(String appId, CacheKeyPrefix prefix, String logTag) {
+    private static String fetchToken(String appId, WxCacheType prefix, String logTag) {
         String token = null;
         WxToken wxToken = WX_TOKEN_HANDLER.get(prefix.key(appId));
         if (wxToken == null) {

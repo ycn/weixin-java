@@ -3,7 +3,7 @@ package cc.ycn.common.cache;
 import cc.ycn.common.api.WxTokenHandler;
 import cc.ycn.common.cache.base.ExpireCache;
 import cc.ycn.common.cache.base.WxCacheLoader;
-import cc.ycn.common.constant.CacheKeyPrefix;
+import cc.ycn.common.constant.WxCacheType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class WxVerifyTicketCache extends ExpireCache<String> {
                 concurrencyLevel,
                 maximumSize,
                 new WxVerifyTicketCacheLoader(executorSize),
-                CacheKeyPrefix.VERIFY_TICKET
+                WxCacheType.VERIFY_TICKET
         );
     }
 

@@ -2,7 +2,7 @@ package cc.ycn.common.cache.base;
 
 import cc.ycn.common.api.WxTokenHandler;
 import cc.ycn.common.bean.WxToken;
-import cc.ycn.common.constant.CacheKeyPrefix;
+import cc.ycn.common.constant.WxCacheType;
 import cc.ycn.common.util.JsonConverter;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
@@ -21,7 +21,7 @@ public abstract class ExpireCache<T> {
 
     private WxTokenHandler wxTokenHandler;
     private LoadingCache<String, T> cache;
-    private CacheKeyPrefix keyPrefix;
+    private WxCacheType cacheType;
 
     protected ExpireCache() {
     }
@@ -31,7 +31,7 @@ public abstract class ExpireCache<T> {
                         int concurrencyLevel,
                         long maximumCacheSize,
                         WxCacheLoader<T> cacheLoader,
-                        CacheKeyPrefix keyPrefix) {
+                        WxCacheType cacheType) {
 
         this.wxTokenHandler = wxTokenHandler;
 
@@ -42,7 +42,7 @@ public abstract class ExpireCache<T> {
                 .refreshAfterWrite(refreshSeconds, TimeUnit.SECONDS)
                 .build(cacheLoader);
 
-        this.keyPrefix = keyPrefix;
+        this.cacheType = cacheType;
     }
 
     final public T get(String key) {
@@ -63,7 +63,7 @@ public abstract class ExpireCache<T> {
     }
 
     final protected String getFromStore(String key) {
-        String realKey = keyPrefix.key(key);
+        String realKey = cacheType.key(key);
         WxToken wxToken = wxTokenHandler.get(realKey);
         if (wxToken == null) {
             return null;
@@ -81,7 +81,7 @@ public abstract class ExpireCache<T> {
     }
 
     final public void setToStore(String key, String token, long expiresIn) {
-        String realKey = keyPrefix.key(key);
+        String realKey = cacheType.key(key);
         Boolean result = wxTokenHandler.set(realKey, new WxToken(token, expiresIn));
         if (result == null || !result) {
             log.error("{} (WX_SET) set failed! {}={}, expiresIn:{}", LOG_TAG, realKey, token, expiresIn);
