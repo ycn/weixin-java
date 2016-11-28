@@ -32,8 +32,7 @@ public class WxPayServiceImpl implements WxPayService {
     private final static Logger log = LoggerFactory.getLogger(WxPayServiceImpl.class);
     private final static String LOG_TAG = "[WxPayService]";
 
-    private String appId; // 自己的appId
-    private String mchId; // 自己的mchId
+    private String appId;
     private WxMsgConfig config;
     private WxPayConfig payConfig;
     private final RequestTool requestTool;
@@ -49,11 +48,6 @@ public class WxPayServiceImpl implements WxPayService {
 
         WxPayConfigCache wxPayConfigCache = WxPayConfigCache.getInstance();
         this.payConfig = wxPayConfigCache == null ? null : wxPayConfigCache.get(appId);
-        if (payConfig != null && payConfig.isAuthorizer()) { // 使用服务商的payConfig
-            mchId = payConfig.getMchid();
-            payConfig = wxPayConfigCache.get(payConfig.getComAppid());
-        }
-
         if (payConfig == null) {
             throw new WxErrorException(new WxError(1001, "missing pay config:" + appId));
         }
@@ -211,15 +205,13 @@ public class WxPayServiceImpl implements WxPayService {
     private void updateSign(WxPayBaseReq req) {
 
         if (payConfig.isAuthorizer()) {
-            req.setAppid(payConfig.getAppid());
+            req.setAppid(payConfig.getComAppid());
             req.setMch_id(payConfig.getMchid());
             req.setSub_appid(appId);
-            if (!StringTool.isEmpty(mchId))
-                req.setSub_mch_id(mchId);
         } else {
             req.setAppid(appId);
-            if (!StringTool.isEmpty(mchId))
-                req.setMch_id(mchId);
+            if (!StringTool.isEmpty(payConfig.getMchid()))
+                req.setMch_id(payConfig.getMchid());
         }
 
         req.setSign(config, payConfig);
