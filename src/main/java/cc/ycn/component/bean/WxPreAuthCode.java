@@ -25,8 +25,10 @@ public class WxPreAuthCode implements Serializable {
     }
 
     public WxPreAuthCode(WxToken wxToken) {
-        this.preAuthCode = wxToken.getToken();
-        this.expiresIn = wxToken.getExpiresIn();
+        if (wxToken != null) {
+            this.preAuthCode = wxToken.getToken();
+            this.expiresIn = wxToken.getExpiresIn();
+        }
     }
 
 

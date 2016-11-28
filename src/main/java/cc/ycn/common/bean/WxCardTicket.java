@@ -23,8 +23,10 @@ public class WxCardTicket implements Serializable {
     }
 
     public WxCardTicket(WxToken wxToken) {
-        this.ticket = wxToken.getToken();
-        this.expiresIn = wxToken.getExpiresIn();
+        if (wxToken != null) {
+            this.ticket = wxToken.getToken();
+            this.expiresIn = wxToken.getExpiresIn();
+        }
     }
 
     public String getTicket() {

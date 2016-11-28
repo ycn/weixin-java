@@ -174,15 +174,17 @@ public class WeixinSDK {
         return accessToken;
     }
 
-    public static WxCardTicket fetchCardTicket(String appId, WxAccessToken wxAccessToken) {
+    public static WxCardTicket fetchCardTicket(String appId) {
         String tokenKey = WxCacheType.CARD_TICKET.key(appId);
         WxToken wxToken = WX_TOKEN_HANDLER.get(tokenKey);
         WxCardTicket oldCardTicket = new WxCardTicket(wxToken);
         String oldCardTicketStr = JsonConverter.pojo2json(oldCardTicket);
 
-        if (wxAccessToken == null) {
-            log.error("{} (WX_FETCH) fetchCardTicket wrong request param WxAccessToken: null, use old:{}",
-                    LOG_TAG, oldCardTicketStr);
+        WxAccessToken wxAccessToken = new WxAccessToken(WX_TOKEN_HANDLER.get(WxCacheType.ACCESS_TOKEN.key(appId)));
+
+        if (wxAccessToken.getAccessToken() == null) {
+            log.error("{} (WX_FETCH) fetchCardTicket missing WxAccessToken, appId:{}, use old:{}",
+                    LOG_TAG, appId, oldCardTicketStr);
             return oldCardTicket;
         }
 
@@ -225,15 +227,17 @@ public class WeixinSDK {
         return cardTicket;
     }
 
-    public static WxJSTicket fetchJSTicket(String appId, WxAccessToken wxAccessToken) {
+    public static WxJSTicket fetchJSTicket(String appId) {
         String tokenKey = WxCacheType.JS_TICKET.key(appId);
         WxToken wxToken = WX_TOKEN_HANDLER.get(tokenKey);
         WxJSTicket oldJSTicket = new WxJSTicket(wxToken);
         String oldJSTicketStr = JsonConverter.pojo2json(oldJSTicket);
 
-        if (wxAccessToken == null) {
-            log.error("{} (WX_FETCH) fetchCardTicket wrong request param WxAccessToken: null, use old:{}",
-                    LOG_TAG, oldJSTicketStr);
+        WxAccessToken wxAccessToken = new WxAccessToken(WX_TOKEN_HANDLER.get(WxCacheType.ACCESS_TOKEN.key(appId)));
+
+        if (wxAccessToken.getAccessToken() == null) {
+            log.error("{} (WX_FETCH) fetchJSTicket missing WxAccessToken, appId:{}, use old:{}",
+                    LOG_TAG, appId, oldJSTicketStr);
             return oldJSTicket;
         }
 
@@ -280,15 +284,17 @@ public class WeixinSDK {
         return jsTicket;
     }
 
-    public static WxPreAuthCode fetchPreAuthCode(String appId, WxAccessToken wxAccessToken) {
+    public static WxPreAuthCode fetchPreAuthCode(String appId) {
         String tokenKey = WxCacheType.PRE_AUTHCODE.key(appId);
         WxToken wxToken = WX_TOKEN_HANDLER.get(tokenKey);
         WxPreAuthCode oldPreAuthCode = new WxPreAuthCode(wxToken);
         String oldPreAuthCodeStr = JsonConverter.pojo2json(oldPreAuthCode);
 
-        if (wxAccessToken == null) {
-            log.error("{} (WX_FETCH) fetchPreAuthCode wrong request param WxAccessToken: null, use old:{}",
-                    LOG_TAG, oldPreAuthCodeStr);
+        WxAccessToken wxAccessToken = new WxAccessToken(WX_TOKEN_HANDLER.get(WxCacheType.ACCESS_TOKEN.key(appId)));
+
+        if (wxAccessToken.getAccessToken() == null) {
+            log.error("{} (WX_FETCH) fetchPreAuthCode missing WxAccessToken, appId:{}, use old:{}",
+                    LOG_TAG, appId, oldPreAuthCode);
             return oldPreAuthCode;
         }
 
