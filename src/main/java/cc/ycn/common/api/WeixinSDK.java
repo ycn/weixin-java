@@ -33,26 +33,25 @@ public class WeixinSDK {
     private static WxPreAuthCodeCache wxPreAuthCodeCache;
 
     public static void init(WxTokenHandler wxTokenHandler) throws WxErrorException {
-        init(wxTokenHandler, 600, 10, 50000, 10);
+        init(wxTokenHandler, 60, 10, 50000);
     }
 
     public static void init(WxTokenHandler wxTokenHandler,
-                            int refreshSeconds,
+                            int expireSeconds,
                             int concurrencyLevel,
-                            long maximumSize,
-                            int executorSize) throws WxErrorException {
+                            long maximumSize) throws WxErrorException {
         if (wxTokenHandler == null) {
             throw new WxErrorException(new WxError(1000, "WeixinSDK init failed!"));
         }
 
-        wxMsgConfigCache = WxMsgConfigCache.init(wxTokenHandler, refreshSeconds, concurrencyLevel, maximumSize, executorSize);
-        wxPayConfigCache = WxPayConfigCache.init(wxTokenHandler, refreshSeconds, concurrencyLevel, maximumSize, executorSize);
-        wxRefreshTokenCache = WxRefreshTokenCache.init(wxTokenHandler, refreshSeconds, concurrencyLevel, maximumSize, executorSize);
-        wxVerifyTicketCache = WxVerifyTicketCache.init(wxTokenHandler, refreshSeconds, concurrencyLevel, maximumSize, executorSize);
-        wxAccessTokenCache = WxAccessTokenCache.init(wxTokenHandler, refreshSeconds, concurrencyLevel, maximumSize, executorSize);
-        wxCardTicketCache = WxCardTicketCache.init(wxTokenHandler, refreshSeconds, concurrencyLevel, maximumSize, executorSize);
-        wxJSTicketCache = WxJSTicketCache.init(wxTokenHandler, refreshSeconds, concurrencyLevel, maximumSize, executorSize);
-        wxPreAuthCodeCache = WxPreAuthCodeCache.init(wxTokenHandler, refreshSeconds, concurrencyLevel, maximumSize, executorSize);
+        wxMsgConfigCache = WxMsgConfigCache.init(wxTokenHandler, expireSeconds, concurrencyLevel, maximumSize);
+        wxPayConfigCache = WxPayConfigCache.init(wxTokenHandler, expireSeconds, concurrencyLevel, maximumSize);
+        wxRefreshTokenCache = WxRefreshTokenCache.init(wxTokenHandler, expireSeconds, concurrencyLevel, maximumSize);
+        wxVerifyTicketCache = WxVerifyTicketCache.init(wxTokenHandler, expireSeconds, concurrencyLevel, maximumSize);
+        wxAccessTokenCache = WxAccessTokenCache.init(wxTokenHandler, expireSeconds, concurrencyLevel, maximumSize);
+        wxCardTicketCache = WxCardTicketCache.init(wxTokenHandler, expireSeconds, concurrencyLevel, maximumSize);
+        wxJSTicketCache = WxJSTicketCache.init(wxTokenHandler, expireSeconds, concurrencyLevel, maximumSize);
+        wxPreAuthCodeCache = WxPreAuthCodeCache.init(wxTokenHandler, expireSeconds, concurrencyLevel, maximumSize);
 
         WX_TOKEN_HANDLER = wxTokenHandler;
     }
