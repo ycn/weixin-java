@@ -110,7 +110,11 @@ public abstract class ExpireCache<T> {
     final protected T getFromStore(String key) {
         String json = getRawFromStore(key);
         Class<T> clazz = cacheType.clazz();
-        return (json == null || json.isEmpty()) ? null : JsonConverter.json2pojo(json, clazz);
+        if (String.class.equals(clazz)) {
+            return (json == null || json.isEmpty()) ? null : (T) json;
+        } else {
+            return (json == null || json.isEmpty()) ? null : JsonConverter.json2pojo(json, clazz);
+        }
     }
 
     private void setRawToStore(String key, String token, long expiresIn) {
