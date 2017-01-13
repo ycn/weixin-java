@@ -45,9 +45,9 @@ public class WxMpServiceImpl implements WxMpService, WxErrorHandler {
         }
 
         OkHttpClient httpClient = new OkHttpClient();
-        httpClient.setConnectTimeout(WxConstant.WX_CONNECT_TIMEOUT, TimeUnit.SECONDS);
-        httpClient.setReadTimeout(WxConstant.WX_READ_TIMEOUT, TimeUnit.SECONDS);
-        httpClient.setWriteTimeout(WxConstant.WX_WRITE_TIMEOUT, TimeUnit.SECONDS);
+        httpClient.setConnectTimeout(WxConstant.WX_CONNECT_TIMEOUT_TEN, TimeUnit.SECONDS);
+        httpClient.setReadTimeout(WxConstant.WX_READ_TIMEOUT_TWENTY, TimeUnit.SECONDS);
+        httpClient.setWriteTimeout(WxConstant.WX_WRITE_TIMEOUT_TEN, TimeUnit.SECONDS);
 
         requestTool = new RequestTool(LOG_TAG, httpClient, this);
     }
