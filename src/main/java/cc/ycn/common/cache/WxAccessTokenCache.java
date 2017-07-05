@@ -5,6 +5,7 @@ import cc.ycn.common.bean.WxAccessToken;
 import cc.ycn.common.bean.WxConfig;
 import cc.ycn.common.constant.CacheKeyPrefix;
 import cc.ycn.common.exception.WxErrorException;
+import cc.ycn.common.util.StringTool;
 import cc.ycn.component.WxComponentServiceImpl;
 import cc.ycn.component.bean.WxAuthorizerAccessToken;
 import cc.ycn.cp.WxCpServiceImpl;
@@ -109,6 +110,11 @@ public class WxAccessTokenCache extends ExpireCache<String> {
 
             // accessToken已过期
             WxAccessToken accessToken = null;
+
+            if (config.getType() == null) {
+                log.error("{} config_type null  appId:{}, reuse oldToken:{}", LOG_TAG, appId, oldToken);
+                return oldToken;
+            }
 
             try {
 

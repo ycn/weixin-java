@@ -105,6 +105,11 @@ public class WxCardTicketCache extends ExpireCache<String> {
             // ticket已过期
             WxCardTicket cardTicket = null;
 
+            if (config.getType() == null) {
+                log.error("{} config_type null appId:{}, reuse oldTicket:{}", LOG_TAG, appId, oldTicket);
+                return oldTicket;
+            }
+
             try {
 
                 switch (config.getType()) {

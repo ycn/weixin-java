@@ -105,6 +105,10 @@ public class WxPreAuthCodeCache extends ExpireCache<String> {
             // code已过期
             WxPreAuthCode preAuthCode = null;
 
+            if (config.getType() == null) {
+                log.error("{} config_type null appId:{}, reuse oldCode:{}", LOG_TAG, appId, oldCode);
+                return oldCode;
+            }
 
             try {
 
