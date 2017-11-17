@@ -39,11 +39,21 @@ public class WxOrderQueryResp extends WxPayBaseResp {
     protected int coupon_fee_2;
     protected int coupon_fee_3;
     protected int coupon_fee_4;
+
+    public String getSub_openid() {
+        return sub_openid;
+    }
+
+    public void setSub_openid(String sub_openid) {
+        this.sub_openid = sub_openid;
+    }
+
     protected String transaction_id;
     protected String out_trade_no;
     protected String attach;
     protected String time_end;
     protected String trade_state_desc;
+    protected String sub_openid;
 
 
     public WxOrderQueryResp() {
